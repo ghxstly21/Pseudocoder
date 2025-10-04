@@ -1,2 +1,24 @@
-# Pseudocoder
-A compiler built in Ruby that recognizes code from a programming language such as Python, Java, or Ruby and turns it into English pseudocode that anyone can understand. Pseudocoder will help anyone who wants a better understanding of their code.
+# README
+
+This README would normally document whatever steps are necessary to get the
+application up and running.
+
+Things you may want to cover:
+
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...

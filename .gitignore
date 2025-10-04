@@ -10,8 +10,39 @@
 /test/version_tmp/
 /tmp/
 
+# Ignore bundler config
+/.bundle
+
+# Ignore all logfiles and tempfiles
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore uploaded files in development
+/storage/*
+!/storage/.keep
+
+# Ignore Byebug command history file
+.byebug_history
+
+# Ignore environment config
+.env
+.env.*.local
+
+# Ignore database files for SQLite (if used locally)
+db/*.sqlite3
+db/*.sqlite3-journal
+
+# Ignore node_modules if using JavaScript packages
+/node_modules
+
+# Ignore Yarn or npm lock files only if you manage them differently
+/yarn-error.log
+
 # Default ignored files
 .DS_Store
+*.vscode/
 *.xml
 *.iml
 /shelf/
@@ -24,9 +55,6 @@
 
 # Used by dotenv library to load environment variables.
 # .env
-
-# Ignore Byebug command history file.
-.byebug_history
 
 ## Specific to RubyMotion:
 .dat*
@@ -66,3 +94,6 @@ build-iPhoneSimulator/
 
 # Used by RuboCop. Remote config files pulled in from inherit_from directive.
 # .rubocop-https?--*
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
