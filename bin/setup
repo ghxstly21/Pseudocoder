@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+﻿#!/usr/bin/env ruby
 require "fileutils"
 
 APP_ROOT = File.expand_path("..", __dir__)
@@ -32,3 +32,4 @@ FileUtils.chdir APP_ROOT do
     exec "bin/dev"
   end
 end
+
