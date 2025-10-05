@@ -43,8 +43,66 @@ class Tokenizer
     [ :open_paren, /\(/ ],
     [ :close_paren, /\)/ ]
   ]
-  JAVA_TOKENS = []
-  JS_TOKENS = []
+  JAVA_TOKENS = [
+    [:abstract, /\babstract\b/],
+    [:assert, /\bassert\b/],
+    [:bool, /\bboolean\b/],
+    [:break, /\bbreak\b/],
+    [:byte, /\bbyte\b/],
+    [:case, /\bcase\b/],
+    [:catch, /\bcatch\b/],
+    [:char, /\bchar\b/],
+    [:class, /\bclass\b/],
+    [:continue, /\bcontinue\b/],
+    [:default, /\bdefault\b/],
+    [:do, /\bdo\b/],
+    [:double, /\bdouble\b/],
+    [:else, /\belse\b/],
+    [:enum, /\benum\b/],
+    [:exports, /\bexports\b/],
+    [:extends, /\bextends\b/],
+    [:final, /\bfinal\b/],
+    [:finally, /\bfinally\b/],
+    [:float, /\bfloat\b/],
+    [:for, /\bfor\b/],
+    [:if, /\bif\b/],
+    [:implements, /\bimplements\b/],
+    [:import, /\bimport\b/],
+    [:instanceof, /\binstanceof\b/],
+    [:int, /\bint\b/],
+    [:interface, /\binterface\b/],
+    [:long, /\blong\b/],
+    [:module, /\bmodule\b/],
+    [:native, /\bnative\b/],
+    [:new, /\bnew\b/],
+    [:package, /\bpackage\b/],
+    [:private, /\bprivate\b/],
+    [:protected, /\bprotected\b/],
+    [:public, /\bpublic\b/],
+    [:requires, /\brequires\b/],
+    [:return, /\breturn\b/],
+    [:short, /\bshort\b/],
+    [:static, /\bstatic\b/],
+    [:super, /\bsuper\b/],
+    [:switch, /\bswitch\b/],
+    [:sync, /\bsynchronized\b/],
+    [:this, /\bthis\b/],
+    [:throw, /\bthrow\b/],
+    [:throws, /\bthrows\b/],
+    [:transient, /\btransient\b/],
+    [:try, /\btry\b/],
+    [:var, /\bvar\b/],
+    [:void, /\bvoid\b/],
+    [:volatile, /\bvolatile\b/],
+    [:while, /\bwhile\b/],
+    [ :identifier, /\b[a-zA-Z]+\b/ ],
+    [ :numbers, /\b[0-9]+\b/ ],
+    [ :open_paren, /\(/ ],
+    [ :close_paren, /\)/ ]
+  ]
+  JS_TOKENS = [
+    
+  ]
   def initialize(code)
     @code = code
   end
