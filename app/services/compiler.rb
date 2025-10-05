@@ -166,7 +166,11 @@ class Tokenizer
     [:volatile, /\bvolatile\b/],
     [:while, /\bwhile\b/],
     [:with, /\bwith\b/],
-    [:yield, /\byield\b/]
+    [:yield, /\byield\b/],
+  [ :identifier, /\b[a-zA-Z]+\b/ ],
+    [ :numbers, /\b[0-9]+\b/ ],
+    [ :open_paren, /\(/ ],
+    [ :close_paren, /\)/ ]
   ]
   def initialize(code)
     @code = code
