@@ -1,0 +1,16 @@
+class Tokenizer
+  PYTHON_TOKENS: [[Symbol,Regexp]]
+  JAVA_TOKENS: [[Symbol, Regexp]]
+  JS_TOKENS: [[Symbol, Regexp]]
+  def initialize: (String) -> void
+  @code: String
+
+
+
+  def identify_lang: -> void
+
+  def tokenize: -> void
+
+  Token: Class
+  def tokenize_single: -> Struct[untyped]
+end
