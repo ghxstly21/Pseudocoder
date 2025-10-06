@@ -1,4 +1,5 @@
 class Tokenizer
+  # MISSING COMPARISON OPERATIONS FOR ALL LANGS
   PYTHON_TOKENS = [
     [ :and, /\band\b/ ],
     [ :break, /\bbreak\b/ ],
@@ -99,8 +100,29 @@ class Tokenizer
   def initialize(code)
     @code = code
   end
-  def tokenize(code)
+  def determine_lang
+    # Find if its python, java, or js or raise an exception if its not any
+  end
+  def tokenize
+    until @code.empty?
+      tokenize_single
+      @code = @code.strip
+    end
+  end
+  def tokenize_single
+    PYTHON_TOKENS.each do |type, regex|
+      # Match regexes at the start of @code (\A)
+      regex = /\A(#{regex})/
+      if @code.match(regex)
+        value = $1
+        @code = @code[value.length..-1]
+        return Token.new(type,value)
+      end
+    end
+    raise RuntimeError, (
+      "Couldn't match your code to any language."
+    )
   end
 
-  tokens = Tokenizer.new(File.read("test.txt"))
+  tokens = Tokenizer.new(File.read("test.txt")).tokenize
 end
