@@ -102,8 +102,8 @@ JS_TOKENS = [
   def initialize(code)
     @code = code
   end
-  def determine_lang
-    # Find if its python, java, or js or raise an exception if its not any
+  def identify_lang
+    # Find if its python, java, or js or raise an exception if it's not any
   end
   def tokenize
     until @code.empty?
