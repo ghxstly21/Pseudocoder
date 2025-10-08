@@ -18,7 +18,7 @@ class Tokenizer
     [ :lambda, /\blambda\b/ ],
     [ :not, /\bnot\b/ ],
     [ :or, /\bor\b/ ],
-    [ :raise, /\braise\b/ ],
+    [ :raise, /\braise\b/ ],    
     [ :return, /\breturn\b/ ],
     [ :try, /\btry\b/ ],
     [ :while, /\bwhile\b/ ],
