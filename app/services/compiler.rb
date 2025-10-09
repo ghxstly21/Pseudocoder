@@ -127,5 +127,8 @@ JS_TOKENS = [
   end
 
   Token = Struct.new(:type, :value)
+  unless Rails.env.test?
   tokens = Tokenizer.new(File.read("test.txt")).tokenize
+ end
+
 end
