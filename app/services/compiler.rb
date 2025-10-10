@@ -27,7 +27,12 @@ class Tokenizer
     [ :identifier, /\b[a-zA-Z]+\b/ ],
     [ :number, /\b[0-9]+\b/ ],
     [ :open_paren, /\(/ ],
-    [ :close_paren, /\)/ ]
+    [ :close_paren, /\)/ ],
+    [ :add, /\b\+\b/ ],
+    [ :sub, /\b-\b/ ],
+    [ :multiply, /\b\*\b/ ],
+    [ :divide, /\b\/\b/ ],
+    [ :operator, /[+\-*\/]/ ]
   ]
   JAVA_TOKENS = [
   [ :assert, /\bassert\b/ ],
@@ -103,11 +108,14 @@ JS_TOKENS = [
     @code = code
   end
   def identify_lang
+    lang = "x"
     # Find if its python, java, or js or raise an exception if it's not any
+    raise RuntimeError("Language could not be recognized as Java, Python, or Javascript")
   end
   def tokenize
+    tokens = []
     until @code.empty?
-      tokenize_single
+      tokens.append(tokenize_single)
       @code = @code.strip
     end
   end
@@ -116,19 +124,17 @@ JS_TOKENS = [
       # Match regexes at the start of @code (\A)
       regex = /\A(#{regex})/
       if @code.match(regex)
-        value = $1
+        value = $1 # .to_s?
         @code = @code[value.length..-1]
         return Token.new(type, value)
       end
     end
     raise RuntimeError, (
-      "Couldn't match your code to any language."
+      "Unrecognized token: #{@code.inspect}"
     )
   end
 
   Token = Struct.new(:type, :value)
-  unless Rails.env.test?
-  tokens = Tokenizer.new(File.read("test.txt")).tokenize
- end
-
+  tokens = Tokenizer.new(File.read("app/services/test.txt")).tokenize
+  puts tokens.map(&:inspect).join("\n")
 end
