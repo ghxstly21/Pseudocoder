@@ -1,0 +1,8 @@
+class Tree
+  attr_accessor branch: array[Node]
+  attr_accessor node_count: int
+end
+
+class Node
+
+end
