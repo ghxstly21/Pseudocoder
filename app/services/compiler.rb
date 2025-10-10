@@ -34,7 +34,7 @@ class Tokenizer
     [ :multiply, /\*/ ],
     [ :divide, /\// ],
     [ :comparison, /(>=|<=|==|>|<)/ ],
-    [ :assignment, /\b=\b/ ]
+    [ :assignment, /=/ ]
   ]
   JAVA_TOKENS = [
   [ :assert, /\bassert\b/ ],
