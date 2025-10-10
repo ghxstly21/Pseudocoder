@@ -1,4 +1,5 @@
 class Tokenizer
+  Token = Struct.new(:type, :value)
   # MISSING COMPARISON OPERATIONS FOR ALL LANGS
   PYTHON_TOKENS = [
     [ :and, /\band\b/ ],
@@ -28,11 +29,12 @@ class Tokenizer
     [ :number, /\b[0-9]+\b/ ],
     [ :open_paren, /\(/ ],
     [ :close_paren, /\)/ ],
-    [ :add, /\b\+\b/ ],
-    [ :sub, /\b-\b/ ],
-    [ :multiply, /\b\*\b/ ],
-    [ :divide, /\b\/\b/ ],
-    [ :operator, /[+\-*\/]/ ]
+    [ :add, /\+/ ],
+    [ :sub, /-/ ],
+    [ :multiply, /\*/ ],
+    [ :divide, /\// ],
+    [ :comparison, /(>=|<=|==|>|<)/ ],
+    [ :assignment, /\b=\b/ ]
   ]
   JAVA_TOKENS = [
   [ :assert, /\bassert\b/ ],
@@ -118,7 +120,9 @@ JS_TOKENS = [
       tokens.append(tokenize_single)
       @code = @code.strip
     end
+    tokens
   end
+
   def tokenize_single
     PYTHON_TOKENS.each do |type, regex|
       # Match regexes at the start of @code (\A)
@@ -133,8 +137,7 @@ JS_TOKENS = [
       "Unrecognized token: #{@code.inspect}"
     )
   end
-
-  Token = Struct.new(:type, :value)
-  tokens = Tokenizer.new(File.read("app/services/test.txt")).tokenize
-  puts tokens.map(&:inspect).join("\n")
 end
+tokens = Tokenizer.new(File.read("app/services/test.txt")).tokenize
+puts tokens.map(&:inspect).join("\n")
+
