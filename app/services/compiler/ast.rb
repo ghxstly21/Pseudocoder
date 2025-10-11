@@ -1,3 +1,5 @@
+module COMPILER
+class Ast
 class Tree
   attr_accessor :node_count, :branch
   def initialize
@@ -19,4 +21,6 @@ class Node
   def initialize(value)
 
   end
+end
+end
 end
