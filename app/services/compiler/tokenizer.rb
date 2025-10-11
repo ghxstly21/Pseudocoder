@@ -1,3 +1,4 @@
+module COMPILER
 class Tokenizer
   def initialize(code)
     @code = code
@@ -251,18 +252,19 @@ JS_TOKENS = [
     )
   end
 end
-py_tokenizer = Tokenizer.new(File.read("app/services/py_test.txt"))
+py_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/py_test.txt"))
 tokens = py_tokenizer.tokenize
 puts "Detected language: #{py_tokenizer.lang || "unknown lang"}"
 puts tokens.map(&:inspect).join("\n")
 puts("\n")
-java_tokenizer = Tokenizer.new(File.read("app/services/java_test.txt"))
+java_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/java_test.txt"))
 tokens = java_tokenizer.tokenize
 puts "Detected language: #{java_tokenizer.lang || "unknown lang"}"
 puts tokens.map(&:inspect).join("\n")
 puts("\n")
-js_tokenizer = Tokenizer.new(File.read("app/services/js_test.txt"))
+js_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/js_test.txt"))
 tokens = js_tokenizer.tokenize
 puts "Detected language: #{js_tokenizer.lang || "unknown lang"}"
 puts tokens.map(&:inspect).join("\n")
 puts("\n")
+end
