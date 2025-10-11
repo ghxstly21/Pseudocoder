@@ -1,0 +1,7 @@
+// welcome to JavaScript
+console.log("Hello Tokenizer!");
+const a = 2 + 2
+const b = 4
+if(a === b) {
+console.log("Wow!");
+}

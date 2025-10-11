@@ -2,12 +2,24 @@ class Tokenizer
   PYTHON_TOKENS: [[Symbol,Regexp]]
   JAVA_TOKENS: [[Symbol, Regexp]]
   JS_TOKENS: [[Symbol, Regexp]]
+
+  attr_reader code: String
+  attr_reader lang: String?
+
   def initialize: (String) -> void
   @code: String
+  @lang: String?
+
 
 
 
   def identify_lang: -> String
+
+  class Token < ::Struct[untyped]
+    attr_accessor type: Symbol
+    attr_accessor value: String
+    def self.new: (Symbol, String) -> Token
+  end
 
   def tokenize: -> void
 
