@@ -1,3 +1,4 @@
+module COMPILER
 class Tokenizer
   PYTHON_TOKENS: [[Symbol,Regexp]]
   JAVA_TOKENS: [[Symbol, Regexp]]
@@ -25,4 +26,5 @@ class Tokenizer
 
   Token: Class
   def tokenize_single: -> Struct[untyped]
+end
 end
