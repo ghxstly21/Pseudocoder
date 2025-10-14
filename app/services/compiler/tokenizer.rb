@@ -147,9 +147,9 @@ JS_TOKENS = [
   def identify_lang
     # establish general tokens
     general_tokens = []
-    py_types = PYTHON_TOKENS.map { |pair| pair[0] }
-    java_types = JAVA_TOKENS.map { |pair| pair[0] }
-    js_types = JS_TOKENS.map { |pair| pair[0] }
+    py_types = PYTHON_TOKENS.map { |pair| pair[1] }
+    java_types = JAVA_TOKENS.map { |pair| pair[1] }
+    js_types = JS_TOKENS.map { |pair| pair[1] }
     py_types.each_with_index { |py_token, i|
       if java_types.include?(py_token) && js_types.include?(py_token)
         general_tokens.append(PYTHON_TOKENS[i])
