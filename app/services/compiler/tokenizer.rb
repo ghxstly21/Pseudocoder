@@ -191,6 +191,8 @@ JS_TOKENS = [
       @lang = "java"
     elsif max == js_count
       @lang = "javascript"
+    elsif js_count==java_count
+      @lang = "javascript"
     else
       raise RuntimeError("Language could not be recognized as Java, Python, or JavaScript")
     end
