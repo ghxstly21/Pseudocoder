@@ -165,6 +165,7 @@ JS_TOKENS = [
         general_tokens.append(JS_TOKENS[i])
       end
     }
+    puts general_tokens
     # find the most likely language
     python_count = 0
     java_count = 0
