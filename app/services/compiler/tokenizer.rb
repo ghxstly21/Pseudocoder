@@ -145,23 +145,23 @@ JS_TOKENS = [
 ]
 
   def identify_lang
-    # establish general tokens
-    general_tokens = []
+    # establish general tokensral_tokens = []
+    gene
     py_types = PYTHON_TOKENS.map { |pair| pair[1] }
     java_types = JAVA_TOKENS.map { |pair| pair[1] }
     js_types = JS_TOKENS.map { |pair| pair[1] }
     py_types.each_with_index { |py_token, i|
-      if java_types.include?(py_token) && js_types.include?(py_token)
+      if java_types.include?(py_token) || js_types.include?(py_token)
         general_tokens.append(PYTHON_TOKENS[i])
       end
     }
     java_types.each_with_index { |java_token, i|
-      if !general_tokens.include?(JAVA_TOKENS[i]) && py_types.include?(java_token) && js_types.include?(java_token)
-        general_tokens.append(JAVA_TOKENS[i])
+      if (!general_tokens.include?(JAVA_TOKENS[i]) && py_types.include?(java_token))|| (!general_tokens.include?(JAVA_TOKENS[i]) &&js_types.include?(java_token))
+        general_tokens.append(JAVA_TOKENS[i]) 
       end
     }
     js_types.each_with_index { |js_token, i|
-      if !general_tokens.include?(JS_TOKENS[i]) && py_types.include?(js_token) && java_types.include?(js_token)
+      if (!general_tokens.include?(JS_TOKENS[i]) && py_types.include?(js_token)) || (!general_tokens.include?(JAVA_TOKENS[i]) && java_types.include?(js_token))
         general_tokens.append(JS_TOKENS[i])
       end
     }
