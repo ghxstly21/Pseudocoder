@@ -33,18 +33,29 @@ class Tokenizer
     [ :colon, /:/ ],
     [ :true, /\bTrue\b/ ],
     [ :false, /\bFalse\b/ ],
-    [ :identifier, /\b[A-Za-z_][A-Za-z0-9_]*\b/ ],
+    [ :comment, /#.*/ ],
+  [ :identifier, /\b[A-Za-z_][A-Za-z0-9_]*\b/ ],
     [ :number, /\b[0-9]+\b/ ],
     [ :open_paren, /\(/ ],
     [ :close_paren, /\)/ ],
+    [ :comparison, /(==|!=|>=|<=|>|<)/ ],
+    [ :floor_div_assign, /\/\/=/ ],  # //=
+    [ :pow_assign, /\*\*=/ ],        # **=
+    [ :add_assign, /\+=/ ],
+    [ :sub_assign, /-=/ ],
+    [ :mul_assign, /\*=/ ],
+    [ :div_assign, /\/=/ ],
+    [ :floor_div, /\/\// ],
+    [ :pow, /\*\*/ ],
     [ :add, /\+/ ],
     [ :sub, /-/ ],
     [ :multiply, /\*/ ],
     [ :divide, /\// ],
-    [ :comparison, /(>=|<=|==|>|<)/ ],
     [ :assignment, /=/ ],
     [ :string, /"(\\.|[^"\\])*"/ ],
     [ :string, /'(\\.|[^'\\])*'/ ]
+
+
 
 
   ]
@@ -76,6 +87,8 @@ class Tokenizer
     [ :while, /\bwhile\b/ ],
     [ :true, /\btrue\b/ ],
     [ :false, /\bfalse\b/ ],
+    [ :comment, /\/\/.*/ ],
+    [ :comment, /\/\*[\s\S]*?\*\// ],
     [ :string, /"(\\.|[^"\\])*"/ ],
     [ :number, /\b[0-9]+\b/ ],
     [ :identifier, /\b[A-Za-z_][A-Za-z0-9_]*\b/ ],
@@ -94,6 +107,8 @@ class Tokenizer
     [ :divide, /\// ],
     [ :comparison, /(>=|<=|==|>|<)/ ],
     [ :assignment, /=/ ]
+
+
   ]
 
 JS_TOKENS = [
@@ -128,6 +143,8 @@ JS_TOKENS = [
   [ :while, /\bwhile\b/ ],
   [ :with, /\bwith\b/ ],
   [ :yield, /\byield\b/ ],
+  [ :comment, /\/\/.*/ ],
+  [ :comment, /\/\*[\s\S]*?\*\// ],
   [ :string, /"(\\.|[^"\\])*"/ ],
   [ :string, /`([^`\\]|\\.)*`/ ],
   [ :open_brace, /\{/ ],
@@ -148,6 +165,8 @@ JS_TOKENS = [
   [ :divide, /\// ],
   [ :comparison, /(>=|<=|===|==|>|<)/ ],
   [ :assignment, /=/ ]
+
+
 ]
 
   def identify_lang
