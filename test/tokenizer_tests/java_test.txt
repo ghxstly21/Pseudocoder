@@ -1,8 +1,5 @@
-public class java_test {
-public static void main(String[] args) {
-System.out.println("Hello Tokenizer!");
-int num = 8;
-num+=7;
-System.out.println("num");
-}
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, world!");
+    }
 }

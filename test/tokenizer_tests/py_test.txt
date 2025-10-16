@@ -1,3 +1,5 @@
 def main():
-x = 2+2
-print(x)
+    print("Hello, world!")
+
+if __name__ == "__main__":
+    main()
