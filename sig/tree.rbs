@@ -1,0 +1,21 @@
+module COMPILER
+class Tree
+  @list: [Node]
+
+  attr_accessor list: [Node]
+  attr_accessor root: Node?
+  attr_accessor node_count: int
+def initialize: (Symbol, String) -> void
+  def add_node: (Node, Symbol, String) -> bool
+end
+
+class Node
+@type: Symbol
+@value: String
+@children: [Node]
+def initialize: (Symbol, String) -> void
+
+def add_child: (Symbol, String) -> Node
+
+end
+end
