@@ -13,7 +13,7 @@ class Tokenizer
     [ :case, /\bcase\b/ ],
     [ :class, /\bclass\b/ ],
     [ :continue, /\bcontinue\b/ ],
-    [ :def, /\bdef\b/ ],
+    [ :function, /\bdef\b/ ],
     [ :elif, /\belif\b/ ],
     [ :else, /\belse\b/ ],
     [ :catch, /\bexcept\b/ ],
@@ -182,7 +182,7 @@ JS_TOKENS = [
     }
     java_types.each_with_index { |java_token, i|
       if (!general_tokens.include?(JAVA_TOKENS[i]) && py_types.include?(java_token))|| (!general_tokens.include?(JAVA_TOKENS[i]) &&js_types.include?(java_token))
-        general_tokens.append(JAVA_TOKENS[i]) 
+        general_tokens.append(JAVA_TOKENS[i])
       end
     }
     js_types.each_with_index { |js_token, i|
@@ -244,7 +244,7 @@ JS_TOKENS = [
 
       begin
         token = tokenize_single
-        tokens << token
+        tokens.append(token)
       rescue => e
         puts "DEBUG: Unrecognized token near: #{@code[0, 40].inspect}"
         raise e
@@ -258,12 +258,12 @@ JS_TOKENS = [
 
   def tokenize_single
     token_defs = case @lang
-                 when "python" then PYTHON_TOKENS
-                 when "java" then JAVA_TOKENS
-                 when "javascript" then JS_TOKENS
-                 else
-                   raise RuntimeError, "Code could not be tokenized."
-                 end
+    when "python" then PYTHON_TOKENS
+    when "java" then JAVA_TOKENS
+    when "javascript" then JS_TOKENS
+    else
+      raise RuntimeError, "Code could not be tokenized."
+    end
 
     token_defs.each do |type, regex|
       if (m = @code.match(/\A#{regex}/))
@@ -275,10 +275,10 @@ JS_TOKENS = [
 
     raise RuntimeError, "Unrecognized token: #{@code.inspect}"
   end
-
 end
 
 
+# begin tokenization
 py_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/py_test.txt"))
 tokens = py_tokenizer.tokenize
 puts "Detected language: #{py_tokenizer.lang || "unknown lang"}"
@@ -294,4 +294,10 @@ tokens = js_tokenizer.tokenize
 puts "Detected language: #{js_tokenizer.lang || "unknown lang"}"
 puts tokens.map(&:inspect).join("\n")
 puts("\n")
+# begin parsing
+# NOTE: There should not be a new tokenizer for each language
+# There should be one general tokenizer that takes in a user's file
+# root = Parser.new(tokens, user_tokenizer.lang).parse()
+root = Parser.new(tokens, py_tokenizer.lang).parse
+puts root
 end
