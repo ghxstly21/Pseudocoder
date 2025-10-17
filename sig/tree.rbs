@@ -5,17 +5,17 @@ class Tree
   attr_accessor list: [Node]
   attr_accessor root: Node?
   attr_accessor node_count: int
-def initialize: (Symbol, String) -> void
-  def add_node: (Node, Symbol, String) -> bool
+def initialize: (Symbol, untyped) -> void
+  def add_node: (Node, Symbol, untyped) -> bool
 end
 
 class Node
 @type: Symbol
-@value: String
+@value: untyped
 @children: [Node]
-def initialize: (Symbol, String) -> void
+def initialize: (Symbol, untyped) -> void
 
-def add_child: (Symbol, String) -> Node
+def add_child: (Symbol, untyped) -> Node
 
 end
 end
