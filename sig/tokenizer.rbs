@@ -1,30 +1,23 @@
 module COMPILER
-class Tokenizer
-  PYTHON_TOKENS: [[Symbol,Regexp]]
-  JAVA_TOKENS: [[Symbol, Regexp]]
-  JS_TOKENS: [[Symbol, Regexp]]
+  class Tokenizer
+    PYTHON_TOKENS: [[Symbol,Regexp]]
+    JAVA_TOKENS: [[Symbol, Regexp]]
+    JS_TOKENS: [[Symbol, Regexp]]
+    attr_reader code: String
+    attr_reader lang: String?
+    def initialize: (String) -> void
+    @code: String
+    @lang: String?
+    @lang_error: LanguageRecognitionError?
+    def identify_lang: -> String
 
-  attr_reader code: String
-  attr_reader lang: String?
+    class Token
+      attr_accessor type: Symbol
+      attr_accessor value: String?
 
-  def initialize: (String) -> void
-  @code: String
-  @lang: String?
-
-
-
-
-  def identify_lang: -> String
-
-  class Token < ::Struct[untyped]
-    attr_accessor type: Symbol
-    attr_accessor value: String
-    def self.new: (Symbol, String) -> Token
+      def initialize: (Symbol, String?) -> void
+    end
+    def tokenize: -> void
+    def tokenize_single: -> Token
   end
-
-  def tokenize: -> void
-
-  Token: Class
-  def tokenize_single: -> Struct[untyped]
-end
 end

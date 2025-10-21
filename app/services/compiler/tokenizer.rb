@@ -1,10 +1,19 @@
 module COMPILER
+  require_relative "../../errors/LanguageRecognitionError"
+  require_relative "../../errors/TokenError"
 class Tokenizer
-  Token = Struct.new(:type, :value)
+  class Token
+    attr_accessor :type, :value
+    def initialize(type, value)
+      @type = type
+      @value = value
+    end
+  end
 
   def initialize(code)
     @code = code
     @lang = nil
+    @lang_error = nil
   end
   attr_reader :code, :lang
   PYTHON_TOKENS = [
@@ -54,10 +63,6 @@ class Tokenizer
     [ :assignment, /=/ ],
     [ :string, /"(\\.|[^"\\])*"/ ],
     [ :string, /'(\\.|[^'\\])*'/ ]
-
-
-
-
   ]
   JAVA_TOKENS = [
     [ :assert, /\bassert\b/ ],
@@ -107,10 +112,7 @@ class Tokenizer
     [ :divide, /\// ],
     [ :comparison, /(>=|<=|==|>|<)/ ],
     [ :assignment, /=/ ]
-
-
   ]
-
 JS_TOKENS = [
   [ :abstract, /\babstract\b/ ],
   [ :break, /\bbreak\b/ ],
@@ -165,10 +167,7 @@ JS_TOKENS = [
   [ :divide, /\// ],
   [ :comparison, /(>=|<=|===|==|>|<)/ ],
   [ :assignment, /=/ ]
-
-
 ]
-
   def identify_lang
     # establish general tokens
     general_tokens = []
@@ -181,7 +180,7 @@ JS_TOKENS = [
       end
     }
     java_types.each_with_index { |java_token, i|
-      if (!general_tokens.include?(JAVA_TOKENS[i]) && py_types.include?(java_token))|| (!general_tokens.include?(JAVA_TOKENS[i]) &&js_types.include?(java_token))
+      if (!general_tokens.include?(JAVA_TOKENS[i]) && py_types.include?(java_token)) || (!general_tokens.include?(JAVA_TOKENS[i]) &&js_types.include?(java_token))
         general_tokens.append(JAVA_TOKENS[i])
       end
     }
@@ -210,73 +209,74 @@ JS_TOKENS = [
         js_count += 1
       end
     end
-    max = [ python_count, java_count, js_count ].max
+    count_list = [ python_count, java_count, js_count ]
+    max = count_list.max
     if max == python_count
       @lang = "python"
     elsif max == java_count
       @lang = "java"
     elsif max == js_count
       @lang = "javascript"
-    elsif js_count==java_count
+    elsif js_count == java_count
       @lang = "javascript"
     else
-      raise "Language could not be recognized as Java, Python, or JavaScript"
+      raise LanguageRecognitionError.new("Language could not be recognized as Java, Python, or JavaScript", count_list)
     end
   end
 
   def tokenize
     begin
       identify_lang
-    rescue
-      puts("Could not identify language!")
+    rescue LanguageRecognitionError => lang_error
+      @lang_error = lang_error
+      puts("ERROR: #{lang_error.message}\nLanguage Counts: #{lang_error.count_dict}")
       return []
     end
 
     tokens = []
-    @code = @code.lstrip
-
-    until @code.empty?
-      # Handle whitespace and newlines explicitly
-      if @code.start_with?(" ") || @code.start_with?("\n") || @code.start_with?("\r")
-        @code = @code.lstrip  # remove them
-        next                  # skip to next loop iteration
-      end
-
-      begin
+    unless @lang == "python"
+      until @code.empty?
         token = tokenize_single
-        tokens.append(token)
-      rescue => e
-        puts "DEBUG: Unrecognized token near: #{@code[0, 40].inspect}"
-        raise e
+        @code = @code.strip
+        tokens.push(token)
       end
-
-      @code = @code.strip
+      return tokens
     end
-
+     until @code.empty?
+       # more explicit whitespace handling for python
+       if @code.start_with?(" ") || @code.start_with?("\n") || @code.start_with?("\r")
+         @code = @code.lstrip  # remove them
+         next                  # don't recognize them as a token
+       end
+       begin
+         token = tokenize_single
+         tokens.append(token)
+       rescue TokenError => e
+         puts "ERROR: Tokenization failed. #{e.message}"
+         raise e # Tokenization failure
+       end
+       @code = @code.strip
+     end
     tokens
-  end
-
+    end
   def tokenize_single
     token_defs = case @lang
     when "python" then PYTHON_TOKENS
     when "java" then JAVA_TOKENS
     when "javascript" then JS_TOKENS
     else
-      raise RuntimeError, "Code could not be tokenized."
+      raise TokenError.new("Code could not be tokenized."), cause: @lang_error  # token error with cause
     end
 
     token_defs.each do |type, regex|
-      if (m = @code.match(/\A#{regex}/))
-        value = m[0]  # full matched text
-        @code = @code[value.length..]  # remove the matched prefix
+      if (match = @code.match(/\A#{regex}/)) # assign match, check if truthy
+        value = match[0] # matched text
+        @code.delete_prefix!(value)  # cut off the token from @code
         return Token.new(type, value)
       end
     end
-
-    raise RuntimeError, "Unrecognized token: #{@code.inspect}"
+    raise TokenError, "Unrecognized token: #{@code.inspect}" # token error
   end
-end
-
 
 # begin tokenization
 py_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/py_test.txt"))
@@ -300,4 +300,5 @@ puts("\n")
 # root = Parser.new(tokens, user_tokenizer.lang).parse()
 root = Parser.new(tokens, py_tokenizer.lang).parse
 puts root
+end
 end
