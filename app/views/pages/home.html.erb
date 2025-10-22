@@ -1,14 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
 
-  <nav class="container mx-auto flex justify-between items-center p-4">
-    <ul class="flex space-x-6">
-      <li><%= link_to "Home", root_path, class: "hover:text-blue-600" %></li>
-      <li><%= def about_path
-                # code here
-              end
-              link_to "About", about_path, class: "hover:text-blue-600" %></li>
-      <li><%= def contact_path
-                # code here
-              end
-              link_to "Contact", contact_path, class: "hover:text-blue-600" %></li>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Barriecito&family=Rubik+Spray+Paint&display=swap"
+    rel="stylesheet">
+
+  <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+
+      }
+
+      .loginpage {
+          width: 400px;
+          height: 350px;
+          background-color: white;
+          margin: auto;
+          padding: 30px;
+          border-radius: 20px;
+          box-shadow: 10px 10px lightgray;
+      }
+
+      .container {
+          background-color: bisque;
+          height: 100vh;
+          width: 100vw;
+          display: flex;
+      }
+
+      .header {
+
+          font-family: "Atkinson Hyperlegible Next", serif;
+          font-optical-sizing: auto;
+          font-size: 36px;
+          font-weight: weight;
+          font-style: normal;
+
+      }
+
+      .email1 {
+          border: none;
+          border-bottom: 1px solid black;
+          width: 335px;
+          outline: none;
+      }
+
+
+
+      .Password1 {
+          margin-bottom: 10px;
+          border: none;
+          border-bottom: 1px solid black;
+          width: 335px;
+          outline: none;
+
+      }
+
+      .account {
+          margin-bottom: 10px;
+      }
+
+      .login1 {
+          border: none;
+          border-radius: 10px;
+          margin-left: 250px;
+          width: 90px;
+          height: 45px;
+          background-color: mediumblue;
+          color: white;
+          border: none;
+      }
+
+      .login1:hover {
+          background-color: blue;
+          cursor: pointer;
+      }
+      header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px 40px;
+          background-color: beige;
+          color: white;
+      }
+
+      .logo {
+          font-size: 24px;
+          font-weight: bold;
+
+      }
+
+      a {
+          text-decoration: none;
+          color: chocolate;
+      }
+
+      .nav {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+      }
+
+      .nav li {
+          margin-left: 20px;
+      }
+
+      .nav a {
+          text-decoration: none;
+          color: black;
+          font-size: 18px;
+      }
+
+      .nav a:hover {
+          color: #4CAF50;
+      }
+  </style>
+</head>
+<header class="header">
+  <div class="logo">
+    <a href="#">Dharma's Recipe</a>
+  </div>
+
+  <nav>
+    <ul class="nav">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Contact</a></li>
     </ul>
   </nav>
+</header>
+
+<body>
+<div class="container">
+  <div class="loginpage">
+
+    <h2 class="header">Sign In</h2>
+    <br>
+    <br>
+
+
+    <form action="">
+      <div class="email">
+        <label for="Email">Email</label>
+        <br>
+        <input type="email" name="" id="" class="email1">
+
+      </div>
+      <br>
+      <div class="password">
+
+        <label for="Password">Password</label>
+        <br>
+        <input type="password" name="Password" class="Password1">
+      </div>
+      <br>
+      <div class="account">
+        <p>No account? <a href="#">Create one</a>!</p>
+      </div>
+      <div class="login">
+
+        <input type="submit" value="Log in" class="login1">
+
+      </div>
+    </form>
+  </div>
+</div>
+
+
+</body>
+
+</html>
