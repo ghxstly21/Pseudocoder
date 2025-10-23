@@ -2,7 +2,7 @@
 module COMPILER
   class LanguageRecognitionError < StandardError
     attr_reader count_dict: Hash[String, Integer]
-    def initialize: (String, [Integer]) -> void
+    def initialize: (String, Hash[String, Integer]) -> void
     @count_dict: Hash[String, Integer]
   end
 end
