@@ -168,58 +168,68 @@ JS_TOKENS = [
   [ :comparison, /(>=|<=|===|==|>|<)/ ],
   [ :assignment, /=/ ]
 ]
-  def identify_lang
+  def shared_tokens(java, python, js)
     # establish general tokens
-    general_tokens = []
-    py_types = PYTHON_TOKENS.map { |pair| pair[1] }
-    java_types = JAVA_TOKENS.map { |pair| pair[1] }
-    js_types = JS_TOKENS.map { |pair| pair[1] }
-    py_types.each_with_index { |py_token, i|
-      if java_types.include?(py_token) || js_types.include?(py_token)
-        general_tokens.append(PYTHON_TOKENS[i])
+    shared = []
+    # add any common regex
+    python.each do |py_token|
+      if java.include?(py_token) || js.include?(py_token)
+        shared.append(py_token)
       end
-    }
-    java_types.each_with_index { |java_token, i|
-      if (!general_tokens.include?(JAVA_TOKENS[i]) && py_types.include?(java_token)) || (!general_tokens.include?(JAVA_TOKENS[i]) &&js_types.include?(java_token))
-        general_tokens.append(JAVA_TOKENS[i])
+    end
+    java.each do |java_token|
+      if !shared.include?(java_token) && (python.include?(java_token) || js.include?(java_token))
+        shared.append(java_token)
       end
-    }
-    js_types.each_with_index { |js_token, i|
-      if (!general_tokens.include?(JS_TOKENS[i]) && py_types.include?(js_token)) || (!general_tokens.include?(JAVA_TOKENS[i]) && java_types.include?(js_token))
-        general_tokens.append(JS_TOKENS[i])
+    end
+    js.each do  |js_token|
+      if !shared.include?(js_token) && (python.include?(js_token) ||  java.include?(js_token))
+        shared.append(js_token)
       end
-    }
-    puts general_tokens
+    end
+    shared
+  end
+  def identify_lang
+    py_regexes = PYTHON_TOKENS.map { |pair| pair[1].source }
+    java_regexes = JAVA_TOKENS.map { |pair| pair[1].source }
+    js_regexes = JS_TOKENS.map { |pair| pair[1].source }
+    general_tokens = shared_tokens(py_regexes, java_regexes, js_regexes)
+
     # find the most likely language
     python_count = 0
     java_count = 0
     js_count = 0
-    PYTHON_TOKENS.each do |py_token|
-      if !general_tokens.include?(py_token) && @code.match?(py_token[1])
+    py_regexes.each do |py_token|
+      if !general_tokens.include?(py_token) && @code.match?(py_token)
         python_count += 1
       end
     end
-    JAVA_TOKENS.each do |java_token|
-      if !general_tokens.include?(java_token) && @code.match?(java_token[1])
+    java_regexes.each do |java_token|
+      if !general_tokens.include?(java_token) && @code.match?(java_token)
         java_count += 1
       end
     end
-    JS_TOKENS.each do |js_token|
-      if !general_tokens.include?(js_token) && @code.match?(js_token[1])
+    js_regexes.each do |js_token|
+      if !general_tokens.include?(js_token) && @code.match?(js_token)
         js_count += 1
       end
     end
-    count_list = [ python_count, java_count, js_count ]
-    max = count_list.max
-    if max == python_count
-      @lang = "python"
-    elsif max == java_count
-      @lang = "java"
-    elsif max == js_count
-      @lang = "javascript"
-    elsif js_count == java_count
-      @lang = "javascript"
-    else
+    count_list = {
+      "python" => python_count,
+      "java" => java_count,
+      "javascript" => js_count
+    }
+    max = count_list.max[1]
+    @lang = count_list.rassoc(max)[0] # returns the language name with the highest count
+    count_list.each do |lang,count|
+      unless lang == @lang
+        if count == max
+          @lang = "#{@lang} or #{lang}"
+          raise LanguageRecognitionError.new("Language is #{@lang}. Please confirm which it is.", count_list)
+        end
+        end
+    end
+    if count_list.map{|pair|pair[1]}.all?{ |element| element == 0}
       raise LanguageRecognitionError.new("Language could not be recognized as Java, Python, or JavaScript", count_list)
     end
   end
@@ -278,27 +288,30 @@ JS_TOKENS = [
     raise TokenError, "Unrecognized token: #{@code.inspect}" # token error
   end
 
-# begin tokenization
-py_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/py_test.txt"))
-tokens = py_tokenizer.tokenize
-puts "Detected language: #{py_tokenizer.lang || "unknown lang"}"
-puts tokens.map(&:inspect).join("\n")
-puts("\n")
-java_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/java_test.txt"))
-tokens = java_tokenizer.tokenize
-puts "Detected language: #{java_tokenizer.lang || "unknown lang"}"
-puts tokens.map(&:inspect).join("\n")
-puts("\n")
-js_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/js_test.txt"))
-tokens = js_tokenizer.tokenize
-puts "Detected language: #{js_tokenizer.lang || "unknown lang"}"
-puts tokens.map(&:inspect).join("\n")
-puts("\n")
-# begin parsing
-# NOTE: There should not be a new tokenizer for each language
-# There should be one general tokenizer that takes in a user's file
-# root = Parser.new(tokens, user_tokenizer.lang).parse()
-root = Parser.new(tokens, py_tokenizer.lang).parse
-puts root
+  # begin tokenization
+  py_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/py_test.txt"))
+  tokens = py_tokenizer.tokenize
+  puts "Detected language: #{py_tokenizer.lang || "unknown lang"}"
+  puts tokens.map(&:inspect).join("\n")
+  puts("\n")
+  java_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/java_test.txt"))
+  tokens = java_tokenizer.tokenize
+  puts "Detected language: #{java_tokenizer.lang || "unknown lang"}"
+  puts tokens.map(&:inspect).join("\n")
+  puts("\n")
+  js_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/js_test.txt"))
+  tokens = js_tokenizer.tokenize
+  puts "Detected language: #{js_tokenizer.lang || "unknown lang"}"
+  puts tokens.map(&:inspect).join("\n")
+  js_edge_case = Tokenizer.new(File.read("test/tokenizer_tests/js_edge_case.txt"))
+  tokens = js_edge_case.tokenize
+  puts "Lang: #{js_edge_case.lang}\nTokens: #{tokens}"
+  puts("\n")
+  # begin parsing
+  # NOTE: There should not be a new tokenizer for each language
+  # There should be one general tokenizer that takes in a user's file
+  # root = Parser.new(tokens, user_tokenizer.lang).parse()
+  root = Parser.new(tokens, py_tokenizer.lang).parse
+  puts root
 end
 end
