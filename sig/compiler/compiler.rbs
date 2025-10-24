@@ -1,0 +1,5 @@
+module COMPILER
+  class Compiler
+    def compile: -> String
+  end
+end
