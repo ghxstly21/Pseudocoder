@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: #222;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav li {
+            margin-left: 20px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+        }
+
+        .nav a:hover {
+            color: green;
+        }
+
+        .user-info {
+            font-size: 16px;
+        }
+
+        .container {
+            padding: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">Pseudocoder</div>
+        <nav>
+            <ul class="nav">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="user-info">
+            Logged in as: <%= current_user.email %> |
+            <%= button_to "Logout", logout_path, method: :delete, form_class: "logout-form", class: "logout-btn" %>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Welcome, <%= current_user.email %>!</h1>
+        <p>This is your dashboard. You can add more content here later.</p>
+    </div>
+</body>
+
+</html>

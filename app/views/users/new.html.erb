@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .loginpage {
+            width: 400px;
+            background: white;
+            margin: auto;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 10px 10px lightgray;
+        }
+
+        .container {
+            background: #334464;
+            height: 100vh;
+            display: flex;
+        }
+
+        .header {
+            font-family: "Atkinson Hyperlegible Next", serif;
+            font-size: 36px;
+        }
+
+        .email1,
+        .Password1 {
+            border: none;
+            border-bottom: 1px solid black;
+            width: 335px;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .login1 {
+            border: none;
+            border-radius: 10px;
+            width: 90px;
+            height: 45px;
+            background: mediumblue;
+            color: white;
+            cursor: pointer;
+        }
+
+        .login1:hover {
+            background: blue;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: #222;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+
+        }
+
+        .logo a {
+            color: chocolate;
+            text-decoration: none;
+        }
+
+        .nav {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav li {
+            margin-left: 20px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+        }
+
+        .nav a:hover {
+            color: green;
+        }
+
+        .account {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><a href="#">Pseudocoder</a></div>
+        <nav>
+            <ul class="nav">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="loginpage">
+            <h2 class="header">Create Account</h2><br><br>
+
+            <% if @user.errors.any? %>
+            <div style="color: red; margin-bottom: 10px;">
+                <ul>
+                    <% @user.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                    <% end %>
+                </ul>
+            </div>
+            <% end %>
+
+            <%= form_with model: @user, local: true do |f| %>
+            <div class="email">
+                <%= f.label :email %><br>
+                <%= f.email_field :email, class: "email1" %>
+            </div>
+
+            <div class="password">
+                <%= f.label :password %><br>
+                <%= f.password_field :password, class: "Password1" %>
+            </div>
+
+            <div class="password_confirmation">
+                <%= f.label :password_confirmation %><br>
+                <%= f.password_field :password_confirmation, class: "Password1" %>
+            </div>
+
+            <div class="login">
+                <%= f.submit "Sign Up", class: "login1" %>
+            </div>
+            <% end %>
+
+            <div class="account">
+                <p>Already have an account? <%= link_to "Log in", login_path %>!</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
