@@ -168,7 +168,7 @@ JS_TOKENS = [
   [ :comparison, /(>=|<=|===|==|>|<)/ ],
   [ :assignment, /=/ ]
 ]
-  def shared_tokens(java, python, js)
+  def generalize(java, python, js)
     # establish general tokens
     shared = []
     # add any common regex
@@ -193,7 +193,7 @@ JS_TOKENS = [
     py_regexes = PYTHON_TOKENS.map { |pair| pair[1].source }
     java_regexes = JAVA_TOKENS.map { |pair| pair[1].source }
     js_regexes = JS_TOKENS.map { |pair| pair[1].source }
-    general_tokens = shared_tokens(py_regexes, java_regexes, js_regexes)
+    general_tokens = generalize(py_regexes, java_regexes, js_regexes)
 
     # find the most likely language
     python_count = 0
