@@ -53,6 +53,9 @@ module COMPILER
       end
 
     end
+      def peek()
+
+      end
   end
   end
   end

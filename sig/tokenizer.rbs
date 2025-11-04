@@ -9,7 +9,7 @@ module COMPILER
     @code: String
     @lang: String?
     @lang_error: LanguageRecognitionError?
-    def shared_tokens: ([String], [String], [String]) -> [String]
+    def generalize: ([String], [String], [String]) -> [String]
     def identify_lang: -> String
 
     class Token
