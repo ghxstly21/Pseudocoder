@@ -1,4 +1,5 @@
 module COMPILER
+  require "set"
   require_relative "../../errors/LanguageRecognitionError"
   require_relative "../../errors/TokenError"
 class Tokenizer
@@ -168,33 +169,24 @@ JS_TOKENS = [
   [ :comparison, /(>=|<=|===|==|>|<)/ ],
   [ :assignment, /=/ ]
 ]
-  def generalize(java, python, js)
-    # establish general tokens
-    shared = []
-    # add any common regex
-    python.each do |py_token|
-      if java.include?(py_token) || js.include?(py_token)
-        shared.append(py_token)
-      end
+  # Returns a list containing all the tokens that are present in 2 or more languages
+  def generalize(java,python, js)
+    java_set = java.to_set
+    python_set = python.to_set
+    js_set = js.to_set
+
+    java_python_shared = java_set.intersection(python_set)
+    java_js_shared = java_set.intersection(js_set)
+    python_js_shared = python_set.intersection(js_set)
+
+    shared = java_python_shared.union(java_js_shared).union(python_js_shared)
+    shared.to_a
     end
-    java.each do |java_token|
-      if !shared.include?(java_token) && (python.include?(java_token) || js.include?(java_token))
-        shared.append(java_token)
-      end
-    end
-    js.each do  |js_token|
-      if !shared.include?(js_token) && (python.include?(js_token) ||  java.include?(js_token))
-        shared.append(js_token)
-      end
-    end
-    shared
-  end
   def identify_lang
     py_regexes = PYTHON_TOKENS.map { |pair| pair[1].source }
     java_regexes = JAVA_TOKENS.map { |pair| pair[1].source }
     js_regexes = JS_TOKENS.map { |pair| pair[1].source }
     general_tokens = generalize(py_regexes, java_regexes, js_regexes)
-
     # find the most likely language
     python_count = 0
     java_count = 0
