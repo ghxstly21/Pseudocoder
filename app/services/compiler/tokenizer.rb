@@ -175,9 +175,8 @@ JS_TOKENS = [
     java_regexes = JAVA_TOKENS.map { |pair| pair[1] }.to_set
     js_regexes = JS_TOKENS.map { |pair| pair[1] }.to_set
     # creates a set of all regexes in common within 2 or more languages
-    general_tokens = (
+    general_tokens =
       (java_regexes & py_regexes | java_regexes & js_regexes | py_regexes & js_regexes)
-    )
     # creates language specific regexp sets
     py_exclusive = py_regexes.difference(general_tokens)
     java_exclusive = java_regexes.difference(general_tokens)
