@@ -193,7 +193,7 @@ JS_TOKENS = [
     # sorted array of all counts from greatest to least
     values = count_list.values.sort.reverse
     # if only 1 count is the max, return the corresponding language
-    unless values[1..].any?{|value| value == values[0]}
+    unless values[1..].any? { |value| value == values[0] }
       @lang = count_list.key(values[0])
       return @lang
     end
