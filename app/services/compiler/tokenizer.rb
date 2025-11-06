@@ -169,61 +169,36 @@ JS_TOKENS = [
   [ :comparison, /(>=|<=|===|==|>|<)/ ],
   [ :assignment, /=/ ]
 ]
-  # Returns a list containing all the tokens that are present in 2 or more languages
-  def generalize(java,python, js)
-    java_set = java.to_set
-    python_set = python.to_set
-    js_set = js.to_set
-
-    java_python_shared = java_set.intersection(python_set)
-    java_js_shared = java_set.intersection(js_set)
-    python_js_shared = python_set.intersection(js_set)
-
-    shared = java_python_shared.union(java_js_shared).union(python_js_shared)
-    shared.to_a
-    end
+  # Sets lang to the language of the file, and then returns it.
   def identify_lang
-    py_regexes = PYTHON_TOKENS.map { |pair| pair[1].source }
-    java_regexes = JAVA_TOKENS.map { |pair| pair[1].source }
-    js_regexes = JS_TOKENS.map { |pair| pair[1].source }
-    general_tokens = generalize(py_regexes, java_regexes, js_regexes)
-    # find the most likely language
-    python_count = 0
-    java_count = 0
-    js_count = 0
-    py_regexes.each do |py_token|
-      if !general_tokens.include?(py_token) && @code.match?(py_token)
-        python_count += 1
-      end
-    end
-    java_regexes.each do |java_token|
-      if !general_tokens.include?(java_token) && @code.match?(java_token)
-        java_count += 1
-      end
-    end
-    js_regexes.each do |js_token|
-      if !general_tokens.include?(js_token) && @code.match?(js_token)
-        js_count += 1
-      end
-    end
+    # creates a set of all regexp source Strings for each language
+    py_regexes = PYTHON_TOKENS.map { |pair| pair[1].source }.to_set
+    java_regexes = JAVA_TOKENS.map { |pair| pair[1].source }.to_set
+    js_regexes = JS_TOKENS.map { |pair| pair[1].source }.to_set
+    # creates a set of all regexes in common within 2 or more languages
+    general_tokens = (java_regexes & py_regexes | java_regexes & js_regexes | py_regexes & js_regexes)
+    # creates language specific regexp sets
+    py_exclusive = py_regexes.difference(general_tokens)
+    java_exclusive = java_regexes.difference(general_tokens)
+    js_exclusive = js_regexes.difference(general_tokens)
+    # counts the number of matches for each language in @code
+    python_count = py_exclusive.count{|regexp|@code.match?(regexp)}
+    java_count = java_exclusive.count{|regexp|@code.match?(regexp)}
+    js_count = js_exclusive.count{|regexp|@code.match?(regexp)}
     count_list = {
       "python" => python_count,
       "java" => java_count,
       "javascript" => js_count
     }
-    max = count_list.max[1]
-    @lang = count_list.rassoc(max)[0] # returns the language name with the highest count
-    count_list.each do |lang,count|
-      unless lang == @lang
-        if count == max
-          @lang = "#{@lang} or #{lang}"
-          raise LanguageRecognitionError.new("Language is #{@lang}. Please confirm which it is.", count_list)
-        end
-        end
+    # sorted array of all counts from greatest to least
+    values = count_list.values.sort.reverse
+    # if only 1 count is the max, return the corresponding language
+    unless values[1...values.length].any?{|value| value == values[0]}
+      @lang = count_list.key(values[0])
+      return @lang
     end
-    if count_list.map{|pair|pair[1]}.all?{ |element| element == 0}
-      raise LanguageRecognitionError.new("Language could not be recognized as Java, Python, or JavaScript", count_list)
-    end
+    # raise an error if multiple languages had the same count
+    raise LanguageRecognitionError.new("Language could not be identified. Please confirm it to continue compilation.", count_list)
   end
 
   def tokenize
