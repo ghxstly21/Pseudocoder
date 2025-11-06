@@ -171,20 +171,21 @@ JS_TOKENS = [
 ]
   # Sets lang to the language of the file, and then returns it.
   def identify_lang
-    # creates a set of all regexp source Strings for each language
-    py_regexes = PYTHON_TOKENS.map { |pair| pair[1].source }.to_set
-    java_regexes = JAVA_TOKENS.map { |pair| pair[1].source }.to_set
-    js_regexes = JS_TOKENS.map { |pair| pair[1].source }.to_set
+    py_regexes = PYTHON_TOKENS.map { |pair| pair[1] }.to_set
+    java_regexes = JAVA_TOKENS.map { |pair| pair[1] }.to_set
+    js_regexes = JS_TOKENS.map { |pair| pair[1] }.to_set
     # creates a set of all regexes in common within 2 or more languages
-    general_tokens = (java_regexes & py_regexes | java_regexes & js_regexes | py_regexes & js_regexes)
+    general_tokens = (
+      (java_regexes & py_regexes | java_regexes & js_regexes | py_regexes & js_regexes)
+    )
     # creates language specific regexp sets
     py_exclusive = py_regexes.difference(general_tokens)
     java_exclusive = java_regexes.difference(general_tokens)
     js_exclusive = js_regexes.difference(general_tokens)
     # counts the number of matches for each language in @code
-    python_count = py_exclusive.count{|regexp|@code.match?(regexp)}
-    java_count = java_exclusive.count{|regexp|@code.match?(regexp)}
-    js_count = js_exclusive.count{|regexp|@code.match?(regexp)}
+    python_count = py_exclusive.count{|regexp| @code.match?(regexp)}
+    java_count = java_exclusive.count{|regexp| @code.match?(regexp)}
+    js_count = js_exclusive.count{|regexp| @code.match?(regexp)}
     count_list = {
       "python" => python_count,
       "java" => java_count,
@@ -193,7 +194,7 @@ JS_TOKENS = [
     # sorted array of all counts from greatest to least
     values = count_list.values.sort.reverse
     # if only 1 count is the max, return the corresponding language
-    unless values[1...values.length].any?{|value| value == values[0]}
+    unless values[1..].any?{|value| value == values[0]}
       @lang = count_list.key(values[0])
       return @lang
     end
