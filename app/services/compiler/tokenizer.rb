@@ -184,7 +184,7 @@ JS_TOKENS = [
     # counts the number of matches for each language in @code
     python_count = py_exclusive.count{|regexp| @code.match?(regexp)}
     java_count = java_exclusive.count{|regexp| @code.match?(regexp)}
-    js_count = js_exclusive.count{|regexp| @code.match?(regexp)}
+    js_count = js_exclusive.count { |regexp| @code.match?(regexp) }
     count_list = {
       "python" => python_count,
       "java" => java_count,
