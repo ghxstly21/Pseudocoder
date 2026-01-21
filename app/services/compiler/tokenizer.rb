@@ -256,29 +256,29 @@ JS_TOKENS = [
   end
 
   # begin tokenization
-  py_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/py_test.txt"))
-  tokens = py_tokenizer.tokenize
-  puts "Detected language: #{py_tokenizer.lang || "unknown lang"}"
-  puts tokens.map(&:inspect).join("\n")
-  puts("\n")
-  java_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/java_test.txt"))
-  tokens = java_tokenizer.tokenize
-  puts "Detected language: #{java_tokenizer.lang || "unknown lang"}"
-  puts tokens.map(&:inspect).join("\n")
-  puts("\n")
-  js_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/js_test.txt"))
-  tokens = js_tokenizer.tokenize
-  puts "Detected language: #{js_tokenizer.lang || "unknown lang"}"
-  puts tokens.map(&:inspect).join("\n")
-  js_edge_case = Tokenizer.new(File.read("test/tokenizer_tests/js_edge_case.txt"))
-  tokens = js_edge_case.tokenize
-  puts "Lang: #{js_edge_case.lang}\nTokens: #{tokens}"
-  puts("\n")
-  # begin parsing
-  # NOTE: There should not be a new tokenizer for each language
-  # There should be one general tokenizer that takes in a user's file
-  # root = Parser.new(tokens, user_tokenizer.lang).parse()
-  root = Parser.new(tokens, py_tokenizer.lang).parse
-  puts root
+  # py_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/py_test.txt"))
+  # tokens = py_tokenizer.tokenize
+  # puts "Detected language: #{py_tokenizer.lang || "unknown lang"}"
+  # puts tokens.map(&:inspect).join("\n")
+  # puts("\n")
+  # java_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/java_test.txt"))
+  # tokens = java_tokenizer.tokenize
+  # puts "Detected language: #{java_tokenizer.lang || "unknown lang"}"
+  # puts tokens.map(&:inspect).join("\n")
+  # puts("\n")
+  # js_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/js_test.txt"))
+  # tokens = js_tokenizer.tokenize
+  # puts "Detected language: #{js_tokenizer.lang || "unknown lang"}"
+  # puts tokens.map(&:inspect).join("\n")
+  # js_edge_case = Tokenizer.new(File.read("test/tokenizer_tests/js_edge_case.txt"))
+  # tokens = js_edge_case.tokenize
+  # puts "Lang: #{js_edge_case.lang}\nTokens: #{tokens}"
+  # puts("\n")
+  # # begin parsing
+  # # NOTE: There should not be a new tokenizer for each language
+  # # There should be one general tokenizer that takes in a user's file
+  # # root = Parser.new(tokens, user_tokenizer.lang).parse()
+  # root = Parser.new(tokens, py_tokenizer.lang).parse
+  # puts root
 end
 end
