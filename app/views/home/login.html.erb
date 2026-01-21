@@ -132,6 +132,7 @@
             <% end %>
 
             <%= form_with model: @user, local: true do |f| %>
+
             <div class="email">
                 <%= f.label :email %><br>
                 <%= f.email_field :email, class: "email1" %>
