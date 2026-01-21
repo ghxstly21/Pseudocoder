@@ -6,8 +6,9 @@ module COMPILER
   def compile(file)
     tokenizer = Tokenizer.new(File.read(file))
     tokens = tokenizer.tokenize
-    ast = Parser.new(tokens,tokenizer.lang)
-    pseudocode = Generator.new(ast)
+    parser = Parser.new(tokens,tokenizer.lang)
+    ast = parser.parse
+    # pseudocode = Generator.new(ast)
   end
   end
   end

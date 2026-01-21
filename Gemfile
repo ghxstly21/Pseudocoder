@@ -9,7 +9,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
 
-gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.21"
 
 gem "tzinfo-data"
 gem "solid_cache"
@@ -35,3 +35,5 @@ group :test do
   gem "selenium-webdriver"
   gem "rspec"
 end
+
+gem "tailwindcss-rails", "~> 4.4"
