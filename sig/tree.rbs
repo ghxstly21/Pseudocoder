@@ -1,21 +1,17 @@
 module COMPILER
 class Tree
-  @list: [Node]
-
-  attr_accessor list: [Node]
-  attr_accessor root: Node?
-  attr_accessor node_count: int
-def initialize: (Symbol, untyped) -> void
-  def add_node: (Node, Symbol, untyped) -> bool
+attr_accessor root: Node?
+  def initialize: (Node?) -> void
+  def empty?: -> bool
+  def clear: -> void
 end
 
 class Node
-@type: Symbol
-@value: untyped
-@children: [Node]
-def initialize: (Symbol, untyped) -> void
-
-def add_child: (Symbol, untyped) -> Node
-
+  def initialize: (Symbol, string) -> void
+attr_reader children: []
+  attr_reader value: string
+  attr_reader type: Symbol
+  def size: -> int
+  def add: (Symbol, string) -> void
 end
 end
