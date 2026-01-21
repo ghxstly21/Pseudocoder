@@ -123,6 +123,11 @@
 
             <%= form_with model: @user, local: true do |f| %>
             <div class="email">
+                <%= f.label :name %><br>
+                <%= f.text_field :name , class:"email1" %>
+            </div>
+
+            <div class=" email">
                 <%= f.label :email %><br>
                 <%= f.email_field :email, class: "email1" %>
             </div>
