@@ -1,4 +1,4 @@
-module COMPILER
+module Compiler
   class Tokenizer
     PYTHON_TOKENS: [[Symbol,Regexp]]
     JAVA_TOKENS: [[Symbol, Regexp]]
@@ -18,7 +18,7 @@ module COMPILER
 
       def initialize: (Symbol, String?) -> void
     end
-    def tokenize: -> void
+    def tokenize:(from_file: bool) -> [Token]
     def tokenize_single: -> Token
   end
 end

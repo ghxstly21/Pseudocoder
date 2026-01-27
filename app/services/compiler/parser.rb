@@ -1,4 +1,4 @@
-module COMPILER
+module Compiler
   class Parser
     @lang
     def initialize(tokens, lang)

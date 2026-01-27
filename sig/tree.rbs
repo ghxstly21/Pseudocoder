@@ -1,4 +1,4 @@
-module COMPILER
+module Compiler
 class Tree
 attr_accessor root: Node?
   def initialize: (Node?) -> void

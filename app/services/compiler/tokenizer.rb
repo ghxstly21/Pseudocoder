@@ -1,5 +1,6 @@
-module COMPILER
+module Compiler
   require "set"
+  require_relative "../../errors/UnsupportedLanguageError"
   require_relative "../../errors/LanguageRecognitionError"
   require_relative "../../errors/TokenError"
 class Tokenizer
@@ -16,6 +17,7 @@ class Tokenizer
     @lang = nil
     @lang_error = nil
   end
+
   attr_reader :code, :lang
   PYTHON_TOKENS = [
     [ :and, /\band\b/ ],
@@ -178,12 +180,12 @@ JS_TOKENS = [
     general_tokens =
       (java_regexes & py_regexes | java_regexes & js_regexes | py_regexes & js_regexes)
     # creates language specific regexp sets
-    py_exclusive = py_regexes.difference(general_tokens)
-    java_exclusive = java_regexes.difference(general_tokens)
-    js_exclusive = js_regexes.difference(general_tokens)
+    py_exclusive = py_regexes - general_tokens
+    java_exclusive = java_regexes - general_tokens
+    js_exclusive = js_regexes - general_tokens
     # counts the number of matches for each language in @code
-    python_count = py_exclusive.count{|regexp| @code.match?(regexp)}
-    java_count = java_exclusive.count{|regexp| @code.match?(regexp)}
+    python_count = py_exclusive.count { |regexp| @code.match?(regexp) }
+    java_count = java_exclusive.count { |regexp| @code.match?(regexp) }
     js_count = js_exclusive.count { |regexp| @code.match?(regexp) }
     count_list = {
       "python" => python_count,
@@ -200,14 +202,22 @@ JS_TOKENS = [
     # raise an error if multiple languages had the same count
     raise LanguageRecognitionError.new("Language could not be identified. Please confirm it to continue compilation.", count_list)
   end
-
-  def tokenize
-    begin
-      identify_lang
-    rescue LanguageRecognitionError => lang_error
-      @lang_error = lang_error
-      puts("ERROR: #{lang_error.message}\nLanguage Counts: #{lang_error.count_dict}")
-      return []
+  def tokenize(from_file: true)
+    if from_file
+      @lang = case File.extname @code
+      when ".py" then "python"
+      when ".java" then "java"
+      when ".js" then "javascript"
+      else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{File.extname @code}."
+      end
+    else
+      begin
+        identify_lang
+      rescue LanguageRecognitionError => lang_error
+        @lang_error = lang_error
+        puts("ERROR: #{lang_error.message}\nLanguage Counts: #{lang_error.count_dict}")
+        return []
+      end
     end
 
     tokens = []
@@ -215,7 +225,7 @@ JS_TOKENS = [
       until @code.empty?
         token = tokenize_single
         @code = @code.strip
-        tokens.push(token)
+        tokens << token
       end
       return tokens
     end
@@ -227,7 +237,7 @@ JS_TOKENS = [
        end
        begin
          token = tokenize_single
-         tokens.append(token)
+         tokens << token
        rescue TokenError => e
          puts "ERROR: Tokenization failed. #{e.message}"
          raise e # Tokenization failure
@@ -241,8 +251,7 @@ JS_TOKENS = [
     when "python" then PYTHON_TOKENS
     when "java" then JAVA_TOKENS
     when "javascript" then JS_TOKENS
-    else
-      raise TokenError.new("Code could not be tokenized."), cause: @lang_error  # token error with cause
+    else raise TokenError.new("Code could not be tokenized."), cause: @lang_error  # token error with cause
     end
 
     token_defs.each do |type, regex|

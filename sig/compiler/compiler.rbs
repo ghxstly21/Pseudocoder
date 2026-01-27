@@ -1,5 +1,5 @@
-module COMPILER
-  class Compiler
-    def compile: -> String
-  end
+module Compiler
+  def self.compile: (String) -> String
+
+  def self.time: { () -> void } -> float
 end
