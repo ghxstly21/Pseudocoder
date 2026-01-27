@@ -3,19 +3,28 @@ module Compiler
   require_relative "parser"
   # require_relative "generator"
 
-  def self.compile(file)
-    if File.exist?(file)
-      tokenizer = Tokenizer.new(File.read(file))
+
+  # Compiles a file received as a path.
+  # @raise Errno::ENOENT if the file does not exist
+  # @raise UnsupportedLanguageError if the file extension is not .java, .js, or .py
+  def self.compile_file(path)
+      tokenizer = Tokenizer.new(File.read(path)) # May raise
       tokens = tokenizer.tokenize(from_file: true)
-    else
-      tokenizer = Tokenizer.new(file)
-      tokens = tokenizer.tokenize(from_file: false)
-    end
+      parser = Parser.new(tokens, tokenizer.lang)
+      ast = parser.parse
+      end
+
+  # Compiles a file received as a String
+  # @raise LanguageRecognitionError if the code could not be identified as a supported language
+  def self.compile_text(code)
+    tokenizer = Tokenizer.new(code)
+    tokens = tokenizer.tokenize(from_file: false)
     parser = Parser.new(tokens, tokenizer.lang)
     ast = parser.parse
     # pseudocode = Generator.new(ast)
   end
 
+  # Times compilation in seconds to 2 decimal points of precision
   def self.time
     start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     yield
