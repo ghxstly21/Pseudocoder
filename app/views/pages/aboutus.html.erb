@@ -1,0 +1,126 @@
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 0;
+    }
+
+    html {
+        box-sizing: border-box;
+    }
+
+    *,
+    *:before,
+    *:after {
+        box-sizing: inherit;
+    }
+
+    .column {
+        float: left;
+        width: 50%;
+        margin-bottom: 16px;
+        padding: 0 8px;
+    }
+
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        margin: 8px;
+    }
+
+    .about-section {
+        padding: 50px;
+        text-align: center;
+        background-color: #474e5d;
+        color: white;
+    }
+
+    .container {
+        padding: 0 16px;
+    }
+
+    .container::after,
+    .row::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    .title {
+        color: grey;
+    }
+
+    .button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .button:hover {
+        background-color: #555;
+    }
+
+    @media screen and (max-width: 650px) {
+        .column {
+            width: 100%;
+            display: block;
+        }
+    }
+
+    .card img {
+        width: 150px;
+        height: 300px;
+        object-fit: cover;
+        display: block;
+        margin: 0 auto;
+        border-radius: 8px;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
+
+<div class="about-section">
+    <h1>About Us</h1>
+    <p>A web app that allows users to turn their code into pseudocode. It is powered by a compiler built in Ruby that recognizes code from a programming language such as Python, Java, or JavaScript and turns it into English pseudocode that anyone can understand. As part of our web app, we will include an account system where users can view the output of their previously compiled files. Pseudocoder will help anyone who wants a better understanding of their code.
+    </p>
+    <p>Mid-year project created by BCA students.</p>
+</div>
+
+<h2 style="text-align:center">Our Team</h2>
+<div class="row">
+    <div class="column">
+        <div class="card">
+            <img src="<%= image_path('miguelface (1).jpg') %>" alt="Miguel Taveras" style="width:100%">
+            <div class="container">
+                <h2>Miguel Taveras</h2>
+                <p class="title">Developer</p>
+                <p>ATCS sophomore at BCA. Big ruby nerd and loves playing roblox.</p>
+                <p>migtav28@bergen.org</p>
+                <p><a href="mailto:migtav@bergen.org"><button class="button">Contact</button></a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="card">
+            <img src="<%= image_path('WIN_20260121_12_56_18_Pro.jpg') %>" alt="Mike" style="width:100%">
+            <div class="container">
+                <h2>Dharma Zalavadiya</h2>
+                <p class="title">Developer</p>
+                <p>ATCS sophomore at BCA. Co founded tesla, nike and addidas. The best there ever is.</p>
+                <p>dhazal28@bergen.org</p>
+                <p><a href="mailto:dhazal28@bergen.org"><button class="button">Contact</button></a></p>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
