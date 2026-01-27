@@ -1,9 +1,9 @@
-module COMPILER
+module Compiler
 
   class Tree
     attr_accessor :root
     def initialize(root)
-      if root.is_a?(COMPILER::Node)
+      if root.is_a?(Compiler::Node)
         @root = root
       else
         raise "Expected root to be a node, not a #{root.class}"
@@ -18,7 +18,7 @@ module COMPILER
 
     def to_s
       node = root
-      return "" unless node.is_a?(COMPILER::Node)
+      return "" unless node.is_a?(Compiler::Node)
       result = [node.value]
       root.children.each do |child|
         result << child.to_s

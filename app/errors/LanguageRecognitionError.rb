@@ -1,4 +1,4 @@
-module COMPILER
+module Compiler
   class LanguageRecognitionError < StandardError
     attr_reader :count_dict
     def initialize(message, count_list)
