@@ -7,6 +7,11 @@ Rails.application.routes.draw do
 
   resources :users, only: [ :new, :create ]
 
-  get "/dashboard", to: "dashboard#index"
   get "/home", to: "pages#home", as: "home"
+  get "/aboutus", to: "pages#aboutus", as:"aboutus"
+  get "/contactus", to: "pages#contactus", as: "contact"
+  get 'contactus', to: 'pages#contactus'
+  post 'contact_submit', to: 'pages#contact_submit' 
 end
+
+
