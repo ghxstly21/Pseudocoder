@@ -1,5 +1,4 @@
 module Compiler
-
   class Tree
     attr_accessor :root
     def initialize(root)
@@ -7,7 +6,7 @@ module Compiler
         @root = root
       else
         raise "Expected root to be a node, not a #{root.class}"
-    end
+      end
     end
     def empty?
       @root.nil?
@@ -19,19 +18,16 @@ module Compiler
     def to_s
       node = root
       return "" unless node.is_a?(Compiler::Node)
-      result = [node.value]
+      result = [ node.value ]
       root.children.each do |child|
         result << child.to_s
       end
       result.join("")
-
-
     end
 
-    def pretty_print()
-
+    def pretty_print
     end
-    end
+  end
 class Node
   attr_reader :children, :value, :type
   def initialize(type, value)
@@ -45,7 +41,7 @@ class Node
   end
 
   def size
-    children.sum {|child| child.size} + 1
+    children.sum { |child| child.size } + 1
   end
   def add(type, value)
     added_node = Node.new(type, value)

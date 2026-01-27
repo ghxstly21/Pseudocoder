@@ -51,11 +51,9 @@ module Compiler
           "Expected token type #{expected_type.inspect} but got #{token.type.inspect}"
         )
       end
-
     end
-      def peek()
-
+      def peek
       end
   end
   end
-  end
+end
