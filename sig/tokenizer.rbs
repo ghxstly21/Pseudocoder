@@ -5,12 +5,15 @@ module Compiler
     JS_TOKENS: [[Symbol, Regexp]]
     attr_reader code: String
     attr_reader lang: String?
-    def initialize: (String) -> void
+    def initialize: (String, from_file: bool) -> void
     @code: String
     @lang: String?
     @lang_error: LanguageRecognitionError?
-    def generalize: ([String], [String], [String]) -> [String]
+    @token_defs: [[Symbol, Regexp]]
+
     def identify_lang: -> String
+
+    Token: Class
 
     class Token
       attr_accessor type: Symbol
@@ -18,7 +21,8 @@ module Compiler
 
       def initialize: (Symbol, String?) -> void
     end
-    def tokenize:(from_file: bool) -> [Token]
+
+    def tokenize: -> [Token]
     def tokenize_single: -> Token
   end
 end

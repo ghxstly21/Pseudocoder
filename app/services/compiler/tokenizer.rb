@@ -4,18 +4,35 @@ module Compiler
   require_relative "../../errors/LanguageRecognitionError"
   require_relative "../../errors/TokenError"
 class Tokenizer
-  class Token
-    attr_accessor :type, :value
-    def initialize(type, value)
-      @type = type
-      @value = value
-    end
-  end
 
-  def initialize(code)
-    @code = code
-    @lang = nil
-    @lang_error = nil
+  Token = Struct.new(:type, :value)
+
+  def initialize(path_or_code, from_file: true)
+    if from_file
+      @lang = case File.extname @code
+              when ".py" then "python"
+              when ".java" then "java"
+              when ".js" then "javascript"
+              else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{File.extname @code}."
+              end
+      @code = File.read(path_or_code)
+    else
+      begin
+        identify_lang
+      rescue LanguageRecognitionError => lang_error
+        @lang_error = lang_error
+        puts("ERROR: #{lang_error.message}\nLanguage Counts: #{lang_error.count_dict}")
+        return []
+      end
+      @code = path_or_code
+    end
+
+    @token_defs = case @lang
+                 when "python" then PYTHON_TOKENS
+                 when "java" then JAVA_TOKENS
+                 when "javascript" then JS_TOKENS
+                 else raise TokenError.new("Code could not be tokenized."), cause: @lang_error  # token error with cause
+                 end
   end
 
   attr_reader :code, :lang
@@ -202,24 +219,7 @@ JS_TOKENS = [
     # raise an error if multiple languages had the same count
     raise LanguageRecognitionError.new("Language could not be identified. Please confirm it to continue compilation.", count_list)
   end
-  def tokenize(from_file: true)
-    if from_file
-      @lang = case File.extname @code
-      when ".py" then "python"
-      when ".java" then "java"
-      when ".js" then "javascript"
-      else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{File.extname @code}."
-      end
-    else
-      begin
-        identify_lang
-      rescue LanguageRecognitionError => lang_error
-        @lang_error = lang_error
-        puts("ERROR: #{lang_error.message}\nLanguage Counts: #{lang_error.count_dict}")
-        return []
-      end
-    end
-
+  def tokenize
     tokens = []
     unless @lang == "python"
       until @code.empty?
@@ -247,14 +247,9 @@ JS_TOKENS = [
     tokens
     end
   def tokenize_single
-    token_defs = case @lang
-    when "python" then PYTHON_TOKENS
-    when "java" then JAVA_TOKENS
-    when "javascript" then JS_TOKENS
-    else raise TokenError.new("Code could not be tokenized."), cause: @lang_error  # token error with cause
-    end
 
-    token_defs.each do |type, regex|
+
+    @token_defs.each do |type, regex|
       if (match = @code.match(/\A#{regex}/)) # assign match, check if truthy
         value = match[0] # matched text
         @code.delete_prefix!(value)  # cut off the token from @code

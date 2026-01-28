@@ -8,8 +8,8 @@ module Compiler
   # @raise Errno::ENOENT if the file does not exist
   # @raise UnsupportedLanguageError if the file extension is not .java, .js, or .py
   def self.compile_file(path)
-      tokenizer = Tokenizer.new(File.read(path)) # May raise
-      tokens = tokenizer.tokenize(from_file: true)
+      tokenizer = Tokenizer.new(path, from_file: true)
+      tokens = tokenizer.tokenize
       parser = Parser.new(tokens, tokenizer.lang)
       ast = parser.parse
       end
@@ -17,8 +17,8 @@ module Compiler
   # Compiles a file received as a String
   # @raise LanguageRecognitionError if the code could not be identified as a supported language
   def self.compile_text(code)
-    tokenizer = Tokenizer.new(code)
-    tokens = tokenizer.tokenize(from_file: false)
+    tokenizer = Tokenizer.new(code, from_file: false)
+    tokens = tokenizer.tokenize
     parser = Parser.new(tokens, tokenizer.lang)
     ast = parser.parse
     # pseudocode = Generator.new(ast)
