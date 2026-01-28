@@ -1,4 +1,3 @@
-
 module Compiler
   class LanguageRecognitionError < StandardError
     attr_reader count_dict: Hash[String, Integer]
