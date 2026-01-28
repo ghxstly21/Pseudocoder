@@ -1,4 +1,48 @@
 <link rel="stylesheet" href="/tailwind.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 
-<h1>Welcome, <%= @current_user.name %>!</h1>
-<p>This is your dashboard.</p>
+
+<style>
+    .header {
+        font-family: Oswald;
+        font-color: 04AA6D;
+        margin: 200px;
+        text-align: center;
+
+    }
+
+    .auth-links {
+        text-align: center;
+        font-family: 'Oswald', sans-serif;
+        font-size: 1.2rem;
+        color: #444;
+    }
+
+    .auth-links a {
+        color: #04AA6D;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .auth-links a:hover {
+        text-decoration: underline;
+    }
+
+    .user-name {
+        color: #04AA6D;
+        font-weight: bold;
+    }
+</style>
+<h1 class="header">Understand all your code with ease using Psuedocoder</h1>
+<p class="auth-links">
+    Hello
+    <% if current_user %>
+    <span class="user-name"><%= current_user.name %></span>
+    <% else %>
+    guest.
+    [ <%= link_to "Sign in with account", new_user_session_path %> ] or
+    [ <%= link_to "Sign in as guest", guest_session_path %> ]
+    <% end %>
+</p>

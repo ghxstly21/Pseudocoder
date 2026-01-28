@@ -1,0 +1,115 @@
+<style>
+    @import url('https://fonts.googleapis.com');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        background: #111;
+        color: white;
+    }
+
+    .container {
+        width: 80%;
+        margin: 40px auto;
+        padding-top: 30px;
+    }
+
+    .container h2 {
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 35px;
+        margin-bottom: 25px;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+
+    .container .services {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: stretch;
+        gap: 20px;
+    }
+
+    .container .services .card {
+        flex: 0 0 330px;
+        text-align: center;
+        background: #222;
+        padding: 20px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+
+    .container .services .card:hover {
+        background: blueviolet;
+    }
+
+    .container .services .card .content {
+        transition: 0.3s;
+    }
+
+    .container .services .card:hover .content {
+        transform: scale(1.07);
+    }
+
+    .container .services .card .content .icon {
+        padding: 5px 0;
+        color: white;
+    }
+
+    .container .services .card .content .icon i {
+        font-size: 40px;
+    }
+
+    .container .services .card .content .title {
+        padding: 5px 0;
+        font-size: 24px;
+        font-weight: 500;
+        color: blueviolet;
+        transition: 0.3s;
+    }
+
+    .container .services .card:hover .content .title {
+        color: white;
+    }
+
+    .header {
+        text-align: center;
+    }
+</style>
+
+
+<div class="container">
+    <h2 class="header">Our Services</h2>
+    <section class="services">
+        <div class="card">
+            <div class="content">
+                <div class="icon"><i class="fa fa-code"></i></div>
+                <div class="title">Java</div>
+                <p>Java is a widely used, high-level, object-oriented programming language designed for maximum portability with the "Write Once, Run Anywhere" (WORA) principle</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="content">
+                <div class="icon"><i class="fa fa-mobile"></i></div>
+                <div class="title">Javascript</div>
+                <p>JavaScript is a versatile, high-level programming language that is one of the core technologies of the World Wide Web, alongside HTML and CSS. </p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="content">
+                <div class="icon"><i class="fa fa-paint-brush"></i></div>
+                <div class="title">Python</div>
+                <p>Python is a high-level, general-purpose programming language known for its simplicity, readability, and versatility.</p>
+            </div>
+        </div>
+    </section>
+</div>
