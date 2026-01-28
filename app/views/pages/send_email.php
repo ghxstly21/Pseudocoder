@@ -9,20 +9,17 @@ require 'path/to/PHPMailer/src/SMTP.php';
 $mail = new PHPMailer(true);
 
 try {
-    // Server settings
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
     $mail->Username   = 'zalavadiyadharma@gmail.com';
-    $mail->Password   = 'jbtd jtzm ydlg gqza'; // Use the App Password here
+    $mail->Password   = 'jbtd jtzm ydlg gqza'; 
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
 
-    // Recipients
     $mail->setFrom('zalavadiyadharma@gmail.com', 'Website Contact Form');
     $mail->addAddress('zalavadiyadharma@gmail.com'); 
 
-    // Content
     $mail->isHTML(false);
     $mail->Subject = "New Form Submission: " . $_POST['firstname'];
     $mail->Body    = "Name: " . $_POST['firstname'] . " " . $_POST['lastname'] . "\n" .
