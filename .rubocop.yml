@@ -2,7 +2,7 @@
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 3.4.6
+  TargetRubyVersion: 3.4
 
 
 # Overwrite or add rules to create your own house style
