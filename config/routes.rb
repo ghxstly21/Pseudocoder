@@ -13,7 +13,5 @@ Rails.application.routes.draw do
   get "contactus", to: "pages#contactus"
   post "contact_submit", to: "pages#contact_submit"
     get "services", to: "pages#services"
-post 'guest_login', to: 'sessions#guest_login', as: :guest_session
-
-
+post "guest_login", to: "sessions#guest_login", as: :guest_session
 end

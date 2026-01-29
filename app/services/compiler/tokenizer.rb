@@ -4,17 +4,16 @@ module Compiler
   require_relative "../../errors/LanguageRecognitionError"
   require_relative "../../errors/TokenError"
 class Tokenizer
-
   Token = Struct.new(:type, :value)
 
   def initialize(path_or_code, from_file: true)
     if from_file
       @lang = case File.extname @code
-              when ".py" then "python"
-              when ".java" then "java"
-              when ".js" then "javascript"
-              else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{File.extname @code}."
-              end
+      when ".py" then "python"
+      when ".java" then "java"
+      when ".js" then "javascript"
+      else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{File.extname @code}."
+      end
       @code = File.read(path_or_code)
     else
       begin
@@ -28,11 +27,11 @@ class Tokenizer
     end
 
     @token_defs = case @lang
-                 when "python" then PYTHON_TOKENS
-                 when "java" then JAVA_TOKENS
-                 when "javascript" then JS_TOKENS
-                 else raise TokenError.new("Code could not be tokenized."), cause: @lang_error  # token error with cause
-                 end
+    when "python" then PYTHON_TOKENS
+    when "java" then JAVA_TOKENS
+    when "javascript" then JS_TOKENS
+    else raise TokenError.new("Code could not be tokenized."), cause: @lang_error  # token error with cause
+    end
   end
 
   attr_reader :code, :lang
@@ -247,8 +246,6 @@ JS_TOKENS = [
     tokens
     end
   def tokenize_single
-
-
     @token_defs.each do |type, regex|
       if (match = @code.match(/\A#{regex}/)) # assign match, check if truthy
         value = match[0] # matched text

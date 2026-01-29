@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "rails", "~> 8.1.2"
+gem "tailwindcss-rails", "~> 4.4"
 gem "propshaft"
 gem "sqlite3", ">= 2.1"
 gem "puma", ">= 5.0"
@@ -28,7 +29,7 @@ end
 
 group :development do
   gem "web-console"
-  gem "steep"
+  gem "steep", require: false
 end
 
 group :test do
@@ -36,5 +37,3 @@ group :test do
   gem "selenium-webdriver"
   gem "rspec"
 end
-
-gem "tailwindcss-rails", "~> 4.4"
