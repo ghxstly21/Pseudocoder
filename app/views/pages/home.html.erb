@@ -34,15 +34,40 @@
         color: #04AA6D;
         font-weight: bold;
     }
+
+    .button {
+        border: none;
+        outline: 0;
+        display: inline-block;
+        padding: 8px;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .button:hover {
+        background-color: #555;
+    }
 </style>
 <h1 class="header">Understand all your code with ease using Psuedocoder</h1>
-<p class="auth-links">
-    Hello
-    <% if current_user %>
-    <span class="user-name"><%= current_user.name %></span>
-    <% else %>
-    guest.
-    [ <%= link_to "Sign in with account", new_user_session_path %> ] or
-    [ <%= link_to "Sign in as guest", guest_session_path %> ]
+<div class="auth-links">
+
+    <p> Hello </p>
+
+    <% if current_user.present? %>
+    <p>
+        <%= current_user.name%>
+    </p>
+    <% else%>
+    <p> guest </p>
+
     <% end %>
-</p>
+
+
+    <p><a href="/login"><button class="button">Log in as user</button></a></p>
+    <p><a href="/login_guest"><button class="button">Log in as guests</button></a></p>
+
+
+</div>
