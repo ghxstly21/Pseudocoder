@@ -12,5 +12,3 @@ target :cli do
   signature "sig/cli"
   check "bin/pseudocoder.rb"
 end
-
-
