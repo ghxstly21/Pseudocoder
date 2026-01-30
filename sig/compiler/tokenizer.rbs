@@ -11,7 +11,9 @@ module Compiler
     @lang_error: LanguageRecognitionError?
     @token_defs: [[Symbol, Regexp]]
 
-    def identify_lang: -> String
+
+
+
 
     Token: Class
 
@@ -24,5 +26,7 @@ module Compiler
 
     def tokenize: -> [Token]
     def tokenize_single: -> Token
+    def identify_lang: -> String
+    def delete_comments!: -> void
   end
 end
