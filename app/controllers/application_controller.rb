@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
     redirect_to login_path, alert: "You must log in first" unless logged_in?
   end
   def destroy
-    session[:user_id] = nil 
-    redirect_to root_path, notice: "Logged out successfully!" 
+    session[:user_id] = nil
+    redirect_to root_path, notice: "Logged out successfully!"
   end
 end
