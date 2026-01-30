@@ -14,8 +14,9 @@ class Tokenizer
       when ".js" then "javascript"
       else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{File.extname @code}."
       end
-      @code = File.read(path_or_code)
+      @code = File.read path_or_code
     else
+      @code = path_or_code
       begin
         identify_lang
       rescue LanguageRecognitionError => lang_error
@@ -23,7 +24,7 @@ class Tokenizer
         puts("ERROR: #{lang_error.message}\nLanguage Counts: #{lang_error.count_dict}")
         return []
       end
-      @code = path_or_code
+
     end
 
     @token_defs = case @lang
@@ -61,9 +62,12 @@ class Tokenizer
     [ :colon, /:/ ],
     [ :true, /\bTrue\b/ ],
     [ :false, /\bFalse\b/ ],
+    [ :string, /"(\\.|[^"\\])*"/ ],
+    [ :string, /'(\\.|[^'\\])*'/ ],
+    [ :string, /("""|''')[\s\S]*?\1/ ],
     [ :comment, /#.*/ ],
-  [ :identifier, /\b[A-Za-z_][A-Za-z0-9_]*\b/ ],
-    [ :number, /\b[0-9]+\b/ ],
+    [ :comment, /("""|''')[\s\S]*?\1/ ],
+    [ :number, /\b\d+(\.\d+)?([eE][+-]?\d+)?\b/ ],
     [ :open_paren, /\(/ ],
     [ :close_paren, /\)/ ],
     [ :comparison, /(==|!=|>=|<=|>|<)/ ],
@@ -80,10 +84,12 @@ class Tokenizer
     [ :multiply, /\*/ ],
     [ :divide, /\// ],
     [ :assignment, /=/ ],
-    [ :string, /"(\\.|[^"\\])*"/ ],
-    [ :string, /'(\\.|[^'\\])*'/ ]
+    [ :identifier, /\b[A-Za-z_][A-Za-z0-9_]*\b/ ]
+
   ]
   JAVA_TOKENS = [
+    [ :comment, /\/\/.*/ ],
+    [ :comment, /\/\*[\s\S]*?\*\// ],
     [ :assert, /\bassert\b/ ],
     [ :bool, /\bboolean\b/ ],
     [ :break, /\bbreak\b/ ],
@@ -111,11 +117,8 @@ class Tokenizer
     [ :while, /\bwhile\b/ ],
     [ :true, /\btrue\b/ ],
     [ :false, /\bfalse\b/ ],
-    [ :comment, /\/\/.*/ ],
-    [ :comment, /\/\*[\s\S]*?\*\// ],
     [ :string, /"(\\.|[^"\\])*"/ ],
-    [ :number, /\b[0-9]+\b/ ],
-    [ :identifier, /\b[A-Za-z_][A-Za-z0-9_]*\b/ ],
+    [ :number, /\b\d+(\.\d+)?([eE][+-]?\d+)?\b/ ],
     [ :open_paren, /\(/ ],
     [ :close_paren, /\)/ ],
     [ :open_brace, /\{/ ],
@@ -130,9 +133,12 @@ class Tokenizer
     [ :multiply, /\*/ ],
     [ :divide, /\// ],
     [ :comparison, /(>=|<=|==|>|<)/ ],
-    [ :assignment, /=/ ]
+    [ :assignment, /=/ ],
+    [ :identifier, /\b[A-Za-z_][A-Za-z0-9_]*\b/ ]
   ]
 JS_TOKENS = [
+  [ :comment, /\/\/.*/ ],
+  [ :comment, /\/\*[\s\S]*?\*\// ],
   [ :abstract, /\babstract\b/ ],
   [ :break, /\bbreak\b/ ],
   [ :case, /\bcase\b/ ],
@@ -164,10 +170,9 @@ JS_TOKENS = [
   [ :while, /\bwhile\b/ ],
   [ :with, /\bwith\b/ ],
   [ :yield, /\byield\b/ ],
-  [ :comment, /\/\/.*/ ],
-  [ :comment, /\/\*[\s\S]*?\*\// ],
   [ :string, /"(\\.|[^"\\])*"/ ],
   [ :string, /`([^`\\]|\\.)*`/ ],
+  [ :string, /'(\\.|[^'\\])*'/ ],
   [ :open_brace, /\{/ ],
   [ :close_brace, /}/ ],
   [ :open_bracket, /\[/ ],
@@ -176,8 +181,7 @@ JS_TOKENS = [
   [ :dot, /\./ ],
   [ :comma, /,/ ],
   [ :const, /\bconst\b/ ],
-  [ :identifier, /[A-Za-z_][A-Za-z0-9_]*/ ],
-  [ :number, /\b[0-9]+\b/ ],
+  [ :number, /\b\d+(\.\d+)?([eE][+-]?\d+)?\b/ ],
   [ :open_paren, /\(/ ],
   [ :close_paren, /\)/ ],
   [ :add, /\+/ ],
@@ -185,8 +189,50 @@ JS_TOKENS = [
   [ :multiply, /\*/ ],
   [ :divide, /\// ],
   [ :comparison, /(>=|<=|===|==|>|<)/ ],
-  [ :assignment, /=/ ]
+  [ :assignment, /=/ ],
+  [ :identifier, /[A-Za-z_][A-Za-z0-9_]*/ ]
 ]
+  def tokenize
+    tokens = []
+    unless @lang == "python"
+      until @code.empty?
+        token = tokenize_single
+        @code = @code.strip
+        tokens << token unless token.type == :comment
+      end
+      return tokens
+    end
+     until @code.empty?
+       # more explicit whitespace handling for python
+       if @code.start_with?(" ") || @code.start_with?("\n") || @code.start_with?("\r")
+         @code = @code.lstrip  # remove them
+         next                  # don't recognize them as a token
+       end
+       begin
+         token = tokenize_single
+         tokens << token
+       rescue TokenError => e
+         puts "ERROR: Tokenization failed. #{e.message}"
+         raise e # Tokenization failure
+       end
+       @code = @code.strip
+     end
+    tokens
+  end
+
+  private
+  def tokenize_single
+    @token_defs.each do |type, regex|
+      if (match = @code.match(/\A#{regex}/)) # assign match, check if truthy
+        value = match[0] # matched text
+        @code.delete_prefix!(value) # cut off the token from @code
+        return Token.new(type, value)
+      end
+    end
+    raise TokenError, "Unrecognized token: #{@code.inspect}" # token error
+  end
+
+
   # Sets lang to the language of the file, and then returns it.
   def identify_lang
     py_regexes = PYTHON_TOKENS.map { |pair| pair[1] }.to_set
@@ -218,68 +264,9 @@ JS_TOKENS = [
     # raise an error if multiple languages had the same count
     raise LanguageRecognitionError.new("Language could not be identified. Please confirm it to continue compilation.", count_list)
   end
-  def tokenize
-    tokens = []
-    unless @lang == "python"
-      until @code.empty?
-        token = tokenize_single
-        @code = @code.strip
-        tokens << token
-      end
-      return tokens
-    end
-     until @code.empty?
-       # more explicit whitespace handling for python
-       if @code.start_with?(" ") || @code.start_with?("\n") || @code.start_with?("\r")
-         @code = @code.lstrip  # remove them
-         next                  # don't recognize them as a token
-       end
-       begin
-         token = tokenize_single
-         tokens << token
-       rescue TokenError => e
-         puts "ERROR: Tokenization failed. #{e.message}"
-         raise e # Tokenization failure
-       end
-       @code = @code.strip
-     end
-    tokens
-    end
-  def tokenize_single
-    @token_defs.each do |type, regex|
-      if (match = @code.match(/\A#{regex}/)) # assign match, check if truthy
-        value = match[0] # matched text
-        @code.delete_prefix!(value)  # cut off the token from @code
-        return Token.new(type, value)
-      end
-    end
-    raise TokenError, "Unrecognized token: #{@code.inspect}" # token error
-  end
-
-  # begin tokenization
-  # py_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/py_test.txt"))
-  # tokens = py_tokenizer.tokenize
-  # puts "Detected language: #{py_tokenizer.lang || "unknown lang"}"
-  # puts tokens.map(&:inspect).join("\n")
-  # puts("\n")
-  # java_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/java_test.txt"))
-  # tokens = java_tokenizer.tokenize
-  # puts "Detected language: #{java_tokenizer.lang || "unknown lang"}"
-  # puts tokens.map(&:inspect).join("\n")
-  # puts("\n")
-  # js_tokenizer = Tokenizer.new(File.read("test/tokenizer_tests/js_test.txt"))
-  # tokens = js_tokenizer.tokenize
-  # puts "Detected language: #{js_tokenizer.lang || "unknown lang"}"
-  # puts tokens.map(&:inspect).join("\n")
-  # js_edge_case = Tokenizer.new(File.read("test/tokenizer_tests/js_edge_case.txt"))
-  # tokens = js_edge_case.tokenize
-  # puts "Lang: #{js_edge_case.lang}\nTokens: #{tokens}"
-  # puts("\n")
-  # # begin parsing
-  # # NOTE: There should not be a new tokenizer for each language
-  # # There should be one general tokenizer that takes in a user's file
-  # # root = Parser.new(tokens, user_tokenizer.lang).parse()
-  # root = Parser.new(tokens, py_tokenizer.lang).parse
-  # puts root
 end
+
+  tokenizer = Tokenizer.new('console.log("Hello, world!")', from_file: false)
+  tokens = tokenizer.tokenize
+  puts tokens
 end
