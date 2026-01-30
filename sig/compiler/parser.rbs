@@ -1,0 +1,12 @@
+module Compiler
+  class Parser
+    @tokens: [Token]
+    @lang: String
+
+    def initialize: ([Token], String) -> void
+
+    def parse: -> Tree
+
+  end
+
+end

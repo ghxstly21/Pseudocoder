@@ -3,8 +3,10 @@ module Compiler
   require_relative "../../errors/UnsupportedLanguageError"
   require_relative "../../errors/LanguageRecognitionError"
   require_relative "../../errors/TokenError"
-class Tokenizer
+
   Token = Struct.new(:type, :value)
+
+class Tokenizer
 
   def initialize(path_or_code, from_file: true)
     if from_file
