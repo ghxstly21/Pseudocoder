@@ -1,4 +1,14 @@
 module Compiler
+
+  Token: Class
+
+  class Token
+    attr_accessor type: Symbol
+    attr_accessor value: String?
+
+    def initialize: (Symbol, String?) -> void
+  end
+
   class Tokenizer
     PYTHON_TOKENS: [[Symbol,Regexp]]
     JAVA_TOKENS: [[Symbol, Regexp]]
@@ -10,20 +20,6 @@ module Compiler
     @lang: String?
     @lang_error: LanguageRecognitionError?
     @token_defs: [[Symbol, Regexp]]
-
-
-
-
-
-    Token: Class
-
-    class Token
-      attr_accessor type: Symbol
-      attr_accessor value: String?
-
-      def initialize: (Symbol, String?) -> void
-    end
-
     def tokenize: -> [Token]
     def tokenize_single: -> Token
     def identify_lang: -> String

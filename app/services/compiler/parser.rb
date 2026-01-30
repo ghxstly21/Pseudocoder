@@ -1,6 +1,5 @@
 module Compiler
   class Parser
-    @lang
     def initialize(tokens, lang)
       @tokens = tokens
       @lang = lang
@@ -16,6 +15,7 @@ module Compiler
         body = parse_expr
         consume(:close_brace)
       elsif @lang == "python"
+        p "python"
         # BUG: python should be able to detect indentation
       else
         raise RuntimeError("Unrecognized language: #{@lang}")
@@ -43,7 +43,7 @@ module Compiler
 
     def consume(expected_type)
       # Grab the first token from the list and remove it
-      token = tokens.slice!(0)
+      token = @tokens.shift
       if token.type == expected_type
         token
       else
