@@ -1,28 +1,29 @@
 module Compiler
 
-  Token: Class
 
-  class Token
-    attr_accessor type: Symbol
-    attr_accessor value: String?
 
-    def initialize: (Symbol, String?) -> void
-  end
 
   class Tokenizer
+    LANG_TOKENS: Hash[String, [[Symbol, Regexp]]]
+    Token: Class
+    class Token
+      attr_accessor type: Symbol
+      attr_accessor value: String
+
+      def initialize: (Symbol, String) -> void
+    end
+
     PYTHON_TOKENS: [[Symbol,Regexp]]
     JAVA_TOKENS: [[Symbol, Regexp]]
     JS_TOKENS: [[Symbol, Regexp]]
     attr_reader code: String
-    attr_reader lang: String?
-    def initialize: (String, from_file: bool) -> void
+    attr_reader lang: String
+    def initialize: (String, ?from_file: bool) -> void
     @code: String
-    @lang: String?
-    @lang_error: LanguageRecognitionError?
+    @lang: String
     @token_defs: [[Symbol, Regexp]]
     def tokenize: -> [Token]
     def tokenize_single: -> Token
     def identify_lang: -> String
-    def delete_comments!: -> void
   end
 end
