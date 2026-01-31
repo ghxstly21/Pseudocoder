@@ -4,40 +4,7 @@ module Compiler
   require_relative "../../errors/LanguageRecognitionError"
   require_relative "../../errors/TokenError"
 
-  Token = Struct.new(:type, :value)
-
 class Tokenizer
-
-  def initialize(path_or_code, from_file: true)
-    if from_file
-      @lang = case File.extname @code
-      when ".py" then "python"
-      when ".java" then "java"
-      when ".js" then "javascript"
-      else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{File.extname @code}."
-      end
-      @code = File.read path_or_code
-    else
-      @code = path_or_code
-      begin
-        identify_lang
-      rescue LanguageRecognitionError => lang_error
-        @lang_error = lang_error
-        puts("ERROR: #{lang_error.message}\nLanguage Counts: #{lang_error.count_dict}")
-        return []
-      end
-
-    end
-
-    @token_defs = case @lang
-    when "python" then PYTHON_TOKENS
-    when "java" then JAVA_TOKENS
-    when "javascript" then JS_TOKENS
-    else raise TokenError.new("Code could not be tokenized."), cause: @lang_error  # token error with cause
-    end
-  end
-
-  attr_reader :code, :lang
   PYTHON_TOKENS = [
     [ :and, /\band\b/ ],
     [ :break, /\bbreak\b/ ],
@@ -69,7 +36,10 @@ class Tokenizer
     [ :string, /("""|''')[\s\S]*?\1/ ],
     [ :comment, /#.*/ ],
     [ :comment, /("""|''')[\s\S]*?\1/ ],
-    [ :number, /\b\d+(\.\d+)?([eE][+-]?\d+)?\b/ ],
+    [ :exponential, /\b(\d+(?:_\d+)*(\.\d+(?:_\d+)*)?|\.\d+(?:_\d+)*)([eE][+-]?\d+(?:_\d+)*)\b/ ],
+    [ :float, /\b(\d+\.\d*|\d*\.\d+)\b/ ],
+    [ :integer, /\b[0-9]+\b/ ],
+    [ :comma, /,/ ],
     [ :open_paren, /\(/ ],
     [ :close_paren, /\)/ ],
     [ :comparison, /(==|!=|>=|<=|>|<)/ ],
@@ -120,7 +90,9 @@ class Tokenizer
     [ :true, /\btrue\b/ ],
     [ :false, /\bfalse\b/ ],
     [ :string, /"(\\.|[^"\\])*"/ ],
-    [ :number, /\b\d+(\.\d+)?([eE][+-]?\d+)?\b/ ],
+    [ :exponential, /\b(\d+(?:_\d+)*(?:\.\d+(?:_\d+)*)?|\.\d+(?:_\d+)*)([eE][+-]?\d+(?:_\d+)*)\b/ ],
+    [ :float, /\b(\d+(?:_\d+)*\.\d*(?:_\d+)*|\d*(?:_\d+)*\.\d+(?:_\d+)*)\b/ ],
+    [ :integer, /\b\d+(?:_\d+)*\b/ ],
     [ :open_paren, /\(/ ],
     [ :close_paren, /\)/ ],
     [ :open_brace, /\{/ ],
@@ -138,62 +110,89 @@ class Tokenizer
     [ :assignment, /=/ ],
     [ :identifier, /\b[A-Za-z_][A-Za-z0-9_]*\b/ ]
   ]
-JS_TOKENS = [
-  [ :comment, /\/\/.*/ ],
-  [ :comment, /\/\*[\s\S]*?\*\// ],
-  [ :abstract, /\babstract\b/ ],
-  [ :break, /\bbreak\b/ ],
-  [ :case, /\bcase\b/ ],
-  [ :catch, /\bcatch\b/ ],
-  [ :class, /\bclass\b/ ],
-  [ :continue, /\bcontinue\b/ ],
-  [ :default, /\bdefault\b/ ],
-  [ :do, /\bdo\b/ ],
-  [ :else, /\belse\b/ ],
-  [ :enum, /\benum\b/ ],
-  [ :false, /\bfalse\b/ ],
-  [ :finally, /\bfinally\b/ ],
-  [ :for, /\bfor\b/ ],
-  [ :function, /\bfunction\b/ ],
-  [ :if, /\bif\b/ ],
-  [ :in, /\bin\b/ ],
-  [ :instanceof, /\binstanceof\b/ ],
-  [ :new, /\bnew\b/ ],
-  [ :null, /\bnull\b/ ],
-  [ :return, /\breturn\b/ ],
-  [ :super, /\bsuper\b/ ],
-  [ :switch, /\bswitch\b/ ],
-  [ :this, /\bthis\b/ ],
-  [ :throw, /\bthrow\b/ ],
-  [ :throws, /\bthrows\b/ ],
-  [ :true, /\btrue\b/ ],
-  [ :try, /\btry\b/ ],
-  [ :typeof, /\btypeof\b/ ],
-  [ :while, /\bwhile\b/ ],
-  [ :with, /\bwith\b/ ],
-  [ :yield, /\byield\b/ ],
-  [ :string, /"(\\.|[^"\\])*"/ ],
-  [ :string, /`([^`\\]|\\.)*`/ ],
-  [ :string, /'(\\.|[^'\\])*'/ ],
-  [ :open_brace, /\{/ ],
-  [ :close_brace, /}/ ],
-  [ :open_bracket, /\[/ ],
-  [ :close_bracket, /\]/ ],
-  [ :semicolon, /;/ ],
-  [ :dot, /\./ ],
-  [ :comma, /,/ ],
-  [ :const, /\bconst\b/ ],
-  [ :number, /\b\d+(\.\d+)?([eE][+-]?\d+)?\b/ ],
-  [ :open_paren, /\(/ ],
-  [ :close_paren, /\)/ ],
-  [ :add, /\+/ ],
-  [ :sub, /-/ ],
-  [ :multiply, /\*/ ],
-  [ :divide, /\// ],
-  [ :comparison, /(>=|<=|===|==|>|<)/ ],
-  [ :assignment, /=/ ],
-  [ :identifier, /[A-Za-z_][A-Za-z0-9_]*/ ]
-]
+  JS_TOKENS = [
+    [ :comment, /\/\/.*/ ],
+    [ :comment, /\/\*[\s\S]*?\*\// ],
+    [ :abstract, /\babstract\b/ ],
+    [ :break, /\bbreak\b/ ],
+    [ :case, /\bcase\b/ ],
+    [ :catch, /\bcatch\b/ ],
+    [ :class, /\bclass\b/ ],
+    [ :continue, /\bcontinue\b/ ],
+    [ :default, /\bdefault\b/ ],
+    [ :do, /\bdo\b/ ],
+    [ :else, /\belse\b/ ],
+    [ :enum, /\benum\b/ ],
+    [ :false, /\bfalse\b/ ],
+    [ :finally, /\bfinally\b/ ],
+    [ :for, /\bfor\b/ ],
+    [ :function, /\bfunction\b/ ],
+    [ :if, /\bif\b/ ],
+    [ :in, /\bin\b/ ],
+    [ :instanceof, /\binstanceof\b/ ],
+    [ :new, /\bnew\b/ ],
+    [ :null, /\bnull\b/ ],
+    [ :return, /\breturn\b/ ],
+    [ :super, /\bsuper\b/ ],
+    [ :switch, /\bswitch\b/ ],
+    [ :this, /\bthis\b/ ],
+    [ :throw, /\bthrow\b/ ],
+    [ :throws, /\bthrows\b/ ],
+    [ :true, /\btrue\b/ ],
+    [ :try, /\btry\b/ ],
+    [ :typeof, /\btypeof\b/ ],
+    [ :while, /\bwhile\b/ ],
+    [ :with, /\bwith\b/ ],
+    [ :yield, /\byield\b/ ],
+    [ :string, /"(\\.|[^"\\])*"/ ],
+    [ :string, /`([^`\\]|\\.)*`/ ],
+    [ :string, /'(\\.|[^'\\])*'/ ],
+    [ :open_brace, /\{/ ],
+    [ :close_brace, /}/ ],
+    [ :open_bracket, /\[/ ],
+    [ :close_bracket, /\]/ ],
+    [ :semicolon, /;/ ],
+    [ :dot, /\./ ],
+    [ :comma, /,/ ],
+    [ :const, /\bconst\b/ ],
+    [ :exponential, /\b(\d+(?:\.\d+)?|\.\d+)[eE][+-]?\d+\b/ ],
+    [ :float, /\b(\d+\.\d*|\.\d+)\b/ ],
+    [ :integer, /\b\d+\b/ ],
+    [ :open_paren, /\(/ ],
+    [ :close_paren, /\)/ ],
+    [ :add, /\+/ ],
+    [ :sub, /-/ ],
+    [ :multiply, /\*/ ],
+    [ :divide, /\// ],
+    [ :comparison, /(>=|<=|===|==|>|<)/ ],
+    [ :assignment, /=/ ],
+    [ :identifier, /[A-Za-z_][A-Za-z0-9_]*/ ]
+  ]
+
+  Token = Struct.new(:type, :value)
+  LANG_TOKENS = {
+    "python" => PYTHON_TOKENS,
+    "java" => JAVA_TOKENS,
+    "javascript" => JS_TOKENS
+  }
+  def initialize(path_or_code, from_file: true)
+    if from_file
+      @code = File.read path_or_code
+      @lang = case File.extname path_or_code
+      when ".py" then "python"
+      when ".java" then "java"
+      when ".js" then "javascript"
+      else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{File.extname @code}."
+      end
+    else
+      @code = path_or_code
+      identify_lang
+    end
+    @token_defs = LANG_TOKENS[@lang]
+  end
+
+  attr_reader :code, :lang
+
   def tokenize
     tokens = []
     unless @lang == "python"
@@ -260,15 +259,11 @@ JS_TOKENS = [
     values = count_list.values.sort.reverse
     # if only 1 count is the max, return the corresponding language
     unless values[1..].any? { |value| value == values[0] }
-      @lang = count_list.key(values[0])
+      @lang = count_list.key(values.fetch(0)) || raise("count_list.key returned nil at identify_lang")
       return @lang
     end
     # raise an error if multiple languages had the same count
     raise LanguageRecognitionError.new("Language could not be identified. Please confirm it to continue compilation.", count_list)
   end
 end
-
-  tokenizer = Tokenizer.new('console.log("Hello, world!")', from_file: false)
-  tokens = tokenizer.tokenize
-  puts tokens
 end
