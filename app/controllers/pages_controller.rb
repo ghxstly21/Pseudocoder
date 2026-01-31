@@ -1,7 +1,12 @@
 class PagesController < ApplicationController
   def home
-    @current_user = User.find(session[:user_id]) if session[:user_id]
+    if current_user && session[:guest_session] != true
+      @compilations = current_user.compilations.order(created_at: :desc)
+    else
+      @compilations = []
+    end
   end
+
   def contactus
   end
 
@@ -15,6 +20,6 @@ class PagesController < ApplicationController
     ContactMailer.contact_email(@first_name, @last_name, @country, @subject).deliver_now
 
     flash[:notice] = "Thank you! Your message has been sent."
-    redirect_to contactus_path
+    redirect_to contact_path
   end
 end

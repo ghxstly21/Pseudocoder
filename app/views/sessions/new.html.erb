@@ -1,141 +1,186 @@
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    .login-page-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    .login-container {
+        background: white;
+        padding: 3rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 500px;
+    }
 
-        .loginpage {
-            width: 400px;
-            background: white;
-            margin: auto;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 10px 10px lightgray;
-        }
+    .login-header {
+        font-family: 'Oswald', sans-serif;
+        color: #04AA6D;
+        font-size: 2rem;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
 
-        .container {
-            background: #334464;
-            height: 100vh;
-            display: flex;
-        }
+    .login-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+    }
 
-        .header {
-            font-family: "Atkinson Hyperlegible Next", serif;
-            font-size: 36px;
-        }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
 
-        .email1,
-        .Password1,
-        .username1 {
-            border: none;
-            border-bottom: 1px solid black;
-            width: 335px;
-            outline: none;
-            margin-bottom: 10px;
-        }
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 600;
+    }
 
-        .login1 {
-            border: none;
-            border-radius: 10px;
-            width: 90px;
-            height: 45px;
-            background: mediumblue;
-            color: white;
-            cursor: pointer;
-        }
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
 
-        .login1:hover {
-            background: blue;
-        }
+    .form-group input:focus {
+        outline: none;
+        border-color: #04AA6D;
+        box-shadow: 0 0 0 3px rgba(4, 170, 109, 0.1);
+    }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background: #222;
-            color: white;
-        }
+    .login-submit-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: #04AA6D;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
+    .login-submit-btn:hover {
+        background: #038a57;
+    }
 
-        .logo a {
-            color: chocolate;
-            text-decoration: none;
-        }
+    .login-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
 
-        .nav {
-            list-style: none;
-            display: flex;
-        }
+    .login-links p {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
 
-        .nav li {
-            margin-left: 20px;
-        }
+    .login-links a {
+        color: #04AA6D;
+        text-decoration: none;
+        font-weight: 600;
+    }
 
-        .nav a {
-            text-decoration: none;
-            color: white;
-            font-size: 18px;
-        }
+    .login-links a:hover {
+        text-decoration: underline;
+    }
 
-        .nav a:hover {
-            color: green;
-        }
+    .error-message {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+    }
 
-        .account {
-            margin-top: 10px;
-        }
-    </style>
-</head>
+    .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        color: #999;
+        font-size: 0.9rem;
+    }
 
-<body>
+    .guest-option {
+        background: #f9f9f9;
+        padding: 1rem;
+        border-radius: 6px;
+        text-align: center;
+    }
 
+    .guest-option p {
+        color: #666;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+    }
 
-    <div class="container">
-        <div class="loginpage">
-            <h2 class="header">Sign In</h2><br><br>
+    .guest-btn {
+        display: inline-block;
+        padding: 0.6rem 1.5rem;
+        background: white;
+        color: #04AA6D;
+        border: 2px solid #04AA6D;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
 
-            <% if flash[:alert] %>
-            <p style="color: red; margin-bottom: 10px;"><%= flash[:alert] %></p>
-            <% end %>
+    .guest-btn:hover {
+        background: #e8fff1;
+    }
+</style>
 
-            <%= form_with url: login_path, local: true do %>
-            <div class="email">
-                <%= label_tag :email %><br>
-                <%= email_field_tag :email, params[:email], class: "email1" %>
-            </div>
+<div class="login-page-wrapper">
+    <div class="login-container">
+        <h1 class="login-header">Sign In</h1>
+        <p class="login-subtitle">Welcome back to Pseudocoder</p>
 
-            <div class="password">
-                <%= label_tag :password %><br>
-                <%= password_field_tag :password, nil, class: "Password1" %>
-            </div>
+        <% if flash[:alert] %>
+        <div class="error-message"><%= flash[:alert] %></div>
+        <% end %>
 
-            <div class="login">
-                <%= submit_tag "Log in", class: "login1" %>
-            </div>
-            <% end %>
+        <%= form_with url: login_path, local: true do |f| %>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <%= f.email_field :email, required: true, placeholder: "your@email.com" %>
+        </div>
 
-            <div class="account">
-                <p>No account? <%= link_to "Sign up", new_user_path %></p>
-            </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <%= f.password_field :password, required: true, placeholder: "••••••••" %>
+        </div>
+
+        <%= f.submit "Sign In", class: "login-submit-btn" %>
+        <% end %>
+
+        <div class="divider">or</div>
+
+        <div class="guest-option">
+            <p>Don't have an account yet?</p>
+            <a href="<%= new_user_path %>" style="color: #04AA6D; text-decoration: none; font-weight: 600;">Create a new account</a>
+        </div>
+
+        <div class="login-links" style="border-top: none; margin-top: 1rem; padding-top: 0;">
+            <p style="color: #999; font-size: 0.85rem;">Want to try first?</p>
+            <a href="/guest_login" class="guest-btn">Continue as Guest</a>
         </div>
     </div>
-
+</div>
 </body>
 
 </html>
