@@ -1,73 +1,455 @@
-<link rel="stylesheet" href="/tailwind.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 
 <style>
-    .header {
-        font-family: Oswald;
-        font-color: 04AA6D;
-        margin: 200px;
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    }
+
+    /* Top bar */
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: #f9f9f9;
+        border-bottom: 1px solid #eee;
+    }
+
+    .top-bar-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    /* Removed dropdown styles - now in header */
+
+
+    /* Auth options */
+    .auth-options {
         text-align: center;
-
+        margin: 3rem 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
     }
 
-    .auth-links {
-        text-align: center;
-        font-family: 'Oswald', sans-serif;
-        font-size: 1.2rem;
-        color: #444;
-    }
-
-    .auth-links a {
-        color: #04AA6D;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .auth-links a:hover {
-        text-decoration: underline;
-    }
-
-    .user-name {
-        color: #04AA6D;
-        font-weight: bold;
-    }
-
-    .button {
+    .auth-button {
+        padding: 12px 24px;
+        font-size: 1rem;
         border: none;
-        outline: 0;
-        display: inline-block;
-        padding: 8px;
-        color: white;
-        background-color: #000;
-        text-align: center;
+        border-radius: 6px;
         cursor: pointer;
-        width: 100%;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-decoration: none;
     }
 
-    .button:hover {
-        background-color: #555;
+    .auth-button-primary {
+        background: #04AA6D;
+        color: white;
+    }
+
+    .auth-button-primary:hover {
+        background: #038a57;
+    }
+
+    .auth-button-secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 2px solid #04AA6D;
+    }
+
+    .auth-button-secondary:hover {
+        background: #e8fff1;
+    }
+
+    /* Header */
+    .header {
+        font-family: 'Oswald', sans-serif;
+        color: #04AA6D;
+        margin: 80px 0 40px;
+        text-align: center;
+        font-size: 2.5rem;
+    }
+
+    /* Flash notice */
+    .flash-notice {
+        background: #d1fae5;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        color: #065f46;
+        text-align: center;
+    }
+
+    /* Compilation form */
+    .compile-form {
+        background: #fafafa;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 2rem auto;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+        max-width: 800px;
+    }
+
+    .code-input {
+        width: 100%;
+        font-family: monospace;
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    .file-input {
+        margin-top: 0.75rem;
+    }
+
+    .or-divider {
+        text-align: center;
+        margin: 0.75rem 0;
+        color: #888;
+    }
+
+    .submit-btn {
+        margin-top: 0.75rem;
+        padding: 0.75rem 1.5rem;
+        background: #04AA6D;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #038a57;
+    }
+
+    .page-title {
+        font-family: 'Oswald', sans-serif;
+        color: #04AA6D;
+        text-align: center;
+        margin: 3rem 0 1.5rem;
+        font-size: 2rem;
+    }
+
+    .history-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-width: 800px;
+        margin: 0 auto 4rem;
+    }
+
+    .history-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #04AA6D;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .history-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .history-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 0.75rem;
+    }
+
+    .history-language {
+        display: inline-block;
+        background: #e8fff1;
+        color: #04AA6D;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .history-delete-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 0.35rem 0.75rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: background 0.2s;
+    }
+
+    .history-delete-btn:hover {
+        background: #dc2626;
+    }
+
+    .history-input {
+        background: #f4f4f4;
+        padding: 0.75rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin-top: 0.5rem;
+    }
+
+    .history-output {
+        background: #e8fff1;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin-top: 0.5rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: #888;
+        font-style: italic;
+    }
+
+    .contact-header {
+        font-family: 'Oswald', sans-serif;
+        color: #04AA6D;
+        text-align: center;
+        margin: 3rem 0 1rem;
+        font-size: 2.5rem;
+    }
+
+    .contact-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 3rem;
+        font-size: 1.1rem;
+    }
+
+    .contact-wrapper {
+        display: flex;
+        gap: 3rem;
+        max-width: 1200px;
+        margin: 0 auto 4rem;
+        padding: 0 2rem;
+    }
+
+    .contact-form-section {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .contact-info-section {
+        flex: 0 0 300px;
+    }
+
+    .contact-info-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #04AA6D;
+    }
+
+    .contact-info-card h3 {
+        color: #04AA6D;
+        margin: 0 0 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .contact-info-card p {
+        margin: 0;
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .form-container {
+        background: #fafafa;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #04AA6D;
+        box-shadow: 0 0 0 3px rgba(4, 170, 109, 0.1);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 150px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: #04AA6D;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #038a57;
+    }
+
+    .submit-btn:active {
+        transform: scale(0.98);
+    }
+
+    .flash-notice {
+        background: #d1fae5;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        color: #065f46;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .flash-alert {
+        background: #fee2e2;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        color: #991b1b;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .contact-wrapper {
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .contact-info-section {
+            flex: 1;
+        }
+
+        .contact-header {
+            font-size: 2rem;
+            margin: 2rem 0 1rem;
+        }
     }
 </style>
+
+<% if current_user.present? %>
+<div class="top-bar">
+    <div style="font-family: 'Oswald', sans-serif; color: #04AA6D; font-weight: bold; font-size: 1.2rem;">
+        <% if session[:guest_session] %>
+        Guest Session
+        <% else %>
+        <%= current_user.name %>
+        <% end %>
+    </div>
+    <div class="top-bar-right">
+        <% if session[:guest_session] %>
+        <form id="logout-form" action="<%= logout_path %>" method="post">
+            <input type="hidden" name="_method" value="delete">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+        </form>
+        <button onclick="document.getElementById('logout-form').submit();" class="button" style="background: #dc2626; padding: 8px 16px;">End Guest Session</button>
+        <% else %>
+        <form id="logout-form" action="<%= logout_path %>" method="post" style="display: none;">
+            <input type="hidden" name="_method" value="delete">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+        </form>
+        <% end %>
+    </div>
+</div>
 <h1 class="header">Understand all your code with ease using Psuedocoder</h1>
-<div class="auth-links">
+<% else %>
+<h1 class="header">Understand all your code with ease using Psuedocoder</h1>
+<div class="auth-options">
+    <p style="font-size: 1.1rem; color: #666; margin-bottom: 0.5rem;">Sign in to save your compilation history</p>
+    <a href="/login" class="auth-button auth-button-primary">Sign in as User</a>
+    <a href="/guest_login" class="auth-button auth-button-secondary">Continue as Guest</a>
+    <p style="color: #888; font-size: 0.9rem;">Don't have an account? <a href="/signup" style="color: #04AA6D; font-weight: 600;">Create one</a></p>
+</div>
+<% end %>
 
-    <p> Hello </p>
+<% if notice %>
+<p class="flash-notice"><%= notice %></p>
+<% end %>
 
-    <% if current_user.present? %>
-    <p>
-        <%= current_user.name%>
-    </p>
-    <% else%>
-    <p> guest </p>
+<%= form_with url: compilations_path, multipart: true, local: true do |f| %>
+<div class="compile-form">
+    <%= f.text_area :code, placeholder: "Paste code here...", rows: 8, class: "code-input" %>
 
+    <div class="or-divider">OR</div>
+
+    <%= f.file_field :file, class: "file-input" %>
+
+    <%= f.submit "Generate Pseudocode", class: "submit-btn" %>
+</div>
+<% end %>
+
+
+<h1 class="page-title">Compilation History</h1>
+
+<div class="history-container">
+    <% if current_user && @compilations.present? %>
+    <% @compilations.each do |c| %>
+    <div class="history-card">
+        <div class="history-meta">
+            <div>
+                <span class="history-language"><%= c.language %></span>
+                <span style="margin-left: 1rem; color: #999;">
+                    <%= time_ago_in_words(c.created_at) %> ago
+                </span>
+            </div>
+            <%= button_to "Delete", compilation_path(c), method: :delete, data: { confirm: "Are you sure?" }, class: "history-delete-btn" %>
+        </div>
+
+        <div>
+            <strong style="color: #666; font-size: 0.85rem;">Input:</strong>
+            <pre class="history-input"><%= truncate(c.input_text, length: 500) %></pre>
+        </div>
+
+        <div>
+            <strong style="color: #666; font-size: 0.85rem;">Pseudocode Output:</strong>
+            <pre class="history-output"><%= truncate(c.output_text, length: 500) %></pre>
+        </div>
+    </div>
     <% end %>
-
-
-    <p><a href="/login"><button class="button">Log in as user</button></a></p>
-    <p><a href="/login_guest"><button class="button">Log in as guests</button></a></p>
-
-
+    <% else %>
+    <p class="empty-state">No history yet. <% if current_user %>Run some code!<% else %>Sign in to save your compilations.<% end %></p>
+    <% end %>
 </div>

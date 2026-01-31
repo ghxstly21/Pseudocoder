@@ -1,158 +1,167 @@
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    .signup-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next&display=swap" rel="stylesheet">
+    .signup-container {
+        background: white;
+        padding: 3rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 500px;
+    }
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    .signup-header {
+        font-family: 'Oswald', sans-serif;
+        color: #04AA6D;
+        font-size: 2rem;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
 
-        .loginpage {
-            width: 400px;
-            background: white;
-            margin: auto;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 10px 10px lightgray;
-        }
+    .signup-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+    }
 
-        .container {
-            background: #334464;
-            height: 100vh;
-            display: flex;
-        }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
 
-        .header {
-            font-family: "Atkinson Hyperlegible Next", serif;
-            font-size: 36px;
-        }
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 600;
+    }
 
-        .email1,
-        .Password1 {
-            border: none;
-            border-bottom: 1px solid black;
-            width: 335px;
-            outline: none;
-            margin-bottom: 10px;
-        }
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
 
-        .login1 {
-            border: none;
-            border-radius: 10px;
-            width: 90px;
-            height: 45px;
-            background: mediumblue;
-            color: white;
-            cursor: pointer;
-        }
+    .form-group input:focus {
+        outline: none;
+        border-color: #04AA6D;
+        box-shadow: 0 0 0 3px rgba(4, 170, 109, 0.1);
+    }
 
-        .login1:hover {
-            background: blue;
-        }
+    .signup-submit-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: #04AA6D;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background: #222;
-            color: white;
-        }
+    .signup-submit-btn:hover {
+        background: #038a57;
+    }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
+    .signup-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
 
-        }
+    .signup-links p {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
 
-        .logo a {
-            color: chocolate;
-            text-decoration: none;
-        }
+    .signup-links a {
+        color: #04AA6D;
+        text-decoration: none;
+        font-weight: 600;
+    }
 
-        .nav {
-            list-style: none;
-            display: flex;
-        }
+    .signup-links a:hover {
+        text-decoration: underline;
+    }
 
-        .nav li {
-            margin-left: 20px;
-        }
+    .error-messages {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+    }
 
-        .nav a {
-            text-decoration: none;
-            color: white;
-            font-size: 18px;
-        }
+    .error-messages ul {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
 
-        .nav a:hover {
-            color: green;
-        }
+    .error-messages li {
+        margin: 0.5rem 0;
+    }
+</style>
 
-        .account {
-            margin-top: 10px;
-        }
-    </style>
-</head>
+<div class="signup-wrapper">
+    <div class="signup-container">
+        <h1 class="signup-header">Create Account</h1>
+        <p class="signup-subtitle">Join Pseudocoder today</p>
 
-<body>
+        <% if @user.errors.any? %>
+        <div class="error-messages">
+            <h3><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h3>
+            <ul>
+                <% @user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+                <% end %>
+            </ul>
+        </div>
+        <% end %>
 
+        <%= form_with model: @user, local: true do |f| %>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <%= f.text_field :name, required: true, placeholder: "Your name" %>
+        </div>
 
-    <div class="container">
-        <div class="loginpage">
-            <h2 class="header">Create Account</h2><br><br>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <%= f.email_field :email, required: true, placeholder: "your@email.com" %>
+        </div>
 
-            <% if @user.errors.any? %>
-            <div style="color: red; margin-bottom: 10px;">
-                <ul>
-                    <% @user.errors.full_messages.each do |msg| %>
-                    <li><%= msg %></li>
-                    <% end %>
-                </ul>
-            </div>
-            <% end %>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <%= f.password_field :password, required: true, placeholder: "••••••••" %>
+        </div>
 
-            <%= form_with model: @user, local: true do |f| %>
-            <div class="email">
-                <%= f.label :name %><br>
-                <%= f.text_field :name , class:"email1" %>
-            </div>
+        <div class="form-group">
+            <label for="password_confirmation">Confirm Password</label>
+            <%= f.password_field :password_confirmation, required: true, placeholder: "••••••••" %>
+        </div>
 
-            <div class=" email">
-                <%= f.label :email %><br>
-                <%= f.email_field :email, class: "email1" %>
-            </div>
+        <%= f.submit "Create Account", class: "signup-submit-btn" %>
+        <% end %>
 
-            <div class="password">
-                <%= f.label :password %><br>
-                <%= f.password_field :password, class: "Password1" %>
-            </div>
-
-            <div class="password_confirmation">
-                <%= f.label :password_confirmation %><br>
-                <%= f.password_field :password_confirmation, class: "Password1" %>
-            </div>
-
-            <div class="login">
-                <%= f.submit "Sign Up", class: "login1" %>
-            </div>
-            <% end %>
-
-            <div class="account">
-                <p>Already have an account? <%= link_to "Log in", login_path %>!</p>
-            </div>
+        <div class="signup-links">
+            <p>Already have an account?</p>
+            <a href="<%= login_path %>">Sign In</a>
         </div>
     </div>
-
+</div>
 </body>
 
 </html>
