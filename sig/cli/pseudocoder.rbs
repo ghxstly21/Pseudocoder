@@ -1,6 +1,6 @@
 SUPPORTED_LANGUAGES: array[string]
 
 class Object
-  def to_path: (string) -> string
+  def normalize_path: (string) -> string
 def is_valid?: (string) -> bool
 end
