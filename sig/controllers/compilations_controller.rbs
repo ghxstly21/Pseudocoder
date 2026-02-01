@@ -1,0 +1,3 @@
+class CompilationsController < Rails::ApplicationController
+
+end
