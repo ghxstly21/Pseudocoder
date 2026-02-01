@@ -1,8 +1,5 @@
 module Compiler
 
-
-
-
   class Tokenizer
     LANG_TOKENS: Hash[String, [[Symbol, Regexp]]]
     Token: Class
