@@ -1,5 +1,7 @@
-<h1>New Contact Form Message</h1>
-<p><strong>Name:</strong> <%= @first_name %> <%= @last_name %></p>
-<p><strong>Country:</strong> <%= @country %></p>
-<p><strong>Message:</strong></p>
-<p><%= @subject %></p>
+    <p style="margin: 8px 0;"><strong>Name:</strong> <%= @first_name %> <%= @last_name %></p>
+    <p style="margin: 8px 0;"><strong>Email:</strong> <a href="mailto:<%= @email %>"><%= @email %></a></p>
+    <p style="margin: 8px 0;"><strong>Phone:</strong> <a href="tel:<%= @phonenumber %>"><%= @phonenumber %></a></p>
+
+
+    <p style="margin: 0 0 10px 0; color: #666;"><strong>Message:</strong></p>
+    <p style="margin: 0; color: #333; line-height: 1.6;"><%= @message %></p>

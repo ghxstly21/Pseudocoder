@@ -13,11 +13,11 @@ class PagesController < ApplicationController
   def contact_submit
     @first_name = params[:firstname]
     @last_name  = params[:lastname]
-    @country    = params[:country]
+    @email    = params[:email]
+    @phonenumber    = params[:phonenumber]
     @subject    = params[:subject]
 
-
-    ContactMailer.contact_email(@first_name, @last_name, @country, @subject).deliver_now
+    ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_now
 
     flash[:notice] = "Thank you! Your message has been sent."
     redirect_to contact_path

@@ -23,7 +23,6 @@ class CompilationsController < ApplicationController
 
     language = detect_language(input_text)
 
-    # Only save for registered users, not guests
     if session[:guest_session]
       redirect_to home_path, notice: "Pseudocode generated! (Guest sessions don't save history)"
     else
@@ -51,7 +50,6 @@ class CompilationsController < ApplicationController
   end
 
   def detect_language(code)
-    # Simple language detection based on syntax
     case code
     when /\bfunction\b|\bconst\b|\blet\b|\bvar\b/
       "JavaScript"

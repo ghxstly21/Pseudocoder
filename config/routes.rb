@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   root "pages#home"
- resources :compilations, only: [ :create, :destroy ]
+  resources :compilations, only: [ :create, :destroy ]
 
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
@@ -11,6 +11,16 @@ Rails.application.routes.draw do
   get "/signup", to: "users#new", as: "signup"
 
   resources :users, only: [ :new, :create, :edit, :update ]
+
+  # Password reset routes
+  get "/forgot_password", to: "password_resets#new", as: "forgot_password"
+  post "/forgot_password", to: "password_resets#create"
+  get "/reset_password/:token", to: "password_resets#edit", as: "reset_password"
+  patch "/reset_password/:token", to: "password_resets#update"
+
+  # Email change routes
+  post "/change_email", to: "email_changes#create", as: "change_email"
+  get "/confirm_email/:token", to: "email_changes#confirm", as: "confirm_email_change"
 
   get "/home", to: "pages#home", as: "home"
   get "/aboutus", to: "pages#aboutus", as: "aboutus"
