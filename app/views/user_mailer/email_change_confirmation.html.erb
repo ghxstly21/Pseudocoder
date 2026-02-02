@@ -1,0 +1,11 @@
+<h1>Confirm Your Email Change</h1>
+
+<p>Hi <%= @user.name %>,</p>
+
+<p>You requested to change your email to: <strong><%= @new_email %></strong></p>
+
+<p>Click the link below to confirm this change:</p>
+
+<p><%= link_to "Confirm Email Change", @confirm_url %></p>
+
+<p>If you didn't request this change, please ignore this email.</p>

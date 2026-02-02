@@ -1,15 +1,14 @@
 class ContactMailer < ApplicationMailer
-  default from: "webmaster@yourdomain.com"
-
-  def contact_email(first_name, last_name, country, subject)
+  def contact_email(first_name, last_name, email, phonenumber, subject)
     @first_name = first_name
     @last_name = last_name
-    @country = country
+    @email = email
+    @phonenumber = phonenumber
     @subject = subject
 
     mail(
       to: "zalavadiyadharma@gmail.com",
-      subject: "New Form Submission: #{@first_name} #{@last_name}"
+      subject: "Customer Support Request: #{@first_name} #{@last_name}"
     )
   end
 end

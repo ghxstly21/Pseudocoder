@@ -1,0 +1,124 @@
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    }
+
+    .form-container {
+        max-width: 400px;
+        margin: 4rem auto;
+        padding: 2rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 500;
+    }
+
+    input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+        box-sizing: border-box;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #04AA6D;
+        box-shadow: 0 0 0 3px rgba(4, 170, 109, 0.1);
+    }
+
+    button {
+        width: 100%;
+        padding: 0.75rem;
+        background: #04AA6D;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    button:hover {
+        background: #038a57;
+    }
+
+    .error-message {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .field_with_errors input {
+        border-color: #dc2626;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .login-link a {
+        color: #04AA6D;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="form-container">
+    <h1>Reset Your Password</h1>
+
+    <form action="<%= reset_password_path(@user.reset_token) %>" method="POST">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <%= hidden_field_tag :_method, :patch %>
+
+        <% if @user.errors.any? %>
+        <div class="error-message">
+            <%= @user.errors.full_messages.join(", ") %>
+        </div>
+        <% end %>
+
+        <div class="form-group">
+            <label for="password">New Password *</label>
+            <input type="password" id="password" name="user[password]" required>
+            <% if @user.errors[:password].any? %>
+            <div class="error-message"><%= @user.errors[:password].join(", ") %></div>
+            <% end %>
+        </div>
+
+        <div class="form-group">
+            <label for="password_confirmation">Confirm Password *</label>
+            <input type="password" id="password_confirmation" name="user[password_confirmation]" required>
+            <% if @user.errors[:password_confirmation].any? %>
+            <div class="error-message"><%= @user.errors[:password_confirmation].join(", ") %></div>
+            <% end %>
+        </div>
+
+        <button type="submit">Reset Password</button>
+    </form>
+
+    <div class="login-link">
+        <%= link_to "Back to Login", login_path %>
+    </div>
+</div>

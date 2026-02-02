@@ -7,7 +7,6 @@
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     }
 
-    /* Top bar */
     .top-bar {
         display: flex;
         justify-content: space-between;
@@ -23,10 +22,8 @@
         gap: 1rem;
     }
 
-    /* Removed dropdown styles - now in header */
 
 
-    /* Auth options */
     .auth-options {
         text-align: center;
         margin: 3rem 0;
@@ -66,7 +63,6 @@
         background: #e8fff1;
     }
 
-    /* Header */
     .header {
         font-family: 'Oswald', sans-serif;
         color: #04AA6D;
@@ -75,7 +71,6 @@
         font-size: 2.5rem;
     }
 
-    /* Flash notice */
     .flash-notice {
         background: #d1fae5;
         padding: 0.75rem;
@@ -85,7 +80,6 @@
         text-align: center;
     }
 
-    /* Compilation form */
     .compile-form {
         background: #fafafa;
         padding: 1rem;
@@ -385,7 +379,6 @@
             <input type="hidden" name="_method" value="delete">
             <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
         </form>
-        <button onclick="document.getElementById('logout-form').submit();" class="button" style="background: #dc2626; padding: 8px 16px;">End Guest Session</button>
         <% else %>
         <form id="logout-form" action="<%= logout_path %>" method="post" style="display: none;">
             <input type="hidden" name="_method" value="delete">

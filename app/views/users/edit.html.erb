@@ -7,7 +7,7 @@
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     }
 
-    .contact-header {
+    .settings-header {
         font-family: 'Oswald', sans-serif;
         color: #04AA6D;
         text-align: center;
@@ -15,31 +15,42 @@
         font-size: 2.5rem;
     }
 
-    .contact-subtitle {
+    .settings-subtitle {
         text-align: center;
         color: #666;
         margin-bottom: 3rem;
         font-size: 1.1rem;
     }
 
-    .contact-wrapper {
+    .settings-wrapper {
         display: flex;
-        gap: 3rem;
-        max-width: 1200px;
+        flex-direction: column;
+        gap: 0;
         margin: 0 auto 4rem;
-        padding: 0 2rem;
     }
 
-    .contact-form-section {
+    .settings-form-section {
         flex: 1;
         min-width: 300px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        width: 100%;
+        box-sizing: border-box;
     }
 
-    .contact-info-section {
-        flex: 0 0 300px;
+    .settings-sidebar {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        width: 100%;
+        background: #f9f9f9;
+        padding: 3rem 2rem;
+        margin-top: 3rem;
     }
 
-    .contact-info-card {
+    .settings-card {
         background: white;
         padding: 1.5rem;
         border-radius: 10px;
@@ -48,24 +59,29 @@
         border-left: 4px solid #04AA6D;
     }
 
-    .contact-info-card h3 {
-        color: #04AA6D;
-        margin: 0 0 0.5rem;
-        font-size: 1.1rem;
+    .settings-card h3 {
+        margin-top: 0;
+        color: #333;
     }
 
-    .contact-info-card p {
-        margin: 0;
+    .settings-card p {
         color: #666;
-        font-size: 0.95rem;
-        line-height: 1.5;
+        margin-bottom: 0;
     }
 
     .form-container {
-        background: #fafafa;
+        background: white;
         padding: 2rem;
         border-radius: 10px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+
+    .form-container h2 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 1rem;
     }
 
     .form-group {
@@ -75,8 +91,8 @@
     .form-group label {
         display: block;
         margin-bottom: 0.5rem;
-        color: #333;
         font-weight: 600;
+        color: #333;
     }
 
     .form-group input,
@@ -84,7 +100,7 @@
     .form-group textarea {
         width: 100%;
         padding: 0.75rem;
-        border: 1px solid #ccc;
+        border: 1px solid #ddd;
         border-radius: 6px;
         font-size: 1rem;
         font-family: inherit;
@@ -97,11 +113,6 @@
         outline: none;
         border-color: #04AA6D;
         box-shadow: 0 0 0 3px rgba(4, 170, 109, 0.1);
-    }
-
-    .form-group textarea {
-        resize: vertical;
-        min-height: 150px;
     }
 
     .submit-btn {
@@ -121,8 +132,10 @@
         background: #038a57;
     }
 
-    .submit-btn:active {
-        transform: scale(0.98);
+    .error-message {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
     }
 
     .flash-notice {
@@ -131,8 +144,7 @@
         border-radius: 6px;
         margin-bottom: 1.5rem;
         color: #065f46;
-        text-align: center;
-        font-weight: 600;
+        border-left: 4px solid #04AA6D;
     }
 
     .flash-alert {
@@ -141,100 +153,97 @@
         border-radius: 6px;
         margin-bottom: 1.5rem;
         color: #991b1b;
-        text-align: center;
-        font-weight: 600;
+        border-left: 4px solid #dc2626;
     }
 
     @media (max-width: 768px) {
-        .contact-wrapper {
+        .settings-wrapper {
             flex-direction: column;
-            gap: 2rem;
         }
 
-        .contact-info-section {
+        .settings-sidebar {
             flex: 1;
-        }
-
-        .contact-header {
-            font-size: 2rem;
-            margin: 2rem 0 1rem;
         }
     }
 </style>
 
-<h1 class="contact-header">Get in Touch</h1>
-<p class="contact-subtitle">Have questions? We'd love to hear from you!</p>
+<h1 class="settings-header">Account Settings</h1>
+<p class="settings-subtitle">Manage your account information and security</p>
 
-<% if notice %>
-<div style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
-    <p class="flash-notice"><%= notice %></p>
-</div>
-<% end %>
+<div class="settings-wrapper">
+    <div class="settings-form-section">
+        <% if notice %>
+        <div class="flash-notice"><%= notice %></div>
+        <% end %>
+        <% if alert %>
+        <div class="flash-alert"><%= alert %></div>
+        <% end %>
 
-<% if alert %>
-<div style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
-    <p class="flash-alert"><%= alert %></p>
-</div>
-<% end %>
-
-<div class="contact-wrapper">
-    <div class="contact-form-section">
         <div class="form-container">
-            <form action="/contact_submit" method="POST">
-                <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <h2>Profile Information</h2>
+            <%= form_with url: user_path(@user), method: :patch, local: true do |f| %>
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <%= f.text_field :name, placeholder: "Enter your full name", value: @user.name %>
+                <% if @user.errors[:name].any? %>
+                <div class="error-message"><%= @user.errors[:name].join(", ") %></div>
+                <% end %>
+            </div>
 
-                <div class="form-group">
-                    <label for="firstname">First Name *</label>
-                    <input type="text" id="firstname" name="firstname" required>
-                </div>
+            <%= f.submit "Update Profile", class: "submit-btn" %>
+            <% end %>
+        </div>
 
-                <div class="form-group">
-                    <label for="lastname">Last Name *</label>
-                    <input type="text" id="lastname" name="lastname" required>
-                </div>
+        <div class="form-container">
+            <h2>Change Email</h2>
+            <p style="color: #666; margin-bottom: 1.5rem;">Current Email: <strong><%= @user.email %></strong></p>
 
-                <div class="form-group">
-                    <label for="country">Country *</label>
-                    <select id="country" name="country" required>
-                        <option value="">-- Select a country --</option>
-                        <option value="australia">Australia</option>
-                        <option value="canada">Canada</option>
-                        <option value="usa">USA</option>
-                        <option value="uk">United Kingdom</option>
-                        <option value="india">India</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
+            <% if @user.pending_email.present? %>
+            <div class="flash-notice">
+                Confirmation email sent to <strong><%= @user.pending_email %></strong>. Please check your inbox.
+            </div>
+            <% end %>
 
-                <div class="form-group">
-                    <label for="subject">Message *</label>
-                    <textarea id="subject" name="subject" required></textarea>
-                </div>
+            <%= form_with url: change_email_path, method: :post, local: true do |f| %>
+            <div class="form-group">
+                <label for="new_email">New Email Address</label>
+                <input type="email" id="new_email" name="new_email" placeholder="Enter your new email address" required>
+            </div>
 
-                <button type="submit" class="submit-btn">Send Message</button>
-            </form>
+            <%= f.submit "Change Email", class: "submit-btn" %>
+            <% end %>
+        </div>
+
+        <div class="form-container">
+            <h2>Change Password</h2>
+            <%= form_with url: user_path(@user), method: :patch, local: true do |f| %>
+            <div class="form-group">
+                <label for="current_password">Current Password</label>
+                <input type="password" id="current_password" name="user[current_password]" placeholder="Enter your current password" required>
+                <% if @user.errors[:current_password].any? %>
+                <div class="error-message"><%= @user.errors[:current_password].join(", ") %></div>
+                <% end %>
+            </div>
+
+            <div class="form-group">
+                <label for="password">New Password</label>
+                <input type="password" id="password" name="user[password]" placeholder="Enter a new password (minimum 6 characters)" required>
+                <% if @user.errors[:password].any? %>
+                <div class="error-message"><%= @user.errors[:password].join(", ") %></div>
+                <% end %>
+            </div>
+
+            <div class="form-group">
+                <label for="password_confirmation">Confirm New Password</label>
+                <input type="password" id="password_confirmation" name="user[password_confirmation]" placeholder="Confirm your new password" required>
+                <% if @user.errors[:password_confirmation].any? %>
+                <div class="error-message"><%= @user.errors[:password_confirmation].join(", ") %></div>
+                <% end %>
+            </div>
+
+            <%= f.submit "Update Password", class: "submit-btn" %>
+            <% end %>
         </div>
     </div>
-
-    <div class="contact-info-section">
-        <div class="contact-info-card">
-            <h3>📧 Email</h3>
-            <p><a href="mailto:support@pseudocoder.com" style="color: #04AA6D; text-decoration: none;">support@pseudocoder.com</a></p>
-        </div>
-
-        <div class="contact-info-card">
-            <h3>🌐 Social</h3>
-            <p>Follow us on social media for updates and tips</p>
-        </div>
-
-        <div class="contact-info-card">
-            <h3>⏱️ Response Time</h3>
-            <p>We typically respond within 24-48 hours during business days</p>
-        </div>
-
-        <div class="contact-info-card">
-            <h3>🚀 Quick Links</h3>
-            <p><a href="<%= home_path %>" style="color: #04AA6D; text-decoration: none; font-weight: 600;">Back to Compiler</a></p>
-        </div>
+    <div class="buff">
     </div>
-</div>
