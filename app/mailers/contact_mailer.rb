@@ -6,9 +6,11 @@ class ContactMailer < ApplicationMailer
     @phonenumber = phonenumber
     @subject = subject
 
-    mail(
-      to: "zalavadiyadharma@gmail.com",
-      subject: "Customer Support Request: #{@first_name} #{@last_name}"
-    )
+mail(
+  from: @email,
+  to: "theofficialpseudocoder@gmail.com",
+  subject: "Customer Support Request: #{@first_name} #{@last_name}",
+  reply_to: @email
+)
   end
 end

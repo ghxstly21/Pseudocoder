@@ -1,4 +1,3 @@
-# app/controllers/application_controller.rb
 require "ostruct"
 
 class ApplicationController < ActionController::Base
@@ -6,7 +5,6 @@ class ApplicationController < ActionController::Base
 
   def current_user
     if session[:guest_session]
-      # Return a guest user object
       @current_user = OpenStruct.new(
         id: nil,
         name: session[:guest_name] || "Guest",
@@ -23,5 +21,9 @@ class ApplicationController < ActionController::Base
 
   def require_login
     redirect_to root_path, alert: "You must log in first" unless logged_in?
+  end
+
+  def authenticate_user!
+    redirect_to login_path, alert: "You must log in first" unless current_user.present?
   end
 end
