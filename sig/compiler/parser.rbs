@@ -1,72 +1,26 @@
 module Compiler
   class Parser
 
-    FunctionNode: Class
-
-    class FunctionNode
-      attr_accessor name: String
-      attr_accessor arg_names: [String]
-      attr_accessor body: String
-
-      def initialize: (String name, [String], String) -> void
-    end
-
-    IntegerNode: Class
-
-    class IntegerNode
-      attr_accessor value: Integer
-      def initialize: (Integer) -> void
-    end
-
-    FloatNode: Class
-
-    class FloatNode
-      attr_accessor value: Float
-      def initialize: (Float) -> void
-    end
-
-    ExponentialNode: Class
-
-    class ExponentialNode
-      attr_accessor value: Float
-      def initialize: (Float) -> void
-    end
-
-    @tokens: [Token]
+    @tokens: [Tokenizer::Token]
     @lang: String
 
-    def initialize: ([Token], String) -> void
+    def initialize: ([Tokenizer::Token], String) -> void
 
-    CallNode: Class
-
-    class CallNode
-      attr_accessor name: String
-      attr_accessor arg_exprs: [String]
-      def initialize: (String, [String]) -> void
-    end
-
-    VarRefNode: Class
-
-    class VarRefNode
-      attr_accessor value: String
-      def initialize: (String) -> void
-    end
-
-    def parse: -> FunctionNode
+    def parse: -> ProgramNode
 
     private
 
-    def parse_expr: -> (ExponentialNode | FloatNode | IntegerNode | CallNode | VarRefNode)
+    def parse_expr: -> ExpressionNode
 
-    def parse_python: -> FunctionNode
+    def parse_python: -> Array[ASTNode]
 
-    def parse_java: -> FunctionNode
+    def parse_java: -> Array[ASTNode]
 
-    def parse_js: -> FunctionNode
+    def parse_js: -> Array[ASTNode]
 
     def parse_def: -> FunctionNode
 
-    def parse_number: -> (ExponentialNode | FloatNode | IntegerNode)
+    def parse_number: -> NumberNode
     
     def parse_call: -> CallNode
 
@@ -80,7 +34,7 @@ module Compiler
 
     def peek_type: (?Integer) -> Symbol
 
-    def consume!: (Symbol) -> Token
+    def consume!: (Symbol) -> Tokenizer::Token
   end
 
 end

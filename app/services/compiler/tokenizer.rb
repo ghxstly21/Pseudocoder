@@ -169,15 +169,18 @@ class Tokenizer
     [ :identifier, /[A-Za-z_][A-Za-z0-9_]*/ ]
   ]
 
-  Token = Struct.new(:type, :value)
+  Location = Struct.new(:line, :column, :length)
+  Token = Struct.new(:type, :value, :location)
+
   LANG_TOKENS = {
     "python" => PYTHON_TOKENS,
     "java" => JAVA_TOKENS,
     "javascript" => JS_TOKENS
   }
+
   def initialize(path_or_code, from_file: true)
     if from_file
-      @code = File.read path_or_code
+      @code = File.read(path_or_code)
       @lang = case File.extname path_or_code
       when ".py" then "python"
       when ".java" then "java"
@@ -188,53 +191,53 @@ class Tokenizer
       @code = path_or_code
       identify_lang
     end
+    @code = @code.gsub("\r\n", "\n").gsub("\r", "\n")
     @token_defs = LANG_TOKENS[@lang]
+    @line = 1
+    @position = 1
   end
 
   attr_reader :code, :lang
 
   def tokenize
     tokens = []
-    unless @lang == "python"
-      until @code.empty?
-        token = tokenize_single
-        @code = @code.strip
-        tokens << token unless token.type == :comment
+    whitespace = /\A\s+/
+    until @code.empty?
+      if (match = @code.match(whitespace))
+        match = match[0]
+        match.each_char do |char|
+          if char == "\n"
+            @line += 1
+            @position = 1
+          else
+            @position += 1
+          end
+        end
+        @code.delete_prefix! match
       end
-      return tokens
+      token = tokenize_single
+      tokens << token unless token.type == :comment
     end
-     until @code.empty?
-       # more explicit whitespace handling for python
-       if @code.start_with?(" ") || @code.start_with?("\n") || @code.start_with?("\r")
-         @code = @code.lstrip  # remove them
-         next                  # don't recognize them as a token
-       end
-       begin
-         token = tokenize_single
-         tokens << token
-       rescue TokenError => e
-         puts "ERROR: Tokenization failed. #{e.message}"
-         raise e # Tokenization failure
-       end
-       @code = @code.strip
-     end
     tokens
   end
 
   private
+
   def tokenize_single
-    @token_defs.each do |type, regex|
-      if (match = @code.match(/\A#{regex}/)) # assign match, check if truthy
-        value = match[0] # matched text
-        @code.delete_prefix!(value) # cut off the token from @code
-        return Token.new(type, value)
+    match = nil
+    token_def =
+      @token_defs.find do |_, regexp|
+        match = @code.match(/\A#{regexp}/)
       end
-    end
-    raise TokenError, "Unrecognized token: #{@code.inspect}" # token error
+    raise TokenError, "Unrecognized token on #{@code.inspect}" unless token_def && match
+    value = match[0]
+    @code.delete_prefix! value
+    @position += value.length
+    Token.new(token_def[0], value, Location.new(@line, @position, value.length)) # why is value.length no method error
   end
 
 
-  # Sets lang to the language of the file, and then returns it.
+  # Sets lang to the language in the file and then returns it.
   def identify_lang
     py_regexes = PYTHON_TOKENS.map { |pair| pair[1] }.to_set
     java_regexes = JAVA_TOKENS.map { |pair| pair[1] }.to_set
@@ -263,7 +266,7 @@ class Tokenizer
       return @lang
     end
     # raise an error if multiple languages had the same count
-    raise LanguageRecognitionError.new("Language could not be identified. Please confirm it to continue compilation.", count_list)
+    raise LanguageRecognitionError.new("Language could not be identified.")
   end
 end
 end

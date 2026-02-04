@@ -40,12 +40,12 @@ when "1"
   end
   puts "File is valid!\nCompiling..."
 
-  elapsed = Compiler.time { pseudocode = Compiler.compile_file file }
+  elapsed = Compiler.time { pseudocode = Compiler.compile file }
 
 when "2"
   puts "Paste your code below:"
   code = gets.chomp
-  elapsed = Compiler.time { pseudocode = Compiler.compile_text code }
+  elapsed = Compiler.time { pseudocode = Compiler.compile(code, from_file: false) }
 else
   raise "Unexpected input: #{input.inspect}.\nExpected '1' or '2'."
 end

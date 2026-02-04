@@ -1,0 +1,11 @@
+module Compiler
+  class Generator
+    @lang: String
+
+    attr_reader ast: Parser::ExponentialNode | Parser::FloatNode | Parser::IntegerNode | Parser::CallNode | Parser::VarRefNode
+
+    def initialize: (Parser::ExponentialNode | Parser::FloatNode | Parser::IntegerNode | Parser::CallNode | Parser::VarRefNode, String) -> void
+
+    def generate: (Parser::ExponentialNode | Parser::FloatNode | Parser::IntegerNode | Parser::CallNode | Parser::VarRefNode) -> String
+end
+end
