@@ -37,6 +37,13 @@
         padding: 0 16px;
     }
 
+    .container p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #555;
+        margin: 8px 0;
+    }
+
     .container::after,
     .row::after {
         content: "";
@@ -49,6 +56,8 @@
     }
 
     .button {
+        margin-top: 30px;
+
         border: none;
         outline: 0;
         display: inline-block;
@@ -78,11 +87,17 @@
         display: block;
         margin: 0 auto;
         border-radius: 8px;
+        margin-bottom: 10px;
     }
 
     a {
         text-decoration: none;
         color: inherit;
+    }
+
+    .row h2 {
+        clear: both;
+        width: 100%;
     }
 </style>
 
@@ -93,15 +108,15 @@
     <p>Mid-year project created by BCA students.</p>
 </div>
 
-<h2 style="text-align:center">Our Team</h2>
+<h2 style="text-align:center">Development Team</h2>
 <div class="row">
     <div class="column">
         <div class="card">
-            <img src="<%= image_path('miguelfacefinal.jpg') %>" alt="Miguel Taveras" style="width:100%">
+            <img src="<%= image_path('miguelface.png') %>" alt="Miguel Taveras" style="width:100%">
             <div class="container">
                 <h2>Miguel Taveras</h2>
                 <p class="title">Developer</p>
-                <p>ATCS sophomore at BCA. Big ruby nerd and loves playing roblox.</p>
+                <p>Mr. Miguel Taveras is a student in the Academy for Technology and Computer Science (ATCS) at Bergen County Academies. A dedicated Ruby enthusiast, he focuses on leveraging elegant syntax to build efficient software engineering solutions. One fun fact about him is that he is a power user on Roblox, often exploring the platform's game mechanics when he isn't refining his latest codebase.</p>
                 <p>migtav28@bergen.org</p>
                 <p><a href="mailto:migtav@bergen.org"><button class="button">Contact</button></a></p>
             </div>
@@ -114,13 +129,54 @@
             <div class="container">
                 <h2>Dharma Zalavadiya</h2>
                 <p class="title">Developer</p>
-                <p>ATCS sophomore at BCA. Co founded tesla, nike and addidas. The best there ever is.</p>
+                <p>Mr. Dharma Zalavadiya is a student in the Academy for Technology and Computer Science (ATCS) at Bergen County Academies. A visionary entrepreneur and innovator, he is widely recognized for his foundational role as the co-founder of Tesla, Nike, and Adidas. Frequently cited as "the best there ever is," Dharma balances his global industrial legacy with his current academic pursuits in Hackensack, NJ.</p>
                 <p>dhazal28@bergen.org</p>
                 <p><a href="mailto:dhazal28@bergen.org"><button class="button">Contact</button></a></p>
 
             </div>
         </div>
     </div>
+    <h2 style="text-align:center">Investment Team</h2>
+    <div class=" column">
+        <div class="card">
+            <img src="<%= image_path('ryan.jpg') %>" alt="Mike" style="width:100%">
+            <div class="container">
+                <h2>Ryan Ortellado</h2>
+                <p class="title">Investor</p>
+                <p>Mr. Ortellado is the CEO and Founder of Banking.com and a great investor to Psuedocodoer. He funded our deployment of the compilor. One fun fact about him is that he loves money and playing roblox.</p>
+                <p>ryaort28@bergen.org</p>
+                <p><a href="mailto:ryaort28@bergen.org"><button class="button">Contact</button></a></p>
+
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="card">
+            <img src="<%= image_path('samuel.jpeg') %>" alt="Mike" style="width:100%">
+            <div class="container">
+                <h2>Samuel Basil</h2>
+                <p class="title">Investor</p>
+                <p>Mr. Basil is the Chief Visionary of Starlight.io and a cornerstone investor for OpenSourceDev. He personally bankrolled our latest server expansion. One fun fact about him is that he exclusively drinks espresso while speedrunning Minecraft.</p>
+                <p>sambas28@bergen.org</p>
+                <p><a href="mailto:sambas28@bergen.org"><button class="button">Contact</button></a></p>
+
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="card">
+            <img src="<%= image_path('nanami.jpeg') %>" alt="Mike" style="width:100%">
+            <div class="container">
+                <h2>Nanami Ishihara</h2>
+                <p class="title">Investor</p>
+                <p>Dr. Nanami is the Lead Architect at NebulaNet.com and a pivotal advisor for CodeSpark. She was the primary sponsor for our recent API integration. One fun fact about her is that she collects vintage typewriters and once spent an entire weekend attempting to teach her cat how to code in Python.</p>
+                <p>nanish28@bergen.org</p>
+                <p><a href="mailto:nanish28@bergen.org"><button class="button">Contact</button></a></p>
+
+            </div>
+        </div>
+    </div>
+
 
 
 </div>

@@ -50,7 +50,7 @@ class UsersController < ApplicationController
   end
 
   def update_password?
-    params[:user][:password].present? || params[:user][:password_confirmation].present?
+    params.dig(:user, :password).present? || params.dig(:user, :password_confirmation).present?
   end
 
   def user_params
