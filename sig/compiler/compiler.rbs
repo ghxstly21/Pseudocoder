@@ -2,9 +2,6 @@ module Compiler
 
   def self.compile: (String, ?from_file: bool) -> String
 
-  def self.compile_file: (String) -> String
-
-  def self.compile_text: (String) -> String
-
   def self.time: { () -> void } -> float
+
 end
