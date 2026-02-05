@@ -182,7 +182,7 @@ class Tokenizer
     raise Errno::ENOENT, "File upload failed." unless path_or_code.respond_to?(:read) && from_file
     if from_file
       @code = File.read(path_or_code)
-      @lang = case File.extname path_or_code
+      @lang = case File.extname(path_or_code.original_filename)
       when ".py" then "python"
       when ".java" then "java"
       when ".js" then "javascript"
