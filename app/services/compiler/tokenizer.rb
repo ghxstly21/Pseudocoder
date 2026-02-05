@@ -179,6 +179,7 @@ class Tokenizer
   }
 
   def initialize(path_or_code, from_file: true)
+    raise Errno::ENOENT, "File upload failed." unless path_or_code.respond_to?(:read) && from_file
     if from_file
       @code = File.read(path_or_code)
       @lang = case File.extname path_or_code
