@@ -402,6 +402,17 @@
 <p class="flash-notice"><%= notice %></p>
 <% end %>
 
+<% if flash[:alert] %>
+<p class="flash-alert"><%= flash[:alert] %></p>
+<% end %>
+
+<% if flash[:pseudocode_output] %>
+<div style="max-width: 800px; margin: 2rem auto; background: #e8fff1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #04AA6D;">
+    <h3 style="color: #04AA6D; margin-top: 0;">Generated Pseudocode:</h3>
+    <pre style="background: white; padding: 1rem; border-radius: 6px; overflow-x: auto; font-family: monospace;"><%= flash[:pseudocode_output] %></pre>
+</div>
+<% end %>
+
 <%= form_with url: compilations_path, multipart: true, local: true do |f| %>
 <div class="compile-form">
     <%= f.text_area :code, placeholder: "Paste code here...", rows: 8, class: "code-input" %>
