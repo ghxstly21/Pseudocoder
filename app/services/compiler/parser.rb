@@ -40,22 +40,54 @@ module Compiler
       end
       nodes
     end
+
+    def parse_conditional
+      condition_type = peek_type
+
+      case condition_type
+      when :if then parse_if
+      when :else then parse_else
+      when :while then parse_while
+      else raise "Currently unsupported conditional at #{consume!(condition_type).location}"
+      end
+    end
+
+    def parse_binary_expr
+      consume!(peek_type) if peek_type == :open_paren
+      left = parse_expr
+      if [:and, :or, :comparison].include?(peek_type)
+        condition = consume!(peek_type).value
+      else
+        raise SyntaxError, "Line: #{left.location.line}\nExpected logical operator after left expression."
+      end
+      right = parse_expr
+      consume!(:close_paren) if peek_type == :close_paren
+      BinaryExprNode.new(left, condition, right, LocationRange.new(left.location.start_loc, right.location.end_loc))
+      end
+
+    def parse_if
+      condition = parse_binary_expr
+
+    end
+
     def parse_def
       case @lang
+
       when "python"
-        then
+
       when "java"
-        then
+
       when "javascript"
-      then
                     # function foo(arg1, arg2) {body}
                     consume!(:function)
                     token = consume!(:identifier)
                     name = token.value
                     arg_names = parse_args
-                    body = parse_expr
+                    consume!(:open_brace)
+                    body = peek?(:close_brace) ? ExpressionNode.new(consume!(:close_brace).location) : parse_expr
+                    consume!(:close_brace) if peek_type == :close_brace
                     FunctionNode.new(name, arg_names, body, token.location)
-      else raise LanguageRecognitionError, "parse_def expected a valid language, got #{@lang}."
+      else raise UnsupportedLanguageError, "parse_def expected a valid language, got #{@lang}."
       end
       end
     def parse_args
@@ -72,7 +104,6 @@ module Compiler
       args
       end
     def parse_expr
-      consume!(:open_brace)
       if [ :exponential, :float, :integer ].include? peek_type
         body = parse_number
       elsif peek?(:identifier) && peek?(:open_paren, 1)
@@ -80,7 +111,6 @@ module Compiler
       else
         body = parse_var_ref
       end
-      consume!(:close_brace)
       body
       end
 
@@ -142,5 +172,6 @@ module Compiler
     def peek_type(offset = 0)
       @tokens.fetch(offset).type
     end
+
   end
 end

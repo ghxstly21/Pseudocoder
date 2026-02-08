@@ -1,4 +1,13 @@
 module Compiler
+  class LocationRange
+    attr_accessor :start_loc, :end_loc
+    def initialize(start_loc, end_loc)
+      @start_loc = start_loc
+      end_loc.column += end_loc.length
+      @end_loc = end_loc
+    end
+  end
+
 class ASTNode
 attr_reader :location
 def initialize(location)
@@ -21,6 +30,18 @@ def initialize(name, arg_names, body, location)
   @arg_names = arg_names
   @body = body
 end
+end
+
+class BinaryExprNode < ASTNode
+  attr_accessor :left, :operator, :right
+
+  def initialize(left, operator, right, location)
+    super location
+    @left = left
+    @operator = operator
+    @right = right
+  end
+
 end
 
 class ExpressionNode < ASTNode

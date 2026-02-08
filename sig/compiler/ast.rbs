@@ -1,8 +1,15 @@
 module Compiler
 
+  class LocationRange
+    attr_accessor start_loc: Tokenizer::Location
+    attr_accessor end_loc: Tokenizer::Location
+
+    def initialize: (Tokenizer::Location, Tokenizer::Location) -> void
+  end
+
   class ASTNode
-    attr_reader location: Tokenizer::Location
-    def initialize: (Tokenizer::Location) -> void
+    attr_reader location: LocationRange
+    def initialize: (LocationRange) -> void
   end
 
   class ProgramNode
@@ -15,15 +22,24 @@ module Compiler
     attr_accessor arg_names: Array[String]
     attr_accessor body: ExpressionNode
 
-    def initialize: (String, Array[String], ExpressionNode, Tokenizer::Location) -> void
+    def initialize: (String, Array[String], ExpressionNode, LocationRange) -> void
+  end
+
+  class BinaryExprNode < ASTNode
+    attr_accessor left: ExpressionNode
+    attr_accessor operator: String
+    attr_accessor right: ExpressionNode
+
+    def initialize: (ExpressionNode, String, ExpressionNode, LocationRange) -> void
   end
 
   class ExpressionNode < ASTNode
+    def initialize: (LocationRange) -> void
   end
 
   class NumberNode < ExpressionNode
     attr_accessor value: Integer | Float
-    def initialize: (Integer | Float, Tokenizer::Location) -> void
+    def initialize: (Integer | Float, LocationRange) -> void
   end
 
   class IntegerNode < NumberNode
@@ -42,12 +58,12 @@ module Compiler
     attr_accessor name: String
     attr_accessor arg_exprs: Array[String]
 
-    def initialize: (String, Array[String], Tokenizer::Location) -> void
+    def initialize: (String, Array[String], LocationRange) -> void
   end
 
   class VarRefNode < ExpressionNode
     attr_accessor value: String
-    def initialize: (String, Tokenizer::Location) -> void
+    def initialize: (String, LocationRange) -> void
   end
 
 end
