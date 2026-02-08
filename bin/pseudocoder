@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require_relative("../app/services/compiler/compiler.rb")
 
 SUPPORTED_LANGUAGES = %w[.java .js .py]
@@ -45,7 +47,7 @@ when "1"
 
 when "2"
   puts "Paste your code below:"
-  code = gets.chomp
+  code = STDIN.read
   elapsed = Compiler.time { pseudocode = Compiler.compile(code, from_file: false) }
 else
   raise "Unexpected input: #{input.inspect}.\nExpected '1' or '2'."
