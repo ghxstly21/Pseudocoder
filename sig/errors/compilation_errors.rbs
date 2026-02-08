@@ -1,0 +1,13 @@
+module Compiler
+  class LanguageRecognitionError < StandardError
+  end
+
+  class UnsupportedLanguageError < StandardError
+  end
+
+  class TokenError < StandardError
+  end
+
+  class SyntaxError < StandardError
+  end
+end

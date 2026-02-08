@@ -113,7 +113,6 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
-    ffi (1.17.3)
     ffi (1.17.3-arm64-darwin)
     ffi (1.17.3-x64-mingw-ucrt)
     ffi (1.17.3-x86_64-linux-gnu)
@@ -168,7 +167,6 @@ GEM
     marcel (1.1.0)
     matrix (0.4.3)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.9)
     minitest (6.0.1)
       prism (~> 1.5)
     msgpack (1.8.0)
@@ -188,9 +186,6 @@ GEM
       net-protocol
     net-ssh (7.3.0)
     nio4r (2.7.5)
-    nokogiri (1.19.0)
-      mini_portile2 (~> 2.8.2)
-      racc (~> 1.4)
     nokogiri (1.19.0-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.19.0-x64-mingw-ucrt)
@@ -337,8 +332,6 @@ GEM
       fugit (~> 1.11)
       railties (>= 7.1)
       thor (>= 1.3.1)
-    sqlite3 (2.9.0)
-      mini_portile2 (~> 2.8.0)
     sqlite3 (2.9.0-arm64-darwin)
     sqlite3 (2.9.0-x64-mingw-ucrt)
     sqlite3 (2.9.0-x86_64-linux-gnu)
@@ -373,7 +366,6 @@ GEM
     tailwindcss-rails (4.4.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
-    tailwindcss-ruby (4.1.18)
     tailwindcss-ruby (4.1.18-arm64-darwin)
     tailwindcss-ruby (4.1.18-x64-mingw-ucrt)
     tailwindcss-ruby (4.1.18-x86_64-linux-gnu)
@@ -413,7 +405,6 @@ GEM
 
 PLATFORMS
   arm64-darwin-25
-  ruby
   x64-mingw-ucrt
   x86_64-linux
 
