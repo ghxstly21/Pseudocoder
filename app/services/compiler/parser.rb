@@ -1,7 +1,8 @@
+require_relative "ast"
+require_relative "../../errors/UnsupportedLanguageError"
+require_relative "../../errors/SyntaxError"
+
 module Compiler
-  require_relative "ast"
-  require_relative "../../errors/UnsupportedLanguageError"
-  require_relative "../../errors/SyntaxError"
   class Parser # Goal: Produce a tree of nodes with 3 parts
     # Ex:
     # DEF/FUNCTION_NODE

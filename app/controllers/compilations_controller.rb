@@ -20,7 +20,7 @@ class CompilationsController < ApplicationController
         input_text = params[:code]
         output_text = nil
 
-        time = Compiler.time { output_text = Compiler.compile(input_text, from_file: false)}
+        time = Compiler.time { output_text = Compiler.compile(input_text, from_file: false) }
         input_type = "code"
       else
         redirect_to root_path, alert: "Please provide code or upload a file" and return

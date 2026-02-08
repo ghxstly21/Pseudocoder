@@ -1,9 +1,9 @@
-module Compiler
-  require "set"
-  require_relative "../../errors/UnsupportedLanguageError"
-  require_relative "../../errors/LanguageRecognitionError"
-  require_relative "../../errors/TokenError"
+require "set"
+require_relative "../../errors/UnsupportedLanguageError"
+require_relative "../../errors/LanguageRecognitionError"
+require_relative "../../errors/TokenError"
 
+module Compiler
 class Tokenizer
   PYTHON_TOKENS = [
     [ :and, /\band\b/ ],
@@ -179,14 +179,21 @@ class Tokenizer
   }
 
   def initialize(path_or_code, from_file: true)
-    raise Errno::ENOENT, "File upload failed." unless path_or_code.respond_to?(:read) && from_file
     if from_file
-      @code = File.read(path_or_code)
-      @lang = case File.extname(path_or_code.original_filename)
+      if path_or_code.is_a?(String) && File.exist?(path_or_code)
+        @code = File.read(path_or_code)
+        ext = File.extname(path_or_code)
+      elsif path_or_code.respond_to?(:read)
+        @code = path_or_code.read
+        ext = File.extname(path_or_code.respond_to?(:original_filename) ? path_or_code.original_filename : path_or_code.path)
+      else
+        raise Errno::ENOENT, "Invalid file upload. Please try again!"
+      end
+      @lang = case ext
       when ".py" then "python"
       when ".java" then "java"
       when ".js" then "javascript"
-      else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{File.extname @code}."
+      else raise UnsupportedLanguageError, "Expected a .java, .js, or .py file but got #{ext}."
       end
     else
       @code = path_or_code
@@ -234,7 +241,7 @@ class Tokenizer
     value = match[0]
     @code.delete_prefix! value
     @position += value.length
-    Token.new(token_def[0], value, Location.new(@line, @position, value.length)) # why is value.length no method error
+    Token.new(token_def[0], value, Location.new(@line, @position, value.length))
   end
 
 

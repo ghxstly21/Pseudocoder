@@ -2,6 +2,7 @@ require_relative("../app/services/compiler/compiler.rb")
 
 SUPPORTED_LANGUAGES = %w[.java .js .py]
 pseudocode = nil
+language = nil
 
 def normalize_path(path)
   path.strip!
@@ -50,5 +51,5 @@ else
   raise "Unexpected input: #{input.inspect}.\nExpected '1' or '2'."
 end
 
-puts "Finished compiling in #{elapsed} seconds.\nYour file in pseudocode:"
+puts "Finished compiling in #{elapsed} seconds."
 puts pseudocode
