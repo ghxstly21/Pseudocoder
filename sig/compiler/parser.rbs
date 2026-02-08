@@ -10,6 +10,8 @@ module Compiler
 
     private
 
+    def parse_binary_expr: -> BinaryExprNode
+
     def parse_expr: -> ExpressionNode
 
     def parse_python: -> Array[ASTNode]
