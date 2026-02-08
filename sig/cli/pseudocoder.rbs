@@ -1,4 +1,4 @@
-SUPPORTED_LANGUAGES: array[string]
+SUPPORTED_LANGUAGES: Array[string]
 
 class Object
   def normalize_path: (string) -> string
