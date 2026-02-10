@@ -3,7 +3,6 @@ module Compiler
     attr_accessor :start_loc, :end_loc
     def initialize(start_loc, end_loc)
       @start_loc = start_loc
-      end_loc.column += end_loc.length
       @end_loc = end_loc
     end
   end
@@ -32,7 +31,7 @@ def initialize(name, arg_names, body, location)
 end
 end
 
-class BinaryExprNode < ASTNode
+class BinaryExprNode < ExpressionNode
   attr_accessor :left, :operator, :right
 
   def initialize(left, operator, right, location)
@@ -41,8 +40,53 @@ class BinaryExprNode < ASTNode
     @operator = operator
     @right = right
   end
-
 end
+
+  class StatementNode < ASTNode
+  end
+
+  class ContinueNode < StatementNode
+    attr_accessor :value
+    def initialize(value, location)
+      super location
+      @value = value
+    end
+  end
+
+  class BreakNode < StatementNode
+    attr_accessor :value
+    def initialize(value, location)
+      super location
+      @value = value
+    end
+  end
+
+  class ConditionalNode < StatementNode
+    attr_accessor :condition, :body
+    def initialize(condition, body, location)
+      super location
+      @condition = condition
+      @body = body
+    end
+  end
+
+  class IfNode < ConditionalNode
+    attr_accessor :else_body
+    def initialize(condition, body, location, else_body = nil)
+      super(condition, body, location)
+      @else_body = else_body
+    end
+  end
+
+  class WhileNode < ASTNode
+    attr_accessor :condition, :body
+
+    def initialize
+      super location
+      @condition = condition
+      @body = body
+    end
+  end
 
 class ExpressionNode < ASTNode
 end
