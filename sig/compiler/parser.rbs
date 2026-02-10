@@ -10,7 +10,13 @@ module Compiler
 
     private
 
-    def parse_binary_expr: -> BinaryExprNode
+    def parse_binary_expr: (?float) -> ExpressionNode
+
+    def parse_if: -> IfNode
+
+    def parse_else: -> (IfNode | Array[ExpressionNode])
+
+    def binding_power: (String) -> [Integer]
 
     def parse_expr: -> ExpressionNode
 
@@ -36,7 +42,11 @@ module Compiler
 
     def peek_type: (?Integer) -> Symbol
 
+    def peek_token: (?Integer) -> Tokenizer::Token
+
     def consume!: (Symbol) -> Tokenizer::Token
+
+    def loc_range: (Tokenizer::Location, Tokenizer::Location) -> LocationRange
   end
 
 end

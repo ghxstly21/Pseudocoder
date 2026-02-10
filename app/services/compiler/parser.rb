@@ -34,8 +34,11 @@ module Compiler
     def parse_js
       nodes = []
       until @tokens.empty?
-        if peek?(:function)
+        case peek_type
+        when :function
           nodes << parse_def
+        when :if, :else, :while
+          parse_conditional
         end
       end
       nodes
@@ -46,28 +49,126 @@ module Compiler
 
       case condition_type
       when :if then parse_if
-      when :else then parse_else
+      when :else then raise("Line #{peek_token.location.line}, Column #{peek_token.location.column}\nFound 'else' with no matching 'if'.")
       when :while then parse_while
       else raise "Currently unsupported conditional at #{consume!(condition_type).location}"
       end
     end
 
-    def parse_binary_expr
-      consume!(peek_type) if peek_type == :open_paren
-      left = parse_expr
-      if [:and, :or, :comparison].include?(peek_type)
-        condition = consume!(peek_type).value
-      else
-        raise SyntaxError, "Line: #{left.location.line}\nExpected logical operator after left expression."
-      end
-      right = parse_expr
-      consume!(:close_paren) if peek_type == :close_paren
-      BinaryExprNode.new(left, condition, right, LocationRange.new(left.location.start_loc, right.location.end_loc))
-      end
-
     def parse_if
-      condition = parse_binary_expr
+      body = []
+      if_start = consume!(:if).location
+    condition = parse_binary_expr
+    if @lang == "python"
+      consume!(:colon)
+    else
+      consume!(:open_brace)
+    end
+    until peek?(:close_brace)
+      case peek_type
+      when :function
+        raise SyntaxError, "Unexpected function definition inside if statement."
+      when :else, :elif
+        raise SyntaxError, "Unexpected 'else' inside if statement body"
+      when :if
+        body << parse_if
+      else
+        body << parse_expr
+      end
+    end
+      if_end = consume!(:close_brace).location
+      if peek?(:else)
+        else_body = parse_else
+        IfNode.new(condition, body, loc_range(if_start, if_end), else_body)
+      end
+      IfNode.new(condition, body, loc_range(if_start, if_end))
+    end
 
+    def parse_else
+      body = []
+      consume!(:else)
+      if @lang == "python"
+        consume!(:colon)
+      else
+        if peek?(:if)
+          return parse_if
+        end
+        consume!(:open_brace)
+      end
+      until peek?(:close_brace)
+        case peek_type
+        when :function
+          raise SyntaxError, "Unexpected function definition inside if statement."
+        when :else, :elif
+          raise SyntaxError, "Unexpected 'else' inside else statement body"
+        when :if
+          body << parse_if
+        else
+          body << parse_expr
+        end
+      end
+      body
+    end
+
+    def parse_while
+      while_start = consume!(:while).location
+      condition = parse_binary_expr
+      if @lang == "python"
+        consume!(:colon)
+      else
+        consume!(:open_brace)
+      end
+      until peek?(:close_brace)
+        case peek_type
+        when :function
+          raise SyntaxError, "Unexpected function definition inside if statement."
+        when :else, :elif
+          raise SyntaxError, "Unexpected 'else' inside while loop body"
+        when :if
+          body << parse_if
+        when :continue
+          body << parse_continue
+        when :break
+          body << parse_break
+        when :while
+          body << parse_while
+        else
+          body << parse_expr
+        end
+      end
+      while_end = consume!(:close_brace).location
+      WhileNode.new(condition, body, LocationRange.new(while_start, while_end))
+    end
+
+    def parse_continue
+      token = consume!(:continue)
+      ContinueNode.new(token.value, (token.location))
+    end
+
+    def parse_binary_expr(min_bp = 0)
+      operators = [ :add, :sub, :multiply, :divide, :and, :or, :comparison ]
+      left = parse_expr
+      while operators.include?(peek_type)
+        operator_token = peek_token
+        operator = operator_token.value
+        left_bp, right_bp = binding_power(operator)
+        break if left_bp < min_bp
+        consume!(peek_type)
+        right = parse_binary_expr(right_bp)
+        left = BinaryExprNode.new(left, operator.value, right, LocationRange.new(left.location.start_loc, right.location.end_loc))
+      end
+      left
+    end
+
+    def binding_power(operator)
+      case operator
+      when "or", "||" then [ 1, 2 ]
+      when "and", "&&" then [ 3, 4 ]
+      when "<", ">", "==", "!=", "===" then [ 5, 6 ]
+      when "+", "-" then [ 7, 8 ]
+      when "*", "/" then [ 9, 10 ]
+      else raise "Expected an operator (char) when getting binding power, got #{operator.class}"
+      end
     end
 
     def parse_def
@@ -104,14 +205,23 @@ module Compiler
       args
       end
     def parse_expr
-      if [ :exponential, :float, :integer ].include? peek_type
-        body = parse_number
-      elsif peek?(:identifier) && peek?(:open_paren, 1)
-        body = parse_call
+      case peek_type
+      when :exponential, :float, :integer
+        parse_number
+      when :identifier
+        if peek?(:open_paren, 1)
+          parse_call
+        else
+          parse_var_ref
+        end
+      when :open_paren
+        consume!(:open_paren)
+        expr = parse_binary_expr
+        consume!(:close_paren)
+        expr
       else
-        body = parse_var_ref
+        raise SyntaxError, "Expected a valid expression."
       end
-      body
       end
 
     def parse_number
@@ -173,5 +283,12 @@ module Compiler
       @tokens.fetch(offset).type
     end
 
+    def peek_token(offset = 0)
+      @tokens.fetch(offset)
+    end
+
+    def loc_range(node_1, node_2)
+        LocationRange.new(node_1.location.start_loc, node_2.location.end_loc)
+    end
   end
 end
