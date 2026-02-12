@@ -10,6 +10,14 @@ module Compiler
 
     private
 
+    def parse_conditional: -> StatementNode
+
+    def parse_while: -> WhileNode
+
+    def parse_break: -> BreakNode
+
+    def parse_continue: -> ContinueNode
+
     def parse_binary_expr: (?float) -> ExpressionNode
 
     def parse_if: -> IfNode

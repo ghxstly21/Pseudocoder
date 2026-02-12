@@ -78,13 +78,10 @@ end
     end
   end
 
-  class WhileNode < ASTNode
-    attr_accessor :condition, :body
+  class WhileNode < ConditionalNode
 
-    def initialize
-      super location
-      @condition = condition
-      @body = body
+    def initialize(condition, body, location)
+      super(condition, body, location)
     end
   end
 

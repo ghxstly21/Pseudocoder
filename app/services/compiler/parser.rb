@@ -113,6 +113,7 @@ module Compiler
     def parse_while
       while_start = consume!(:while).location
       condition = parse_binary_expr
+      body = []
       if @lang == "python"
         consume!(:colon)
       else
@@ -140,9 +141,36 @@ module Compiler
       WhileNode.new(condition, body, LocationRange.new(while_start, while_end))
     end
 
+    def parse_for
+      js_ids = %w[let var const]
+      java_ids = %w[short int long var]
+      start = nil
+      
+      # for(let/var i = 0; i < 10; i++) {}
+      # for(let/const/var variable of/in list) {}
+      # for(int i = 0; i < 10; i++) {}
+      # for(identifier i : list) {}
+      #
+      # for i in _
+      for_start = consume!(:for).location
+      case @lang
+      when "java"
+        consume!(:open_paren)
+        consume!(peek_type) if java_ids.include?(peek_token.value)
+        consume!(:identifier)
+        consume!(:assignment)
+
+      end
+    end
+
+    def parse_break
+      token = consume!(:break)
+      BreakNode.new(token.value, token.location)
+    end
+
     def parse_continue
       token = consume!(:continue)
-      ContinueNode.new(token.value, (token.location))
+      ContinueNode.new(token.value, token.location)
     end
 
     def parse_binary_expr(min_bp = 0)
@@ -239,10 +267,10 @@ module Compiler
 
       def parse_call
         # f(x, y, z)
-        call_start = consume!(:identifier)
+        call_start = consume!(:identifier).location
         name = call_start.value
         arg_exprs = parse_arg_exprs
-        CallNode.new(name, arg_exprs, call_start.location)
+        CallNode.new(name, arg_exprs, call_start)
       end
 
     def parse_arg_exprs

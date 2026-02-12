@@ -37,14 +37,14 @@ module Compiler
     def initialize: (LocationRange | Tokenizer::Location) -> void
   end
 
-  class ContinueNode < StatementNode
+  class BreakNode < StatementNode
     attr_accessor value: String
     def initialize: (String, Tokenizer::Location) -> void
   end
 
-  class BreakNode < StatementNode
+  class ContinueNode < StatementNode
     attr_accessor value: String
-    def initialize: (String, LocationRange) -> void
+    def initialize: (String, Tokenizer::Location) -> void
   end
 
   class ConditionalNode < StatementNode
@@ -91,7 +91,7 @@ module Compiler
     attr_accessor name: String
     attr_accessor arg_exprs: Array[String]
 
-    def initialize: (String, Array[String], LocationRange) -> void
+    def initialize: (String, Array[String], Tokenizer::Location) -> void
   end
 
   class VarRefNode < ExpressionNode
