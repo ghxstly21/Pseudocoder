@@ -12,9 +12,12 @@ class CompilationsController < ApplicationController
     begin
       if params[:file].present?
         uploaded_file = params[:file]
-        file_path = uploaded_file
-        output_text = Compiler.compile(file_path.to_s)
+        input_text = uploaded_file.original_filename
+        output_text = nil
+
+        time = Compiler.time { output_text = Compiler.compile(uploaded_file, from_file: true) }
         input_type = "file"
+        flash[:pseudocode_output] = output_text
 
       elsif params[:code].present?
         input_text = params[:code]
@@ -22,6 +25,8 @@ class CompilationsController < ApplicationController
 
         time = Compiler.time { output_text = Compiler.compile(input_text, from_file: false) }
         input_type = "code"
+        flash[:pseudocode_output] = output_text
+
       else
         redirect_to root_path, alert: "Please provide code or upload a file" and return
       end
@@ -30,8 +35,7 @@ class CompilationsController < ApplicationController
         @compilation = current_user.compilations.create!(
           input_type: input_type,
           input_text: input_text,
-          output_text: output_text,
-          output_time: time,
+          output_text: output_text
         )
       end
 
@@ -45,8 +49,10 @@ class CompilationsController < ApplicationController
       redirect_to root_path, alert: "Could not recognize language: #{e.message}"
     rescue Compiler::TokenError => e
       redirect_to root_path, alert: "Token error: #{e.message}"
-    rescue Compiler::SyntaxError => e
+    rescue ::Compiler::SyntaxError => e
       redirect_to root_path, alert: "Syntax error: #{e.message}"
+    rescue Errno::ENOENT => e
+      redirect_to root_path, alert: "File upload error. Please try again."
     rescue => e
       redirect_to root_path, alert: "Compilation error: #{e.message}"
     end
