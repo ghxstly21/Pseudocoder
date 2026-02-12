@@ -185,7 +185,8 @@ class Tokenizer
         ext = File.extname(path_or_code)
       elsif path_or_code.respond_to?(:read)
         @code = path_or_code.read
-        ext = File.extname(path_or_code.respond_to?(:original_filename) ? path_or_code.original_filename : path_or_code.path)
+        filename = path_or_code.respond_to?(:original_filename) ? path_or_code.original_filename : path_or_code.to_path
+        ext = File.extname(filename || '')
       else
         raise Errno::ENOENT, "Invalid file upload. Please try again!"
       end
