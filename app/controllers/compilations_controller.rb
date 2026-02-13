@@ -1,8 +1,8 @@
 require_relative "../services/compiler/compiler"
-require_relative "../errors/UnsupportedLanguageError"
-require_relative "../errors/LanguageRecognitionError"
-require_relative "../errors/TokenError"
-require_relative "../errors/SyntaxError"
+require_relative "../errors/compiler/unsupported_language_error"
+require_relative "../errors/compiler/language_recognition_error"
+require_relative "../errors/compiler/token_error"
+require_relative "../errors/compiler/syntax_error"
 
 class CompilationsController < ApplicationController
   before_action :authenticate_user!
