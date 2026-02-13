@@ -1,4 +1,7 @@
 module Compiler
+  module Ast
+  end
+
 class ASTNode
 attr_reader :location
 def initialize(location)
