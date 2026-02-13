@@ -1,7 +1,7 @@
 require "set"
-require_relative "../../errors/UnsupportedLanguageError"
-require_relative "../../errors/LanguageRecognitionError"
-require_relative "../../errors/TokenError"
+require_relative "../../errors/compiler/unsupported_language_error"
+require_relative "../../errors/compiler/language_recognition_error"
+require_relative "../../errors/compiler/token_error"
 
 module Compiler
 class Tokenizer
