@@ -366,12 +366,12 @@ GEM
       railties (>= 6.0.0)
     stringio (3.2.0)
     strscan (3.1.7)
-    tailwindcss-rails (4.4.0)
+    tailwindcss-rails (3.3.2)
       railties (>= 7.0.0)
-      tailwindcss-ruby (~> 4.0)
-    tailwindcss-ruby (4.1.18-arm64-darwin)
-    tailwindcss-ruby (4.1.18-x64-mingw-ucrt)
-    tailwindcss-ruby (4.1.18-x86_64-linux-gnu)
+      tailwindcss-ruby (~> 3.0)
+    tailwindcss-ruby (3.4.19-arm64-darwin)
+    tailwindcss-ruby (3.4.19-x64-mingw-ucrt)
+    tailwindcss-ruby (3.4.19-x86_64-linux)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
     thor (1.5.0)
@@ -434,7 +434,7 @@ DEPENDENCIES
   sqlite3 (>= 2.1)
   steep
   stimulus-rails
-  tailwindcss-rails (~> 4.4)
+  tailwindcss-rails (~> 3.3.1)
   thruster
   turbo-rails
   tzinfo-data
