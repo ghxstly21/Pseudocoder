@@ -119,80 +119,85 @@
 
 <div class="about-section">
     <h1>About Us</h1>
-    <p>A web app that allows users to turn their code into pseudocode. It is powered by a compiler built in Ruby that recognizes code from a programming language such as Python, Java, or JavaScript and turns it into English pseudocode that anyone can understand. As part of our web app, we will include an account system where users can view the output of their previously compiled files. Pseudocoder will help anyone who wants a better understanding of their code.
-    </p>
-    <p>Mid-year project created by BCA students.</p>
-</div>
+    <p>Pseudocoder is a web application created by students at Bergen County Academies as a mid-year project, designed to help anyone better understand programming logic. Our platform allows users to convert code from languages such as Python, Java, and JavaScript into clear, human-readable pseudocode. By breaking down complex syntax into structured English explanations, it makes programming more approachable for beginners, learners, and anyone curious about how code works.
 
-<h2 class="team-title">Development Team</h2>
-<div class="row">
-    <div class="column">
-        <div class="card">
-            <img src="<%= image_path('miguelface.png') %>" alt="Miguel Taveras" style="width:100%">
-            <div class="container">
-                <h2>Miguel Taveras</h2>
-                <p class="title">Developer</p>
-                <p>Mr. Miguel Taveras is a student in the Academy for Technology and Computer Science (ATCS) at Bergen County Academies. A dedicated Ruby enthusiast, he focuses on leveraging elegant syntax to build efficient software engineering solutions. One fun fact about him is that he is a power user on Roblox, often exploring the platform's game mechanics when he isn't refining his latest codebase.</p>
-                <p>migtav28@bergen.org</p>
-                <p><a href="mailto:migtav@bergen.org"><button class="button">Contact</button></a></p>
+        The application is built using Ruby on Rails, leveraging the framework’s Model–View–Controller architecture to provide a secure and organized user experience. Users can create accounts, securely log in, update their profiles, and manage their passwords with confidence. Passwords are encrypted with bcrypt, and token-based workflows are implemented for password resets and email confirmations, ensuring both security and usability.
+
+        At the core of Pseudocoder is a custom-built Ruby compiler engine that handles the heavy lifting. Submitted code is first analyzed to detect its programming language, then tokenized into structured units, parsed into an Abstract Syntax Tree (AST), and finally transformed into readable pseudocode. This pipeline allows users to see exactly how their code executes in a language-independent way, making programming concepts easier to grasp.
+
+        Beyond its technical functionality, Pseudocoder also serves as a learning archive. Users can view the results of previously compiled files, track their progress, and revisit their code transformations anytime. This project reflects our dedication as BCA students to combining strong programming skills with practical web development, creating a tool that is both educational and engaging.
+
+        Pseudocoder demonstrates how thoughtful design, modern web frameworks, and compiler theory can come together in a student project to make coding more accessible and understandable for everyone.</p>
+
+    <h2 class="team-title">Development Team</h2>
+    <div class="row">
+        <div class="column">
+            <div class="card">
+                <img src="<%= image_path('miguelface.png') %>" alt="Miguel Taveras" style="width:100%">
+                <div class="container">
+                    <h2>Miguel Taveras</h2>
+                    <p class="title">Developer</p>
+                    <p>Mr. Miguel Taveras is a student in the Academy for Technology and Computer Science (ATCS) at Bergen County Academies. A dedicated Ruby enthusiast, he focuses on leveraging elegant syntax to build efficient software engineering solutions. One fun fact about him is that he is a power user on Roblox, often exploring the platform's game mechanics when he isn't refining his latest codebase.</p>
+                    <p>migtav28@bergen.org</p>
+                    <p><a href="mailto:migtav@bergen.org"><button class="button">Contact</button></a></p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="column">
-        <div class="card">
-            <img src="<%= image_path('WIN_20260121_12_56_18_Pro.jpg') %>" alt="Mike" style="width:100%">
-            <div class="container">
-                <h2>Dharma Zalavadiya</h2>
-                <p class="title">Developer</p>
-                <p>Mr. Dharma Zalavadiya is a student in the Academy for Technology and Computer Science (ATCS) at Bergen County Academies. A visionary entrepreneur and innovator, he is widely recognized for his foundational role as the co-founder of Tesla, Nike, and Adidas. Frequently cited as "the best there ever is," Dharma balances his global industrial legacy with his current academic pursuits in Hackensack, NJ.</p>
-                <p>dhazal28@bergen.org</p>
-                <p><a href="mailto:dhazal28@bergen.org"><button class="button">Contact</button></a></p>
+        <div class="column">
+            <div class="card">
+                <img src="<%= image_path('WIN_20260121_12_56_18_Pro.jpg') %>" alt="Mike" style="width:100%">
+                <div class="container">
+                    <h2>Dharma Zalavadiya</h2>
+                    <p class="title">Developer</p>
+                    <p>Mr. Dharma Zalavadiya is a student in the Academy for Technology and Computer Science (ATCS) at Bergen County Academies. A visionary entrepreneur and innovator, he is widely recognized for his foundational role as the co-founder of Tesla, Nike, and Adidas. Frequently cited as "the best there ever is," Dharma balances his global industrial legacy with his current academic pursuits in Hackensack, NJ.</p>
+                    <p>dhazal28@bergen.org</p>
+                    <p><a href="mailto:dhazal28@bergen.org"><button class="button">Contact</button></a></p>
 
+                </div>
             </div>
         </div>
-    </div>
-    <h2 class="team-title">Investment Team</h2>
-    <div class=" column">
-        <div class="card">
-            <img src="<%= image_path('ryan.jpg') %>" alt="Mike" style="width:100%">
-            <div class="container">
-                <h2>Ryan Ortellado</h2>
-                <p class="title">Investor</p>
-                <p>Mr. Ortellado is the CEO and Founder of Banking.com and a great investor to Psuedocodoer. He funded our deployment of the compilor. One fun fact about him is that he loves money and playing roblox.</p>
-                <p>ryaort28@bergen.org</p>
-                <p><a href="mailto:ryaort28@bergen.org"><button class="button">Contact</button></a></p>
+        <h2 class="team-title">Investment Team</h2>
+        <div class=" column">
+            <div class="card">
+                <img src="<%= image_path('ryan.jpg') %>" alt="Mike" style="width:100%">
+                <div class="container">
+                    <h2>Ryan Ortellado</h2>
+                    <p class="title">Investor</p>
+                    <p>Mr. Ortellado is the CEO and Founder of Banking.com and a great investor to Psuedocodoer. He funded our deployment of the compilor. One fun fact about him is that he loves money and playing roblox.</p>
+                    <p>ryaort28@bergen.org</p>
+                    <p><a href="mailto:ryaort28@bergen.org"><button class="button">Contact</button></a></p>
 
+                </div>
             </div>
         </div>
-    </div>
-    <div class="column">
-        <div class="card">
-            <img src="<%= image_path('samuel.jpeg') %>" alt="Mike" style="width:100%">
-            <div class="container">
-                <h2>Samuel Basil</h2>
-                <p class="title">Investor</p>
-                <p>Mr. Basil is the Chief Visionary of Starlight.io and a cornerstone investor for OpenSourceDev. He personally bankrolled our latest server expansion. One fun fact about him is that he exclusively drinks espresso while speedrunning Minecraft.</p>
-                <p>sambas28@bergen.org</p>
-                <p><a href="mailto:sambas28@bergen.org"><button class="button">Contact</button></a></p>
+        <div class="column">
+            <div class="card">
+                <img src="<%= image_path('samuel.jpeg') %>" alt="Mike" style="width:100%">
+                <div class="container">
+                    <h2>Samuel Basil</h2>
+                    <p class="title">Investor</p>
+                    <p>Mr. Basil is the Chief Visionary of Starlight.io and a cornerstone investor for OpenSourceDev. He personally bankrolled our latest server expansion. One fun fact about him is that he exclusively drinks espresso while speedrunning Minecraft.</p>
+                    <p>sambas28@bergen.org</p>
+                    <p><a href="mailto:sambas28@bergen.org"><button class="button">Contact</button></a></p>
 
+                </div>
             </div>
         </div>
-    </div>
-    <div class="column">
-        <div class="card">
-            <img src="<%= image_path('nanami.jpeg') %>" alt="Mike" style="width:100%">
-            <div class="container">
-                <h2>Nanami Ishihara</h2>
-                <p class="title">Investor</p>
-                <p>Dr. Nanami is the Lead Architect at NebulaNet.com and a pivotal advisor for CodeSpark. She was the primary sponsor for our recent API integration. One fun fact about her is that she collects vintage typewriters and once spent an entire weekend attempting to teach her cat how to code in Python.</p>
-                <p>nanish28@bergen.org</p>
-                <p><a href="mailto:nanish28@bergen.org"><button class="button">Contact</button></a></p>
+        <div class="column">
+            <div class="card">
+                <img src="<%= image_path('nanami.jpeg') %>" alt="Mike" style="width:100%">
+                <div class="container">
+                    <h2>Nanami Ishihara</h2>
+                    <p class="title">Investor</p>
+                    <p>Dr. Nanami is the Lead Architect at NebulaNet.com and a pivotal advisor for CodeSpark. She was the primary sponsor for our recent API integration. One fun fact about her is that she collects vintage typewriters and once spent an entire weekend attempting to teach her cat how to code in Python.</p>
+                    <p>nanish28@bergen.org</p>
+                    <p><a href="mailto:nanish28@bergen.org"><button class="button">Contact</button></a></p>
 
+                </div>
             </div>
         </div>
+
+
+
     </div>
-
-
-
-</div>
