@@ -36,6 +36,9 @@ module Compiler
       until @tokens.empty?
         if peek?(:function)
           nodes << parse_def
+        else
+          token = @tokens.first
+          raise SyntaxError, "Unexpected token #{token.type.inspect} at line #{token.location.line}, column #{token.location.column}"
         end
       end
       nodes

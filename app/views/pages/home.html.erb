@@ -1,6 +1,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 
 <style>
     body {
@@ -398,24 +399,24 @@
 </div>
 <% end %>
 
-<% if notice %>
-<p class="flash-notice"><%= notice %></p>
+<% if flash[:notice] %>
+<p class="flash-notice"><%= flash[:notice] %></p>
 <% end %>
 
 <% if flash[:alert] %>
 <p class="flash-alert"><%= flash[:alert] %></p>
 <% end %>
 
-<% if flash[:pseudocode_output] %>
+<% if @pseudocode_output.present? %>
 <div style="max-width: 800px; margin: 2rem auto; background: #e8fff1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #04AA6D;">
     <h3 style="color: #04AA6D; margin-top: 0;">Generated Pseudocode:</h3>
-    <pre style="background: white; padding: 1rem; border-radius: 6px; overflow-x: auto; font-family: monospace;"><%= flash[:pseudocode_output] %></pre>
+    <pre style="background: white; padding: 1rem; border-radius: 6px; overflow-x: auto; font-family: monospace;"><%= @pseudocode_output %></pre>
 </div>
 <% end %>
 
 <%= form_with url: compilations_path, multipart: true, local: true do |f| %>
 <div class="compile-form">
-    <%= f.text_area :code, placeholder: "Paste code here...", rows: 8, class: "code-input" %>
+    <%= f.text_area :code, placeholder: "Paste code here...", rows: 8, class: "code-input", id: "code-input" %>
 
     <div class="or-divider">OR</div>
 
@@ -424,6 +425,29 @@
     <%= f.submit "Generate Pseudocode", class: "submit-btn" %>
 </div>
 <% end %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var codeInput = document.getElementById("code-input");
+        if (!codeInput || !window.CodeMirror) {
+            return;
+        }
+
+        var editor = CodeMirror.fromTextArea(codeInput, {
+            lineNumbers: true,
+            indentUnit: 4,
+            indentWithTabs: false,
+            tabSize: 4
+        });
+
+        var form = codeInput.closest("form");
+        if (form) {
+            form.addEventListener("submit", function() {
+                editor.save();
+            });
+        }
+    });
+</script>
 
 
 <h1 class="page-title">Compilation History</h1>
