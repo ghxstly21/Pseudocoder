@@ -35,7 +35,6 @@
 
     .about-section h1 {
         font-size: 2.5rem;
-        letter-spacing: 0.08em;
         margin: 0 0 16px;
         text-transform: uppercase;
     }
@@ -113,21 +112,25 @@
         margin: 40px 0 16px;
         color: #2a2f3a;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+    }
+
+    .about-description {
+        padding-left: 100px;
+        padding-right: 100px;
     }
 </style>
 
 <div class="about-section">
     <h1>About Us</h1>
-    <p>Pseudocoder is a web application created by students at Bergen County Academies as a mid-year project, designed to help anyone better understand programming logic. Our platform allows users to convert code from languages such as Python, Java, and JavaScript into clear, human-readable pseudocode. By breaking down complex syntax into structured English explanations, it makes programming more approachable for beginners, learners, and anyone curious about how code works.
+    <p class="about-description">Pseudocoder is a web application created by students at Bergen County Academies as a mid-year project, designed to help anyone better understand programming logic. Our platform allows users to convert code from languages such as Python, Java, and JavaScript into clear, human-readable pseudocode. By breaking down complex syntax into structured English explanations, it makes programming more approachable for beginners, learners, and anyone curious about how code works.
 
-        <br>The application is built using Ruby on Rails, leveraging the framework’s Model–View–Controller architecture to provide a secure and organized user experience. Users can create accounts, securely log in, update their profiles, and manage their passwords with confidence. Passwords are encrypted with bcrypt, and token-based workflows are implemented for password resets and email confirmations, ensuring both security and usability.
+        <br><br>The application is built using Ruby on Rails, leveraging the framework’s Model–View–Controller architecture to provide a secure and organized user experience. Users can create accounts, securely log in, update their profiles, and manage their passwords with confidence. Passwords are encrypted with bcrypt, and token-based workflows are implemented for password resets and email confirmations, ensuring both security and usability.
 
-        <br> At the core of Pseudocoder is a custom-built Ruby compiler engine that handles the heavy lifting. Submitted code is first analyzed to detect its programming language, then tokenized into structured units, parsed into an Abstract Syntax Tree (AST), and finally transformed into readable pseudocode. This pipeline allows users to see exactly how their code executes in a language-independent way, making programming concepts easier to grasp.
+        <br><br> At the core of Pseudocoder is a custom-built Ruby compiler engine that handles the heavy lifting. Submitted code is first analyzed to detect its programming language, then tokenized into structured units, parsed into an Abstract Syntax Tree (AST), and finally transformed into readable pseudocode. This pipeline allows users to see exactly how their code executes in a language-independent way, making programming concepts easier to grasp.
 
-        <br>Beyond its technical functionality, Pseudocoder also serves as a learning archive. Users can view the results of previously compiled files, track their progress, and revisit their code transformations anytime. This project reflects our dedication as BCA students to combining strong programming skills with practical web development, creating a tool that is both educational and engaging.
+        <br><br>Beyond its technical functionality, Pseudocoder also serves as a learning archive. Users can view the results of previously compiled files, track their progress, and revisit their code transformations anytime. This project reflects our dedication as BCA students to combining strong programming skills with practical web development, creating a tool that is both educational and engaging.
 
-        <br> Pseudocoder demonstrates how thoughtful design, modern web frameworks, and compiler theory can come together in a student project to make coding more accessible and understandable for everyone.
+        <br><br> Pseudocoder demonstrates how thoughtful design, modern web frameworks, and compiler theory can come together in a student project to make coding more accessible and understandable for everyone.
     </p>
 </div>
 
