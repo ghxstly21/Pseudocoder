@@ -33,6 +33,13 @@
         color: white;
     }
 
+    .about-section h1 {
+        font-size: 2.5rem;
+        letter-spacing: 0.08em;
+        margin: 0 0 16px;
+        text-transform: uppercase;
+    }
+
     .container {
         padding: 0 16px;
     }
@@ -99,6 +106,15 @@
         clear: both;
         width: 100%;
     }
+
+    .team-title {
+        text-align: center;
+        font-size: 1.75rem;
+        margin: 40px 0 16px;
+        color: #2a2f3a;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
 </style>
 
 <div class="about-section">
@@ -108,7 +124,7 @@
     <p>Mid-year project created by BCA students.</p>
 </div>
 
-<h2 style="text-align:center">Development Team</h2>
+<h2 class="team-title">Development Team</h2>
 <div class="row">
     <div class="column">
         <div class="card">
@@ -136,7 +152,7 @@
             </div>
         </div>
     </div>
-    <h2 style="text-align:center">Investment Team</h2>
+    <h2 class="team-title">Investment Team</h2>
     <div class=" column">
         <div class="card">
             <img src="<%= image_path('ryan.jpg') %>" alt="Mike" style="width:100%">
