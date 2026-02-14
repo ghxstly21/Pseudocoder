@@ -25,7 +25,7 @@ class User < ApplicationRecord
 
   def generate_email_confirmation_token
     self.email_confirmation_token = SecureRandom.hex(32) if email_changed?
-    self.email_confirmed_at = Time.current if email.present? && !email_changed?
+    self.email_confirmed_at = nil
   end
 
   def confirm_email_change(token)
