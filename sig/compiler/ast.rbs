@@ -1,10 +1,10 @@
 module Compiler
 
   class LocationRange
-    attr_accessor start_loc: Tokenizer::Location
-    attr_accessor end_loc: Tokenizer::Location
+    attr_accessor start_loc: Tokenizer::Location | LocationRange
+    attr_accessor end_loc: Tokenizer::Location | LocationRange
 
-    def initialize: (Tokenizer::Location, Tokenizer::Location) -> void
+    def initialize: (Tokenizer::Location | LocationRange, Tokenizer::Location | LocationRange) -> void
   end
 
   class ASTNode
@@ -68,6 +68,22 @@ module Compiler
 
   class ExpressionNode < ASTNode
     def initialize: (LocationRange | Tokenizer::Location) -> void
+  end
+
+  class DeclarationNode < ExpressionNode
+    attr_accessor modifiers: Array[String]
+    attr_accessor data_type: (String?)
+    attr_accessor name: ExpressionNode
+    attr_accessor value: ExpressionNode
+
+    def initialize: (Array[String], ExpressionNode, ExpressionNode, LocationRange, ?String?) -> void
+  end
+
+  class AssignmentNode < ExpressionNode
+    attr_accessor name: String
+    attr_accessor value: ExpressionNode
+
+    def initialize: (String, ExpressionNode, LocationRange) -> void
   end
 
   class NumberNode < ExpressionNode
