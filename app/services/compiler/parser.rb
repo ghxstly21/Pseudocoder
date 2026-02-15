@@ -3,6 +3,7 @@ require_relative "../../errors/UnsupportedLanguageError"
 require_relative "../../errors/SyntaxError"
 
 module Compiler
+  # noinspection RubyTooManyMethodsInspection
   class Parser # Goal: Produce a tree of nodes with 3 parts
     # Ex:
     # DEF/FUNCTION_NODE
@@ -10,9 +11,11 @@ module Compiler
     # Args: %w[x y z]
     # BODY:
     # INTEGER_LITERAL: "1"
+    attr_accessor :ast
     def initialize(tokens, lang)
       @tokens = tokens
       @lang = lang
+      @ast = []
     end
     def parse
       case @lang
@@ -32,16 +35,15 @@ module Compiler
     end
 
     def parse_js
-      nodes = []
       until @tokens.empty?
         case peek_type
         when :function
-          nodes << parse_def
+          @ast << parse_def
         when :if, :else, :while
           parse_conditional
         end
       end
-      nodes
+      @ast
     end
 
     def parse_conditional
@@ -142,10 +144,8 @@ module Compiler
     end
 
     def parse_for
-      js_ids = %w[let var const]
-      java_ids = %w[short int long var]
       start = nil
-      
+      java_types = %w[byte short int long]
       # for(let/var i = 0; i < 10; i++) {}
       # for(let/const/var variable of/in list) {}
       # for(int i = 0; i < 10; i++) {}
@@ -153,12 +153,18 @@ module Compiler
       #
       # for i in _
       for_start = consume!(:for).location
+      consume!(:open_paren)
       case @lang
       when "java"
-        consume!(:open_paren)
-        consume!(peek_type) if java_ids.include?(peek_token.value)
-        consume!(:identifier)
-        consume!(:assignment)
+        declaration = parse_var_set
+        var_name = declaration.name
+        start = declaration.value
+        unless java_types.include?(declaration.data_type)
+        raise SyntaxError, "#{declaration.location}\nExpected a number in for loop, got #{declaration.data_type}"
+        end
+
+        condition = parse_binary_expr
+        # here
 
       end
     end
@@ -236,9 +242,13 @@ module Compiler
       case peek_type
       when :exponential, :float, :integer
         parse_number
+      when :return
+        parse_return
       when :identifier
         if peek?(:open_paren, 1)
           parse_call
+        elsif peek?(:assignment, 1)
+          parse_assignment
         else
           parse_var_ref
         end
@@ -247,10 +257,110 @@ module Compiler
         expr = parse_binary_expr
         consume!(:close_paren)
         expr
+      when :open_bracket
+        parse_arr
       else
         raise SyntaxError, "Expected a valid expression."
       end
+    end
+    def is_assignment?
+      # x = 5 -> return true
+      # let x = 5
+      i = 0
+      while true
+        case peek_type(i)
+        when :identifier
+          i += 1
+        when :dot
+          return false unless peek?(:identifier, i + 1)
+          i += 2
+        when :open_bracket
+          i += 1
+          bracket_count = 1
+          while bracket_count > 0
+            type = peek_type(i)
+            raise SyntaxError, "#{peek_token.location}Unclosed opening bracket." if type.nil?
+            bracket_count += 1 if type == :open_bracket
+            bracket_count -= 1 if type == :close_bracket
+            i += 1
+          end
+        else break
+        end
       end
+      peek?(:assignment, i + 1)
+    end
+
+    def parse_var_set
+      js_modifiers = %w[var let const]
+      java_modifiers = %w[final]
+      java_types = %w[byte short int long float double char boolean String]
+      modifiers = []
+      init_start = nil
+      # let x = 5
+      # let y = "hello"
+      # const x = "var";
+      # var x = 5;
+      # int, long, string, char, short, float, double
+      if @lang == "javascript"
+        init_start = peek_token.location
+        modifiers << consume!(:identifier).value if peek_token.value == "export"
+        if js_modifiers.include? peek_token.value
+          modifiers << consume!(:identifier).value
+        else
+          parse_assignment
+        end
+        name = parse_var_ref
+        consume!(:assignment)
+        value = parse_expr
+        init_end = value.location
+        if peek?(:semicolon)
+          init_end = consume!(:semicolon).location
+        end
+        DeclarationNode.new(modifiers, name, value, LocationRange.new(init_start, init_end))
+      elsif @lang == "java"
+        init_start = peek_token.location
+        modifiers << consume!(:identifier).value if java_modifiers.include?(peek_token.value)
+        if peek?(:assignment)
+          raise SyntaxError, "#{peek_token.location}Expected a data type but got '='"
+        elsif java_types.include?(peek_token.value)
+          data_type = consume!(:identifier).value
+        elsif peek?(:identifier)
+          parse_assignment
+        end
+        name = parse_var_ref
+        consume!(:assignment)
+        value = parse_expr
+        init_end = consume!(:semicolon).location
+        DeclarationNode.new(modifiers, name, value, LocationRange.new(init_start, init_end), data_type)
+      end
+    end
+
+    def parse_assignment
+      # x = 5
+      name = consume!(:identifier).value
+      assignment_start = name.location
+      consume!(:assignment)
+      value = parse_expr
+      assignment_end = value.location
+      if peek?(:semicolon)
+        assignment_end = consume!(:semicolon).location
+      end
+      AssignmentNode.new(name, value, LocationRange.new(assignment_start, assignment_end))
+    end
+
+    def parse_declaration
+    end
+
+    def parse_return
+      return_start = consume!(:return).location
+      raise SyntaxError, "Unexpected 'return' after return statement" if peek?(:return)
+      value = parse_expr
+    end
+
+    def parse_arr
+      arr = []
+      consume!(:open_bracket)
+    end
 
     def parse_number
       num_type = peek_type
@@ -313,10 +423,6 @@ module Compiler
 
     def peek_token(offset = 0)
       @tokens.fetch(offset)
-    end
-
-    def loc_range(node_1, node_2)
-        LocationRange.new(node_1.location.start_loc, node_2.location.end_loc)
     end
   end
 end

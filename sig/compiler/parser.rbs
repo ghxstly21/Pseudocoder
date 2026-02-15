@@ -4,6 +4,8 @@ module Compiler
     @tokens: [Tokenizer::Token]
     @lang: String
 
+    attr_accessor ast: [ASTNode]
+
     def initialize: ([Tokenizer::Token], String) -> void
 
     def parse: -> ProgramNode
@@ -27,6 +29,10 @@ module Compiler
     def binding_power: (String) -> [Integer]
 
     def parse_expr: -> ExpressionNode
+
+    def is_assignment?: -> bool
+
+    def parse_var_set: -> DeclarationNode
 
     def parse_python: -> Array[ASTNode]
 
@@ -54,7 +60,7 @@ module Compiler
 
     def consume!: (Symbol) -> Tokenizer::Token
 
-    def loc_range: (Tokenizer::Location, Tokenizer::Location) -> LocationRange
+    def loc_range: (Tokenizer::Location | LocationRange, Tokenizer::Location | LocationRange) -> LocationRange
   end
 
 end

@@ -2,8 +2,24 @@ module Compiler
   class LocationRange
     attr_accessor :start_loc, :end_loc
     def initialize(start_loc, end_loc)
-      @start_loc = start_loc
-      @end_loc = end_loc
+      if start_loc.is_a?(LocationRange)
+        @start_loc = start_loc.start_loc
+      else
+        @start_loc = start_loc
+      end
+      if end_loc.is_a?(LocationRange)
+        @end_loc = end_loc.end_loc
+      else
+        @end_loc = end_loc
+      end
+    end
+
+    def to_s
+      if @start_loc.line == @end_loc.line
+        "Line #{@start_loc.line}, Position #{@start_loc.column}-#{@end_loc.column}\n"
+      else
+        "Line #{@start_loc.line}, position #{@start_loc.column} - line #{@end_loc.line}, position #{end_loc.column}\n"
+      end
     end
   end
 
@@ -30,6 +46,8 @@ def initialize(name, arg_names, body, location)
   @body = body
 end
 end
+  class ExpressionNode < ASTNode
+  end
 
 class BinaryExprNode < ExpressionNode
   attr_accessor :left, :operator, :right
@@ -79,14 +97,31 @@ end
   end
 
   class WhileNode < ConditionalNode
-
     def initialize(condition, body, location)
       super(condition, body, location)
     end
   end
 
-class ExpressionNode < ASTNode
-end
+  class DeclarationNode < ExpressionNode
+    attr_accessor :modifiers, :data_type, :name, :value
+    def initialize(modifiers, name, value, location, data_type = nil)
+      super location
+      @modifiers = modifiers
+      @data_type = data_type
+      @name = name
+      @value = value
+    end
+  end
+
+  class AssignmentNode < ExpressionNode
+    attr_accessor :name, :value
+    def initialize(name, value, location)
+      super location
+      @name = name
+      @value = value
+      @location = location
+    end
+  end
 
 class NumberNode < ExpressionNode
 attr_accessor :value
