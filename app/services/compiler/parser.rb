@@ -41,6 +41,8 @@ module Compiler
           @ast << parse_def
         when :if, :else, :while
           parse_conditional
+        else
+          raise "Unsupported node_type by parse_js: #{peek_type}"
         end
       end
       @ast
@@ -60,7 +62,9 @@ module Compiler
     def parse_if
       body = []
       if_start = consume!(:if).location
-    condition = parse_binary_expr
+      consume!(:open_paren)
+      condition = parse_binary_expr
+      consume!(:close_paren)
     if @lang == "python"
       consume!(:colon)
     else
@@ -81,9 +85,9 @@ module Compiler
       if_end = consume!(:close_brace).location
       if peek?(:else)
         else_body = parse_else
-        IfNode.new(condition, body, loc_range(if_start, if_end), else_body)
+        IfNode.new(condition, body, LocationRange.new(if_start, if_end), else_body)
       end
-      IfNode.new(condition, body, loc_range(if_start, if_end))
+      IfNode.new(condition, body, LocationRange.new(if_start, if_end))
     end
 
     def parse_else
@@ -114,7 +118,9 @@ module Compiler
 
     def parse_while
       while_start = consume!(:while).location
+      consume!(:open_paren)
       condition = parse_binary_expr
+      consume!(:close_paren)
       body = []
       if @lang == "python"
         consume!(:colon)
@@ -144,8 +150,10 @@ module Compiler
     end
 
     def parse_for
-      start = nil
-      java_types = %w[byte short int long]
+      body = []
+      unary_exprs = %i[increment decrement]
+      allowed_steps = %i[add_assign sub_assign mul_assign div_assign]
+
       # for(let/var i = 0; i < 10; i++) {}
       # for(let/const/var variable of/in list) {}
       # for(int i = 0; i < 10; i++) {}
@@ -154,19 +162,52 @@ module Compiler
       # for i in _
       for_start = consume!(:for).location
       consume!(:open_paren)
-      case @lang
-      when "java"
-        declaration = parse_var_set
-        var_name = declaration.name
-        start = declaration.value
-        unless java_types.include?(declaration.data_type)
-        raise SyntaxError, "#{declaration.location}\nExpected a number in for loop, got #{declaration.data_type}"
-        end
-
-        condition = parse_binary_expr
-        # here
-
+      raise SyntaxError, "#{for_start}Expected variable initialization" unless peek?(:identifier)
+      init_node = parse_assignment
+      consume!(:semicolon)
+      comparison = parse_binary_expr
+      consume!(:semicolon)
+      # ++i i++ i += 3
+      if unary_exprs.include?(peek_type) ||
+         unary_exprs.include?(peek_type(1))
+        increment = parse_unary_expr
+      elsif allowed_steps.include?(peek_type(1))
+        increment = parse_binary_expr
+      else
+        raise SyntaxError, "#{for_start}\nUnknown increment in loop"
       end
+      consume!(:close_paren)
+      consume!(:open_brace)
+      # body
+      until peek?(:close_brace)
+        case peek_type
+        when :function
+          raise SyntaxError, "Unexpected function definition inside if statement."
+        when :else, :elif
+          raise SyntaxError, "Unexpected 'else' inside for loop body"
+        when :if
+          body << parse_if
+        when :continue
+          body << parse_continue
+        when :break
+          body << parse_break
+        when :while
+          body << parse_while
+        when :return
+          body << parse_return
+        else
+          body << parse_expr
+        end
+      end
+
+      for_end = consume!(:close_brace).location
+      ForNode.new(
+        init_node,
+        comparison,
+        increment,
+        body,
+        LocationRange(for_start, for_end)
+      )
     end
 
     def parse_break
@@ -180,7 +221,7 @@ module Compiler
     end
 
     def parse_binary_expr(min_bp = 0)
-      operators = [ :add, :sub, :multiply, :divide, :and, :or, :comparison ]
+      operators = %i[ add sub multiply divide and or comparison add_assign sub_assign mul_assign div_assign ]
       left = parse_expr
       while operators.include?(peek_type)
         operator_token = peek_token
@@ -189,13 +230,14 @@ module Compiler
         break if left_bp < min_bp
         consume!(peek_type)
         right = parse_binary_expr(right_bp)
-        left = BinaryExprNode.new(left, operator.value, right, LocationRange.new(left.location.start_loc, right.location.end_loc))
+        left = BinaryExprNode.new(left, operator, right, LocationRange.new(left.location, right.location))
       end
       left
     end
 
     def binding_power(operator)
       case operator
+      when "+=", "-=", "*=", "/=" then [ 1, 0 ]
       when "or", "||" then [ 1, 2 ]
       when "and", "&&" then [ 3, 4 ]
       when "<", ">", "==", "!=", "===" then [ 5, 6 ]
@@ -214,14 +256,23 @@ module Compiler
 
       when "javascript"
                     # function foo(arg1, arg2) {body}
-                    consume!(:function)
+                    def_start = consume!(:function).location
                     token = consume!(:identifier)
                     name = token.value
                     arg_names = parse_args
                     consume!(:open_brace)
-                    body = peek?(:close_brace) ? ExpressionNode.new(consume!(:close_brace).location) : parse_expr
-                    consume!(:close_brace) if peek_type == :close_brace
-                    FunctionNode.new(name, arg_names, body, token.location)
+                    body = []
+                    until peek?(:close_brace)
+                      if %i[if else while].include?(peek_type)
+                        body << parse_conditional
+                      elsif peek?(:return)
+                        body << parse_return
+                      else
+                        body << parse_expr
+                      end
+                    end
+                    def_end = consume!(:close_brace).location
+                    FunctionNode.new(name, arg_names, body, LocationRange.new(def_start, def_end))
       else raise UnsupportedLanguageError, "parse_def expected a valid language, got #{@lang}."
       end
       end
@@ -240,18 +291,22 @@ module Compiler
       end
     def parse_expr
       case peek_type
+      when :let, :var, :const
+        parse_var_set
       when :exponential, :float, :integer
         parse_number
-      when :return
-        parse_return
       when :identifier
         if peek?(:open_paren, 1)
           parse_call
         elsif peek?(:assignment, 1)
           parse_assignment
+        elsif [ :increment, :decrement ].include?(peek_type(1))
+          parse_unary_expr
         else
           parse_var_ref
         end
+      when :not, :increment, :decrement
+        parse_unary_expr
       when :open_paren
         consume!(:open_paren)
         expr = parse_binary_expr
@@ -291,11 +346,10 @@ module Compiler
     end
 
     def parse_var_set
-      js_modifiers = %w[var let const]
+      js_modifiers = %i[var let const]
       java_modifiers = %w[final]
       java_types = %w[byte short int long float double char boolean String]
       modifiers = []
-      init_start = nil
       # let x = 5
       # let y = "hello"
       # const x = "var";
@@ -304,8 +358,8 @@ module Compiler
       if @lang == "javascript"
         init_start = peek_token.location
         modifiers << consume!(:identifier).value if peek_token.value == "export"
-        if js_modifiers.include? peek_token.value
-          modifiers << consume!(:identifier).value
+        if js_modifiers.include? peek_type
+          modifiers << consume!(peek_type).value
         else
           parse_assignment
         end
@@ -336,9 +390,14 @@ module Compiler
     end
 
     def parse_assignment
+      operators = [ :add, :sub, :multiply, :divide ]
       # x = 5
-      name = consume!(:identifier).value
-      assignment_start = name.location
+      name_token = consume!(:identifier)
+      name = name_token.value
+      assignment_start = name_token.location
+      if operators.include?(peek_type)
+
+      end
       consume!(:assignment)
       value = parse_expr
       assignment_end = value.location
@@ -348,19 +407,74 @@ module Compiler
       AssignmentNode.new(name, value, LocationRange.new(assignment_start, assignment_end))
     end
 
-    def parse_declaration
+    def parse_unary_expr
+      if peek?(:not)
+        not_token = consume!(:not)
+        unary_start = not_token.location
+        operator = not_token.value
+        expr = parse_binary_expr(11) # not has the highest BP
+        unary_end = expr.location
+        # pre-increment -> ++x
+      elsif [ :increment, :decrement ].include?(peek_type)
+        operator_token = consume!(peek_type)
+        unary_start = operator_token.location
+        operator = operator_token.value
+        expr = parse_binary_expr
+        unary_end = var.location
+      else
+        # post-increment -> x++
+        expr = parse_binary_expr
+        unary_start = expr.location
+        operator_token = consume!(peek_type)
+        unary_end = operator_token.location
+        operator = operator_token.value
+      end
+      if @lang == "java" && !peek?(:semicolon)
+        raise SyntaxError, "#{unary_end}Expected ';'"
+      end
+      unary_end = consume!(:semicolon).location if peek?(:semicolon)
+      UnaryExprNode.new(expr, operator, LocationRange.new(unary_start, unary_end))
     end
 
     def parse_return
       return_start = consume!(:return).location
       raise SyntaxError, "Unexpected 'return' after return statement" if peek?(:return)
-      value = parse_expr
+      value = parse_binary_expr
+      return_end = value.location
+      if @lang == "java" && !peek?(:semicolon)
+        raise SyntaxError, "#{return_end}Expected ';'"
+      end
+      return_end = consume!(:semicolon).location if peek?(:semicolon)
+      RetNode.new(value, LocationRange.new(return_start, return_end))
     end
 
     def parse_arr
       arr = []
-      consume!(:open_bracket)
-    end
+      if @lang == "java"
+        arr_symbol = :open_brace
+      else
+        arr_symbol = :open_bracket
+      end
+      closing_symbol =
+        {
+          open_bracket: :close_bracket,
+          open_brace: :close_brace
+        }
+      arr_start = consume!(arr_symbol).location
+      unless peek?(closing_symbol[arr_symbol])
+        arr << parse_expr
+        while peek?(:comma)
+          consume!(:comma)
+          arr << parse_expr
+        end
+      end
+      arr_end = consume!(closing_symbol[arr_symbol]).location
+      if @lang == "java" && !peek?(:semicolon)
+        raise SyntaxError, "#{arr_end}Expected ';'"
+      end
+      arr_end = consume!(:semicolon).location if peek?(:semicolon)
+      ArrDeclNode.new(arr, LocationRange.new(arr_start, arr_end))
+      end
 
     def parse_number
       num_type = peek_type
@@ -377,8 +491,13 @@ module Compiler
 
       def parse_call
         # f(x, y, z)
-        call_start = consume!(:identifier).location
-        name = call_start.value
+        name_token = consume!(:identifier)
+        call_start = name_token.location
+        name = name_token.value
+        while peek?(:dot)
+          name << consume!(:dot).value
+          name << consume!(:identifier).value
+        end
         arg_exprs = parse_arg_exprs
         CallNode.new(name, arg_exprs, call_start)
       end

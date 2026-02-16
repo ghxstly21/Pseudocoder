@@ -16,11 +16,15 @@ module Compiler
 
     def parse_while: -> WhileNode
 
+    def parse_for: -> ForNode
+
     def parse_break: -> BreakNode
 
     def parse_continue: -> ContinueNode
 
     def parse_binary_expr: (?float) -> ExpressionNode
+
+    def parse_unary_expr: -> UnaryExprNode
 
     def parse_if: -> IfNode
 
@@ -31,6 +35,12 @@ module Compiler
     def parse_expr: -> ExpressionNode
 
     def is_assignment?: -> bool
+
+    def parse_assignment: -> AssignmentNode
+
+    def parse_return: -> RetNode
+
+    def parse_arr: -> ArrDeclNode
 
     def parse_var_set: -> DeclarationNode
 

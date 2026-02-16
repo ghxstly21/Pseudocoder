@@ -20,9 +20,9 @@ module Compiler
   class FunctionNode < ASTNode
     attr_accessor name: String
     attr_accessor arg_names: Array[String]
-    attr_accessor body: ExpressionNode
+    attr_accessor body: Array[ExpressionNode]
 
-    def initialize: (String, Array[String], ExpressionNode, LocationRange) -> void
+    def initialize: (String, Array[String], Array[ExpressionNode], LocationRange) -> void
   end
 
   class BinaryExprNode < ExpressionNode
@@ -31,6 +31,13 @@ module Compiler
     attr_accessor right: ExpressionNode
 
     def initialize: (ExpressionNode, String, ExpressionNode, LocationRange) -> void
+  end
+
+  class UnaryExprNode < ExpressionNode
+    attr_accessor var: ExpressionNode
+    attr_accessor operator: String
+
+    def initialize: (ExpressionNode, String, LocationRange) -> void
   end
 
   class StatementNode < ASTNode
@@ -47,6 +54,11 @@ module Compiler
     def initialize: (String, Tokenizer::Location) -> void
   end
 
+  class RetNode < StatementNode
+    attr_accessor value: ExpressionNode
+    def initialize: (ExpressionNode, LocationRange) -> void
+  end
+
   class ConditionalNode < StatementNode
     attr_accessor condition: ExpressionNode
     attr_accessor body: Array[ExpressionNode]
@@ -59,15 +71,24 @@ module Compiler
     def initialize: (ExpressionNode, Array[ExpressionNode], LocationRange, ?(IfNode | Array[ExpressionNode])?) -> void
   end
 
-  class WhileNode < ASTNode
-    attr_accessor condition: ExpressionNode
-    attr_accessor body: Array[ExpressionNode]
-
+  class WhileNode < ConditionalNode
     def initialize: (ExpressionNode, Array[ExpressionNode], LocationRange) -> void
+  end
+
+  class ForNode < ConditionalNode
+    attr_accessor var_init: AssignmentNode
+    attr_accessor increment: ExpressionNode
+
+    def initialize: (AssignmentNode, ExpressionNode, ExpressionNode, Array[ExpressionNode], LocationRange) -> void
   end
 
   class ExpressionNode < ASTNode
     def initialize: (LocationRange | Tokenizer::Location) -> void
+  end
+
+  class ArrDeclNode < ExpressionNode
+    attr_accessor values: Array[ExpressionNode]
+    def initialize: (Array[ExpressionNode], LocationRange) -> void
   end
 
   class DeclarationNode < ExpressionNode
