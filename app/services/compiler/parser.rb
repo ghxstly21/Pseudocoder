@@ -409,6 +409,7 @@ module Compiler
 
     def parse_unary_expr
       if peek?(:not)
+        is_prefix = true
         not_token = consume!(:not)
         unary_start = not_token.location
         operator = not_token.value
@@ -416,12 +417,14 @@ module Compiler
         unary_end = expr.location
         # pre-increment -> ++x
       elsif [ :increment, :decrement ].include?(peek_type)
+        is_prefix = true
         operator_token = consume!(peek_type)
         unary_start = operator_token.location
         operator = operator_token.value
         expr = parse_binary_expr
         unary_end = var.location
       else
+        is_prefix = false
         # post-increment -> x++
         expr = parse_binary_expr
         unary_start = expr.location
@@ -433,7 +436,7 @@ module Compiler
         raise SyntaxError, "#{unary_end}Expected ';'"
       end
       unary_end = consume!(:semicolon).location if peek?(:semicolon)
-      UnaryExprNode.new(expr, operator, LocationRange.new(unary_start, unary_end))
+      UnaryExprNode.new(expr, operator, LocationRange.new(unary_start, unary_end), is_prefix: is_prefix)
     end
 
     def parse_return

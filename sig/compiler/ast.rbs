@@ -36,8 +36,9 @@ module Compiler
   class UnaryExprNode < ExpressionNode
     attr_accessor var: ExpressionNode
     attr_accessor operator: String
+    attr_accessor is_prefix: bool
 
-    def initialize: (ExpressionNode, String, LocationRange) -> void
+    def initialize: (ExpressionNode, String, LocationRange, is_prefix: bool) -> void
   end
 
   class StatementNode < ASTNode

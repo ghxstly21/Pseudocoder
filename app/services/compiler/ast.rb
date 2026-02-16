@@ -60,12 +60,13 @@ class BinaryExprNode < ExpressionNode
   end
 end
   class UnaryExprNode < ExpressionNode
-    attr_accessor :var, :operator
+    attr_accessor :var, :operator, :is_prefix
 
-    def initialize(var, operator, location)
+    def initialize(var, operator, location, is_prefix:)
       super location
       @var = var
       @operator = operator
+      @is_prefix = is_prefix
     end
   end
 
