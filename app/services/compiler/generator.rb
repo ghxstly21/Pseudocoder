@@ -30,8 +30,21 @@ class Generator
           "#{node.name} = #{generate(node.value)}"
         end
       when BinaryExprNode then "#{generate(node.left)} #{operator} #{generate(node.right)}"
-      when UnaryExprNode then "#{}"
-      else raise "Currently unsupported expression on type #{node.class} at #{node.location} Add a case!"
+      when UnaryExprNode
+        if node.is_prefix
+          "#{node.operator}#{generate(node.var)}"
+        else
+          "#{generate(node.var)}#{node.operator}"
+        end
+      else raise "Currently unsupported expression on type #{node.class} at #{node.location} Let support know!"
+      end
+    when StatementNode
+      case node
+      when ContinueNode then "continue"
+      when BreakNode then "break"
+      when RetNode then "return #{generate(node.value)}"
+      when ConditionalNode then "not implemented yet"
+      else raise "Currently unsupported expression on type #{node.class} at #{node.location}. Let support know!"
       end
     else raise RuntimeError.new("Unexpected node type: #{node.class}")
     end
