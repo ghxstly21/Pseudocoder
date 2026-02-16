@@ -1,8 +1,15 @@
 module Compiler
 
+  class LocationRange
+    attr_accessor start_loc: Tokenizer::Location | LocationRange
+    attr_accessor end_loc: Tokenizer::Location | LocationRange
+
+    def initialize: (Tokenizer::Location | LocationRange, Tokenizer::Location | LocationRange) -> void
+  end
+
   class ASTNode
-    attr_reader location: Tokenizer::Location
-    def initialize: (Tokenizer::Location) -> void
+    attr_reader location: LocationRange | Tokenizer::Location
+    def initialize: (LocationRange | Tokenizer::Location) -> void
   end
 
   class ProgramNode
@@ -13,12 +20,92 @@ module Compiler
   class FunctionNode < ASTNode
     attr_accessor name: String
     attr_accessor arg_names: Array[String]
-    attr_accessor body: ExpressionNode
+    attr_accessor body: Array[ExpressionNode]
 
-    def initialize: (String, Array[String], ExpressionNode, Tokenizer::Location) -> void
+    def initialize: (String, Array[String], Array[ExpressionNode], LocationRange) -> void
+  end
+
+  class BinaryExprNode < ExpressionNode
+    attr_accessor left: ExpressionNode
+    attr_accessor operator: String
+    attr_accessor right: ExpressionNode
+
+    def initialize: (ExpressionNode, String, ExpressionNode, LocationRange) -> void
+  end
+
+  class UnaryExprNode < ExpressionNode
+    attr_accessor var: ExpressionNode
+    attr_accessor operator: String
+    attr_accessor is_prefix: bool
+
+    def initialize: (ExpressionNode, String, LocationRange, is_prefix: bool) -> void
+  end
+
+  class StatementNode < ASTNode
+    def initialize: (LocationRange | Tokenizer::Location) -> void
+  end
+
+  class BreakNode < StatementNode
+    attr_accessor value: String
+    def initialize: (String, Tokenizer::Location) -> void
+  end
+
+  class ContinueNode < StatementNode
+    attr_accessor value: String
+    def initialize: (String, Tokenizer::Location) -> void
+  end
+
+  class RetNode < StatementNode
+    attr_accessor value: ExpressionNode
+    def initialize: (ExpressionNode, LocationRange) -> void
+  end
+
+  class ConditionalNode < StatementNode
+    attr_accessor condition: ExpressionNode
+    attr_accessor body: Array[ExpressionNode]
+    def initialize: (ExpressionNode, Array[ExpressionNode], LocationRange) -> void
+  end
+
+  class IfNode < ConditionalNode
+    attr_accessor else_body: (IfNode | Array[ExpressionNode])?
+
+    def initialize: (ExpressionNode, Array[ExpressionNode], LocationRange, ?(IfNode | Array[ExpressionNode])?) -> void
+  end
+
+  class WhileNode < ConditionalNode
+    def initialize: (ExpressionNode, Array[ExpressionNode], LocationRange) -> void
+  end
+
+  class ForNode < ConditionalNode
+    attr_accessor var_init: AssignmentNode
+    attr_accessor increment: ExpressionNode
+
+    def initialize: (AssignmentNode, ExpressionNode, ExpressionNode, Array[ExpressionNode], LocationRange) -> void
   end
 
   class ExpressionNode < ASTNode
+    def initialize: (LocationRange | Tokenizer::Location) -> void
+  end
+
+  class ArrDeclNode < ExpressionNode
+    attr_accessor values: Array[ExpressionNode]
+    def initialize: (Array[ExpressionNode], LocationRange) -> void
+  end
+
+  class DeclarationNode < ExpressionNode
+    attr_accessor modifiers: Array[String]
+    attr_accessor data_type: (String?)
+    attr_accessor name: ExpressionNode
+    attr_accessor value: ExpressionNode
+
+    def initialize: (Array[String], ExpressionNode, ExpressionNode, LocationRange, ?String?) -> void
+  end
+
+  class AssignmentNode < ExpressionNode
+    attr_accessor name: String
+    attr_accessor value: ExpressionNode
+
+    def initialize: (String, ExpressionNode, LocationRange) -> void
   end
 
   class NumberNode < ExpressionNode

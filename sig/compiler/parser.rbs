@@ -4,13 +4,45 @@ module Compiler
     @tokens: [Tokenizer::Token]
     @lang: String
 
+    attr_accessor ast: [ASTNode]
+
     def initialize: ([Tokenizer::Token], String) -> void
 
     def parse: -> ProgramNode
 
     private
 
+    def parse_conditional: -> StatementNode
+
+    def parse_while: -> WhileNode
+
+    def parse_for: -> ForNode
+
+    def parse_break: -> BreakNode
+
+    def parse_continue: -> ContinueNode
+
+    def parse_binary_expr: (?float) -> ExpressionNode
+
+    def parse_unary_expr: -> UnaryExprNode
+
+    def parse_if: -> IfNode
+
+    def parse_else: -> (IfNode | Array[ExpressionNode])
+
+    def binding_power: (String) -> [Integer]
+
     def parse_expr: -> ExpressionNode
+
+    def is_assignment?: -> bool
+
+    def parse_assignment: -> AssignmentNode
+
+    def parse_return: -> RetNode
+
+    def parse_arr: -> ArrDeclNode
+
+    def parse_var_set: -> DeclarationNode
 
     def parse_python: -> Array[ASTNode]
 
@@ -34,7 +66,11 @@ module Compiler
 
     def peek_type: (?Integer) -> Symbol
 
+    def peek_token: (?Integer) -> Tokenizer::Token
+
     def consume!: (Symbol) -> Tokenizer::Token
+
+    def loc_range: (Tokenizer::Location | LocationRange, Tokenizer::Location | LocationRange) -> LocationRange
   end
 
 end
