@@ -59,6 +59,15 @@ class BinaryExprNode < ExpressionNode
     @right = right
   end
 end
+  class UnaryExprNode < ExpressionNode
+    attr_accessor :var, :operator
+
+    def initialize(var, operator, location)
+      super location
+      @var = var
+      @operator = operator
+    end
+  end
 
   class StatementNode < ASTNode
   end
@@ -72,6 +81,13 @@ end
   end
 
   class BreakNode < StatementNode
+    attr_accessor :value
+    def initialize(value, location)
+      super location
+      @value = value
+    end
+  end
+  class RetNode < StatementNode
     attr_accessor :value
     def initialize(value, location)
       super location
@@ -99,6 +115,22 @@ end
   class WhileNode < ConditionalNode
     def initialize(condition, body, location)
       super(condition, body, location)
+    end
+  end
+
+  class ForNode < ConditionalNode
+    attr_accessor :var_init, :increment
+    def initialize(var_init, condition, increment, body, location)
+      super(condition, body, location)
+      @var_init = var_init
+      @increment = increment
+    end
+  end
+  class ArrDeclNode < ExpressionNode
+    attr_accessor :values
+    def initialize(values, location)
+      super location
+      @values = values
     end
   end
 
