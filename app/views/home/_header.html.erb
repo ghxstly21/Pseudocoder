@@ -74,13 +74,15 @@
                             <p style="margin: 0; font-size: 14px; font-weight: bold; color: #333;"><%= current_user.name %></p>
                             <p style="margin: 4px 0 0 0; font-size: 12px; color: #666;"><%= current_user.email %></p>
                         </div>
+                        <%if !session[:guest_session]%>
                         <%= link_to "Account Settings", edit_user_path(current_user), style: "display: block; padding: 12px 16px; font-size: 14px; color: #333; text-decoration: none;", onmouseover: "this.style.backgroundColor='#f3f4f6'", onmouseout: "this.style.backgroundColor='transparent'" %>
-
+                        <% end %>
                         <form action="<%= logout_path %>" method="post">
                             <input type="hidden" name="_method" value="delete">
                             <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
                             <button type="submit" style="display: block; width: 100%; padding: 12px 16px; font-size: 14px; color: #dc2626; text-decoration: none; border: none; border-top: 1px solid #ddd; background: none; cursor: pointer; text-align: left;" onmouseover="this.style.backgroundColor='#f3f4f6'" onmouseout="this.style.backgroundColor='transparent'">Logout</button>
                         </form>
+
                     </div>
                     <% else %>
                     <%= link_to "Login", "/login", style: "text-decoration: none; color: white; font-size: 18px;" %>
