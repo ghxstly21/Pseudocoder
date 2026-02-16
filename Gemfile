@@ -2,7 +2,13 @@ source "https://rubygems.org"
 
 gem "rails", "~> 8.1.2"
 gem "propshaft"
-gem "sqlite3", ">= 2.1"
+group :development, :test do
+  gem "sqlite3", ">=2.1"
+end
+
+group :production do
+  gem "pg"
+end
 gem "puma", ">= 5.0"
 gem "importmap-rails"
 gem "turbo-rails"
@@ -37,4 +43,4 @@ group :test do
   gem "rspec"
 end
 
-gem "tailwindcss-rails", "~> 4.4"
+gem "tailwindcss-rails", "~> 3.3.1"

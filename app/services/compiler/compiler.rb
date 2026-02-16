@@ -1,5 +1,8 @@
 require "bigdecimal"
 module Compiler
+  class Compiler
+  end
+
   require_relative "tokenizer"
   require_relative "parser"
   require_relative "generator"

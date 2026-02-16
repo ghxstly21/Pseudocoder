@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/*
+ *= require bootstrap.min
+ *= require fontawesome
+ *= require templatemo-edu-meeting
+ *= require owl
+ *= require lightbox
+ *= require_self
+ */

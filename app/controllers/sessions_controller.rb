@@ -15,8 +15,7 @@ class SessionsController < ApplicationController
   end
 
   def guest_login
-    # Create a temporary guest user record (or use session-only approach)
-    guest_name = params[:username] || "Guest"
+    guest_name ="Guest"
     session[:user_id] = nil
     session[:guest_session] = true
     session[:guest_name] = guest_name
