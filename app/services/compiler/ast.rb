@@ -1,4 +1,8 @@
 module Compiler
+  class Ast
+    # Namespace for AST node classes
+  end
+
   class LocationRange
     attr_accessor :start_loc, :end_loc
     def initialize(start_loc, end_loc)
