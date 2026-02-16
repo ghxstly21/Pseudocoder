@@ -1,5 +1,3 @@
-<html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,9 +57,9 @@
         <nav>
             <ul class="nav">
                 <li><a href="/home">Home</a></li>
-                <li><a href="/aboutus">About</a></li>
-                <li><a href="/services">Services</a></li>
-                <li><a href="/contactus">Contact</a></li>
+                <li><a href="/aboutus" target="_blank">About</a></li>
+                <li><a href="/services" target="_blank">Services</a></li>
+                <li><a href="/contactus" target="_blank">Contact</a></li>
                 <li style="position: relative; margin-left: 40px;" id="userDropdown">
                     <% if current_user.present? %>
                     <button type="button" id="dropdownBtn" onclick="toggleDropdown()" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 0;">
@@ -76,12 +74,15 @@
                             <p style="margin: 0; font-size: 14px; font-weight: bold; color: #333;"><%= current_user.name %></p>
                             <p style="margin: 4px 0 0 0; font-size: 12px; color: #666;"><%= current_user.email %></p>
                         </div>
+                        <%if !session[:guest_session]%>
                         <%= link_to "Account Settings", edit_user_path(current_user), style: "display: block; padding: 12px 16px; font-size: 14px; color: #333; text-decoration: none;", onmouseover: "this.style.backgroundColor='#f3f4f6'", onmouseout: "this.style.backgroundColor='transparent'" %>
-
-                        <input type="hidden" name="_method" value="delete">
-                        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-                        <button type="submit" style="display: block; width: 100%; padding: 12px 16px; font-size: 14px; color: #dc2626; text-decoration: none; border: none; border-top: 1px solid #ddd; background: none; cursor: pointer; text-align: left;" onmouseover="this.style.backgroundColor='#f3f4f6'" onmouseout="this.style.backgroundColor='transparent'">Logout</button>
+                        <% end %>
+                        <form action="<%= logout_path %>" method="post">
+                            <input type="hidden" name="_method" value="delete">
+                            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+                            <button type="submit" style="display: block; width: 100%; padding: 12px 16px; font-size: 14px; color: #dc2626; text-decoration: none; border: none; border-top: 1px solid #ddd; background: none; cursor: pointer; text-align: left;" onmouseover="this.style.backgroundColor='#f3f4f6'" onmouseout="this.style.backgroundColor='transparent'">Logout</button>
                         </form>
+
                     </div>
                     <% else %>
                     <%= link_to "Login", "/login", style: "text-decoration: none; color: white; font-size: 18px;" %>
@@ -99,12 +100,14 @@
             menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
         }
 
-        document.addEventListener('click', function(event) {
-            const dropdown = document.getElementById('userDropdown');
-            if (!dropdown.contains(event.target)) {
-                document.getElementById('dropdownMenu').style.display = 'none';
+        window.onclick = function(event) {
+            if (!event.target.matches('#dropdownBtn') && !event.target.closest('#dropdownBtn')) {
+                const menu = document.getElementById('dropdownMenu');
+                if (menu && menu.style.display === 'block') {
+                    menu.style.display = 'none';
+                }
             }
-        });
+        }
     </script>
 
 </body>

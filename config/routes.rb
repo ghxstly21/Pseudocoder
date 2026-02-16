@@ -25,4 +25,10 @@ Rails.application.routes.draw do
   get "/contactus", to: "pages#contactus", as: "contact"
   post "contact_submit", to: "pages#contact_submit"
   get "services", to: "pages#services"
+  get "/affiliate", to: "pages#affiliateprogram"
+  get "/faq", to: "pages#faq"
+  get "/status", to: "pages#status"
+  get "/feedback", to: "pages#feedback"
+  get "/docs", to: "pages#documentation"
+  get "/frontend",to:"pages#frontend", as: "frontened_presentation"
 end

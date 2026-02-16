@@ -1,7 +1,7 @@
 require "set"
-require_relative "../../errors/UnsupportedLanguageError"
-require_relative "../../errors/LanguageRecognitionError"
-require_relative "../../errors/TokenError"
+require_relative "../../errors/compiler/unsupported_language_error"
+require_relative "../../errors/compiler/language_recognition_error"
+require_relative "../../errors/compiler/token_error"
 
 module Compiler
 class Tokenizer
@@ -214,7 +214,8 @@ class Tokenizer
         ext = File.extname(path_or_code)
       elsif path_or_code.respond_to?(:read)
         @code = path_or_code.read
-        ext = File.extname(path_or_code.respond_to?(:original_filename) ? path_or_code.original_filename : path_or_code.path)
+        filename = path_or_code.respond_to?(:original_filename) ? path_or_code.original_filename : path_or_code.to_path
+        ext = File.extname(filename || '')
       else
         raise Errno::ENOENT, "Invalid file upload. Please try again!"
       end

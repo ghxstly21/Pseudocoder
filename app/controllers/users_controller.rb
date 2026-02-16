@@ -27,11 +27,11 @@ class UsersController < ApplicationController
         if @user.save
           redirect_to home_path, notice: "Password updated successfully!"
         else
-          @user.errors.add(:password, "could not be updated")
+          @user.errors.add(:current_password, "Password could not be updated")
           render :edit, status: :unprocessable_entity
         end
       else
-        @user.errors.add(:current_password, "is incorrect")
+        @user.errors.add(:current_password, "Password is incorrect")
         render :edit, status: :unprocessable_entity
       end
     else

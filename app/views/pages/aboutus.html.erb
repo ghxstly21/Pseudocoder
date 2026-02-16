@@ -33,6 +33,12 @@
         color: white;
     }
 
+    .about-section h1 {
+        font-size: 2.5rem;
+        margin: 0 0 16px;
+        text-transform: uppercase;
+    }
+
     .container {
         padding: 0 16px;
     }
@@ -99,16 +105,36 @@
         clear: both;
         width: 100%;
     }
+
+    .team-title {
+        text-align: center;
+        font-size: 1.75rem;
+        margin: 40px 0 16px;
+        color: #2a2f3a;
+        text-transform: uppercase;
+    }
+
+    .about-description {
+        padding-left: 100px;
+        padding-right: 100px;
+    }
 </style>
 
 <div class="about-section">
     <h1>About Us</h1>
-    <p>A web app that allows users to turn their code into pseudocode. It is powered by a compiler built in Ruby that recognizes code from a programming language such as Python, Java, or JavaScript and turns it into English pseudocode that anyone can understand. As part of our web app, we will include an account system where users can view the output of their previously compiled files. Pseudocoder will help anyone who wants a better understanding of their code.
+    <p class="about-description">Pseudocoder is a web application created by students at Bergen County Academies as a mid-year project, designed to help anyone better understand programming logic. Our platform allows users to convert code from languages such as Python, Java, and JavaScript into clear, human-readable pseudocode. By breaking down complex syntax into structured English explanations, it makes programming more approachable for beginners, learners, and anyone curious about how code works.
+
+        <br><br>The application is built using Ruby on Rails, leveraging the framework’s Model–View–Controller architecture to provide a secure and organized user experience. Users can create accounts, securely log in, update their profiles, and manage their passwords with confidence. Passwords are encrypted with bcrypt, and token-based workflows are implemented for password resets and email confirmations, ensuring both security and usability.
+
+        <br><br> At the core of Pseudocoder is a custom-built Ruby compiler engine that handles the heavy lifting. Submitted code is first analyzed to detect its programming language, then tokenized into structured units, parsed into an Abstract Syntax Tree (AST), and finally transformed into readable pseudocode. This pipeline allows users to see exactly how their code executes in a language-independent way, making programming concepts easier to grasp.
+
+        <br><br>Beyond its technical functionality, Pseudocoder also serves as a learning archive. Users can view the results of previously compiled files, track their progress, and revisit their code transformations anytime. This project reflects our dedication as BCA students to combining strong programming skills with practical web development, creating a tool that is both educational and engaging.
+
+        <br><br> Pseudocoder demonstrates how thoughtful design, modern web frameworks, and compiler theory can come together in a student project to make coding more accessible and understandable for everyone.
     </p>
-    <p>Mid-year project created by BCA students.</p>
 </div>
 
-<h2 style="text-align:center">Development Team</h2>
+<h2 class="team-title">Development Team</h2>
 <div class="row">
     <div class="column">
         <div class="card">
@@ -136,7 +162,7 @@
             </div>
         </div>
     </div>
-    <h2 style="text-align:center">Investment Team</h2>
+    <h2 class="team-title">Investment Team</h2>
     <div class=" column">
         <div class="card">
             <img src="<%= image_path('ryan.jpg') %>" alt="Mike" style="width:100%">

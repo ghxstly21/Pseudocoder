@@ -1,6 +1,6 @@
 require_relative "ast"
-require_relative "../../errors/UnsupportedLanguageError"
-require_relative "../../errors/SyntaxError"
+require_relative "../../errors/compiler/unsupported_language_error"
+require_relative "../../errors/compiler/syntax_error"
 
 module Compiler
   # noinspection RubyTooManyMethodsInspection
