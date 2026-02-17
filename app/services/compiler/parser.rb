@@ -39,10 +39,10 @@ module Compiler
         case peek_type
         when :function
           @ast << parse_def
-        when :if, :else, :while
-          parse_conditional
+        when :if, :else, :while, :for
+          @ast << parse_conditional
         else
-          raise "Unsupported node_type by parse_js: #{peek_type}"
+          raise "Unsupported node type by parse_js: #{peek_type}"
         end
       end
       @ast
@@ -55,6 +55,7 @@ module Compiler
       when :if then parse_if
       when :else then raise("Line #{peek_token.location.line}, Column #{peek_token.location.column}\nFound 'else' with no matching 'if'.")
       when :while then parse_while
+      when :for then parse_for
       else raise "Currently unsupported conditional at #{consume!(condition_type).location}"
       end
     end
@@ -78,6 +79,8 @@ module Compiler
         raise SyntaxError, "Unexpected 'else' inside if statement body"
       when :if
         body << parse_if
+      when :return
+        body << parse_return
       else
         body << parse_expr
       end
@@ -86,8 +89,9 @@ module Compiler
       if peek?(:else)
         else_body = parse_else
         IfNode.new(condition, body, LocationRange.new(if_start, if_end), else_body)
-      end
+      else
       IfNode.new(condition, body, LocationRange.new(if_start, if_end))
+      end
     end
 
     def parse_else
@@ -109,10 +113,13 @@ module Compiler
           raise SyntaxError, "Unexpected 'else' inside else statement body"
         when :if
           body << parse_if
+        when :return
+          body << parse_return
         else
           body << parse_expr
         end
       end
+      consume!(:close_brace)
       body
     end
 
@@ -141,6 +148,8 @@ module Compiler
           body << parse_break
         when :while
           body << parse_while
+        when :return
+          body << parse_return
         else
           body << parse_expr
         end
@@ -153,7 +162,7 @@ module Compiler
       body = []
       unary_exprs = %i[increment decrement]
       allowed_steps = %i[add_assign sub_assign mul_assign div_assign]
-
+      allowed_types = %i[let var const byte short int long]
       # for(let/var i = 0; i < 10; i++) {}
       # for(let/const/var variable of/in list) {}
       # for(int i = 0; i < 10; i++) {}
@@ -162,9 +171,8 @@ module Compiler
       # for i in _
       for_start = consume!(:for).location
       consume!(:open_paren)
-      raise SyntaxError, "#{for_start}Expected variable initialization" unless peek?(:identifier)
-      init_node = parse_assignment
-      consume!(:semicolon)
+      raise SyntaxError, "#{for_start}Expected variable initialization" unless allowed_types.include?(peek_type)
+      init_node = parse_var_set
       comparison = parse_binary_expr
       consume!(:semicolon)
       # ++i i++ i += 3
@@ -206,7 +214,7 @@ module Compiler
         comparison,
         increment,
         body,
-        LocationRange(for_start, for_end)
+        LocationRange.new(for_start, for_end)
       )
     end
 
@@ -240,9 +248,9 @@ module Compiler
       when "+=", "-=", "*=", "/=" then [ 1, 0 ]
       when "or", "||" then [ 1, 2 ]
       when "and", "&&" then [ 3, 4 ]
-      when "<", ">", "==", "!=", "===" then [ 5, 6 ]
+      when "<", ">", "<=", ">=", "==", "!=", "===" then [ 5, 6 ]
       when "+", "-" then [ 7, 8 ]
-      when "*", "/" then [ 9, 10 ]
+      when "*", "/", "%" then [ 9, 10 ]
       else raise "Expected an operator (char) when getting binding power, got #{operator.class}"
       end
     end
@@ -263,7 +271,7 @@ module Compiler
                     consume!(:open_brace)
                     body = []
                     until peek?(:close_brace)
-                      if %i[if else while].include?(peek_type)
+                      if %i[if else while for].include?(peek_type)
                         body << parse_conditional
                       elsif peek?(:return)
                         body << parse_return
@@ -296,7 +304,12 @@ module Compiler
       when :exponential, :float, :integer
         parse_number
       when :identifier
-        if peek?(:open_paren, 1)
+        i = 1
+        while peek?(:dot, i)
+          raise SyntaxError, "Expected identifier after '.'" unless peek?(:identifier, i+1)
+          i += 2
+        end
+        if peek?(:open_paren, i)
           parse_call
         elsif peek?(:assignment, 1)
           parse_assignment
@@ -314,6 +327,8 @@ module Compiler
         expr
       when :open_bracket
         parse_arr
+      when :string
+        parse_str
       else
         raise SyntaxError, "Expected a valid expression."
       end
@@ -363,7 +378,7 @@ module Compiler
         else
           parse_assignment
         end
-        name = parse_var_ref
+        name = parse_var_ref.value
         consume!(:assignment)
         value = parse_expr
         init_end = value.location
@@ -381,7 +396,7 @@ module Compiler
         elsif peek?(:identifier)
           parse_assignment
         end
-        name = parse_var_ref
+        name = parse_var_ref.value
         consume!(:assignment)
         value = parse_expr
         init_end = consume!(:semicolon).location
@@ -390,14 +405,10 @@ module Compiler
     end
 
     def parse_assignment
-      operators = [ :add, :sub, :multiply, :divide ]
       # x = 5
       name_token = consume!(:identifier)
       name = name_token.value
       assignment_start = name_token.location
-      if operators.include?(peek_type)
-
-      end
       consume!(:assignment)
       value = parse_expr
       assignment_end = value.location
@@ -421,12 +432,12 @@ module Compiler
         operator_token = consume!(peek_type)
         unary_start = operator_token.location
         operator = operator_token.value
-        expr = parse_binary_expr
-        unary_end = var.location
+        expr = parse_var_ref
+        unary_end = expr.location
       else
         is_prefix = false
         # post-increment -> x++
-        expr = parse_binary_expr
+        expr = parse_var_ref
         unary_start = expr.location
         operator_token = consume!(peek_type)
         unary_end = operator_token.location
@@ -477,7 +488,12 @@ module Compiler
       end
       arr_end = consume!(:semicolon).location if peek?(:semicolon)
       ArrDeclNode.new(arr, LocationRange.new(arr_start, arr_end))
-      end
+    end
+
+    def parse_str
+      str_token = consume!(:string)
+      StringNode.new(str_token.value, str_token.location)
+    end
 
     def parse_number
       num_type = peek_type
@@ -508,11 +524,12 @@ module Compiler
     def parse_arg_exprs
       arg_exprs = []
       consume!(:open_paren)
+
       unless peek?(:close_paren)
-        arg_exprs << consume!(:identifier).value
+        arg_exprs << parse_binary_expr
         while peek?(:comma)
           consume!(:comma)
-          arg_exprs << consume!(:identifier).value
+          arg_exprs << parse_binary_expr
         end
       end
       consume!(:close_paren)
@@ -520,8 +537,13 @@ module Compiler
     end
 
     def parse_var_ref
-      token = consume! :identifier
-      VarRefNode.new(token.value, token.location)
+      var_token = consume!(:identifier)
+      value = var_token.value
+      while peek?(:dot)
+        value << consume!(:dot).value
+        value << consume!(:identifier).value
+      end
+      VarRefNode.new(value, var_token.location)
     end
 
     def consume!(expected_type)

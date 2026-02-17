@@ -193,4 +193,12 @@ class VarRefNode < ExpressionNode
     @value = value
   end
 end
+
+  class StringNode < ExpressionNode
+    attr_accessor :value
+    def initialize(value, location)
+      super location
+      @value = value
+    end
+  end
 end

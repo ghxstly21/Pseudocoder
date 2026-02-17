@@ -4,10 +4,27 @@ module Compiler
 
     attr_reader ast: ProgramNode
 
+    attr_reader instructions: Array[String]
+
     def initialize: (ProgramNode) -> void
 
     def generate: (ASTNode | ProgramNode) -> String
 
+    private
+
+    def generate_fn: (FunctionNode) -> String
+
+    def generate_expr: (ExpressionNode) -> String
+
+    def generate_stmt: (StatementNode) -> String
+
+    def generate_conditional: (ConditionalNode) -> String
+
+    def generate_if: (IfNode) -> String
+
+    def generate_while: (WhileNode) -> String
+
+    def generate_for: (ForNode) -> String
 end
 
 end

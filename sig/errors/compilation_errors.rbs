@@ -10,4 +10,7 @@ module Compiler
 
   class SyntaxError < StandardError
   end
+
+  class GenerationError < StandardError
+  end
 end
