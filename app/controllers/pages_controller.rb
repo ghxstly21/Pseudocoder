@@ -18,21 +18,12 @@ class PagesController < ApplicationController
     @subject    = params[:subject]
 
     begin
-      Rails.logger.info "=== ATTEMPTING TO SEND EMAIL ==="
-      Rails.logger.info "SMTP User: #{ENV['SMTP_USERNAME'].present? ? 'SET' : 'NOT SET'}"
-      Rails.logger.info "SMTP Pass: #{ENV['SMTP_PASSWORD'].present? ? 'SET' : 'NOT SET'}"
+      Rails.logger.info "=== SENDING EMAIL VIA RESEND ==="
 
-      # Try async delivery first, fall back to sync if queue isn't available
-      begin
-        ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_later
-        Rails.logger.info "=== EMAIL QUEUED SUCCESSFULLY ==="
-      rescue SolidQueue::Job::EnqueueError => e
-        Rails.logger.warn "=== QUEUE UNAVAILABLE, SENDING SYNCHRONOUSLY ==="
-        Rails.logger.warn e.message
-        ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_now
-        Rails.logger.info "=== EMAIL SENT SYNCHRONOUSLY ==="
-      end
+      # Send email via Resend with deliver_later for async processing
+      ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_later
 
+      Rails.logger.info "=== EMAIL QUEUED SUCCESSFULLY ==="
       flash[:notice] = "Thank you! Your message has been sent."
     rescue StandardError => e
       Rails.logger.error "=== EMAIL FAILED: #{e.class} ==="
