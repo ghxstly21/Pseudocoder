@@ -58,7 +58,7 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: ENV.fetch("MAILER_HOST", "https://pseudocoder-1.onrender.com") }
+  config.action_mailer.default_url_options = { host: ENV.fetch("MAILER_HOST", "pseudocoder-1.onrender.com") }
 
   # Specify outgoing SMTP server using environment variables
   config.action_mailer.delivery_method = :smtp
