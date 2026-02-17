@@ -18,23 +18,19 @@ class PagesController < ApplicationController
     @subject    = params[:subject]
 
     begin
-      Rails.logger.info "=== ATTEMPTING TO SEND EMAIL ==="
+      Rails.logger.info "=== QUEUEING EMAIL TO SEND ==="
       Rails.logger.info "SMTP User: #{ENV['SMTP_USERNAME'].present? ? 'SET' : 'NOT SET'}"
       Rails.logger.info "SMTP Pass: #{ENV['SMTP_PASSWORD'].present? ? 'SET' : 'NOT SET'}"
 
-      ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_now
+      ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_later
 
-      Rails.logger.info "=== EMAIL SENT SUCCESSFULLY ==="
-      flash[:notice] = "Thank you! Your message has been sent."
-    rescue Errno::ECONNREFUSED => e
-      Rails.logger.error "=== EMAIL FAILED: Connection refused ==="
-      Rails.logger.error e.message
-      flash[:alert] = "Unable to send email at this time. Please try again later or contact us directly at theofficialpseudocoder@gmail.com"
+      Rails.logger.info "=== EMAIL QUEUED SUCCESSFULLY ==="
+      flash[:notice] = "Thank you! Your message has been queued and will be sent shortly."
     rescue StandardError => e
-      Rails.logger.error "=== EMAIL FAILED: #{e.class} ==="
+      Rails.logger.error "=== EMAIL QUEUE FAILED: #{e.class} ==="
       Rails.logger.error e.message
       Rails.logger.error e.backtrace.first(5).join("\n")
-      flash[:alert] = "An error occurred while sending your message. Please try again later."
+      flash[:alert] = "Unable to queue your message at this time. Please try again later or contact us directly at theofficialpseudocoder@gmail.com"
     end
 
     redirect_to contact_path
