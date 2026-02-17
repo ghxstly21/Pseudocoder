@@ -15,6 +15,7 @@ module Compiler
   # @raise LanguageRecognitionError if the language could not be identified based on code alone
   # @raise TokenError if the code contains currently unsupported tokens
   # @raise SyntaxError if the code has incorrect syntax
+  # @raise GenerationError if generation for a piece of code has not been implemented
   def self.compile(path_or_code, from_file: true)
     tokenizer = from_file ? Tokenizer.new(path_or_code) : Tokenizer.new(path_or_code, from_file: false)
     language = tokenizer.lang
