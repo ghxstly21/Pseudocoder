@@ -27,14 +27,14 @@ class CompilationsController < ApplicationController
 
       else
         flash.now[:alert] = "Please provide code or upload a file"
-        @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+        @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
         return render "pages/home", status: :unprocessable_entity
       end
 
       # Validate that output was generated
       if output_text.blank?
         flash.now[:alert] = "Compilation failed: No output generated. Please check your code syntax."
-        @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+        @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
         return render "pages/home", status: :unprocessable_entity
       end
 
@@ -47,33 +47,36 @@ class CompilationsController < ApplicationController
       end
 
       @pseudocode_output = output_text
-      @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+      @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
       flash.now[:notice] = "Compilation successful in #{time} seconds!"
       render "pages/home"
 
     rescue Compiler::UnsupportedLanguageError => e
       flash.now[:alert] = "Unsupported language: #{e.message}"
-      @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+      @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
       render "pages/home", status: :unprocessable_entity
     rescue Compiler::LanguageRecognitionError => e
       flash.now[:alert] = "Could not recognize language: #{e.message}"
-      @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+      @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
       render "pages/home", status: :unprocessable_entity
     rescue Compiler::TokenError => e
       flash.now[:alert] = "Token error: #{e.message}"
-      @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+      @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
       render "pages/home", status: :unprocessable_entity
     rescue ::Compiler::SyntaxError => e
       flash.now[:alert] = "Syntax error: #{e.message}"
-      @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+      @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
       render "pages/home", status: :unprocessable_entity
     rescue Errno::ENOENT
       flash.now[:alert] = "File upload error. Please try again."
-      @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+      @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
       render "pages/home", status: :unprocessable_entity
+    rescue Compiler::GenerationError => e
+      flash.now[:alert] = "Unsupported feature: #{e.message}"
+      @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
     rescue => e
       flash.now[:alert] = "Compilation error: #{e.message}"
-      @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+      @compilations = current_user && session[:guest_session] == false ? current_user.compilations.order(created_at: :desc) : []
       render "pages/home", status: :unprocessable_entity
     end
   end
