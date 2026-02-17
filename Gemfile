@@ -16,6 +16,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 gem "bcrypt", "~> 3.1.21"
+gem "resend"
 
 gem "tzinfo-data"
 gem "solid_cache"
