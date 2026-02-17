@@ -262,6 +262,7 @@ module Compiler
 
       when "java"
 
+
       when "javascript"
                     # function foo(arg1, arg2) {body}
                     def_start = consume!(:function).location
@@ -330,7 +331,7 @@ module Compiler
       when :string
         parse_str
       else
-        raise SyntaxError, "Expected a valid expression."
+        raise SyntaxError, "Expected a valid expression, got #{peek_type}."
       end
     end
     def is_assignment?
