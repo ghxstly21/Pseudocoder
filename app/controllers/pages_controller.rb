@@ -20,10 +20,10 @@ class PagesController < ApplicationController
     begin
       Rails.logger.info "=== SENDING EMAIL VIA RESEND ==="
 
-      # Send email via Resend with deliver_later for async processing
-      ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_later
+      # Resend is fast, so deliver_now is safe and reliable
+      ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_now
 
-      Rails.logger.info "=== EMAIL QUEUED SUCCESSFULLY ==="
+      Rails.logger.info "=== EMAIL SENT SUCCESSFULLY ==="
       flash[:notice] = "Thank you! Your message has been sent."
     rescue StandardError => e
       Rails.logger.error "=== EMAIL FAILED: #{e.class} ==="
