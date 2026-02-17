@@ -30,5 +30,5 @@ Rails.application.routes.draw do
   get "/status", to: "pages#status"
   get "/feedback", to: "pages#feedback"
   get "/docs", to: "pages#documentation"
-  get "/frontend",to:"pages#frontend", as: "frontened_presentation"
+  get "/frontend", to: "pages#frontend", as: "frontened_presentation"
 end

@@ -215,7 +215,7 @@ class Tokenizer
       elsif path_or_code.respond_to?(:read)
         @code = path_or_code.read
         filename = path_or_code.respond_to?(:original_filename) ? path_or_code.original_filename : path_or_code.to_path
-        ext = File.extname(filename || '')
+        ext = File.extname(filename || "")
       else
         raise Errno::ENOENT, "Invalid file upload. Please try again!"
       end

@@ -67,7 +67,7 @@ module Compiler
   end
 
   class IfNode < ConditionalNode
-    attr_accessor else_body: (IfNode | Array[ExpressionNode])?
+    attr_accessor else_body: (IfNode | Array[ExpressionNode] | nil)
 
     def initialize: (ExpressionNode, Array[ExpressionNode], LocationRange, ?(IfNode | Array[ExpressionNode])?) -> void
   end
@@ -77,10 +77,10 @@ module Compiler
   end
 
   class ForNode < ConditionalNode
-    attr_accessor var_init: AssignmentNode
+    attr_accessor var_init: AssignmentNode | DeclarationNode
     attr_accessor increment: ExpressionNode
 
-    def initialize: (AssignmentNode, ExpressionNode, ExpressionNode, Array[ExpressionNode], LocationRange) -> void
+    def initialize: (AssignmentNode | DeclarationNode, ExpressionNode, ExpressionNode, Array[ExpressionNode], LocationRange) -> void
   end
 
   class ExpressionNode < ASTNode
@@ -95,10 +95,10 @@ module Compiler
   class DeclarationNode < ExpressionNode
     attr_accessor modifiers: Array[String]
     attr_accessor data_type: (String?)
-    attr_accessor name: ExpressionNode
+    attr_accessor name: String
     attr_accessor value: ExpressionNode
 
-    def initialize: (Array[String], ExpressionNode, ExpressionNode, LocationRange, ?String?) -> void
+    def initialize: (Array[String], String, ExpressionNode, LocationRange, ?String?) -> void
   end
 
   class AssignmentNode < ExpressionNode
@@ -127,12 +127,17 @@ module Compiler
 
   class CallNode < ExpressionNode
     attr_accessor name: String
-    attr_accessor arg_exprs: Array[String]
+    attr_accessor arg_exprs: Array[ExpressionNode]
 
-    def initialize: (String, Array[String], Tokenizer::Location) -> void
+    def initialize: (String, Array[ExpressionNode], Tokenizer::Location) -> void
   end
 
   class VarRefNode < ExpressionNode
+    attr_accessor value: String
+    def initialize: (String, Tokenizer::Location) -> void
+  end
+
+  class StringNode < ExpressionNode
     attr_accessor value: String
     def initialize: (String, Tokenizer::Location) -> void
   end
