@@ -31,6 +31,13 @@ class CompilationsController < ApplicationController
         return render "pages/home", status: :unprocessable_entity
       end
 
+      # Validate that output was generated
+      if output_text.blank?
+        flash.now[:alert] = "Compilation failed: No output generated. Please check your code syntax."
+        @compilations = current_user && session[:guest_session] != true ? current_user.compilations.order(created_at: :desc) : []
+        return render "pages/home", status: :unprocessable_entity
+      end
+
       unless session[:guest_session]
         @compilation = current_user.compilations.create!(
           input_type: input_type,

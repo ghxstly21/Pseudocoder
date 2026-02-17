@@ -17,9 +17,15 @@ class PagesController < ApplicationController
     @phonenumber    = params[:phonenumber]
     @subject    = params[:subject]
 
-    ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_now
+    begin
+      ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_now
+      flash[:notice] = "Thank you! Your message has been sent."
+    rescue Errno::ECONNREFUSED => e
+      flash[:alert] = "Unable to send email at this time. Please try again later or contact us directly at theofficialpseudocoder@gmail.com"
+    rescue StandardError => e
+      flash[:alert] = "An error occurred while sending your message. Please try again later."
+    end
 
-    flash[:notice] = "Thank you! Your message has been sent."
     redirect_to contact_path
   end
 end
