@@ -41,6 +41,14 @@ class ProgramNode
   end
 end
 
+  class ClassNode
+    attr_accessor :nodes
+
+    def initialize(nodes)
+      @nodes = nodes
+    end
+  end
+
 class FunctionNode < ASTNode
 attr_accessor :name, :arg_names, :body
 def initialize(name, arg_names, body, location)
