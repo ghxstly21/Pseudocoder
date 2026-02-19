@@ -15,6 +15,9 @@ Rails.application.configure do
   # Turn on fragment caching in view templates.
   config.action_controller.perform_caching = true
 
+  # Serve static files from public directory
+  config.public_file_server.enabled = true
+
   # Cache assets for far-future expiry since they are all digest stamped.
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
 
@@ -28,7 +31,8 @@ Rails.application.configure do
   config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  # Disabled for Elastic Beanstalk (load balancer handles SSL)
+  config.force_ssl = false
 
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
@@ -50,8 +54,9 @@ Rails.application.configure do
   config.cache_store = :solid_cache_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  # Disabled solid_queue for initial deployment
+  # config.active_job.queue_adapter = :solid_queue
+  # config.solid_queue.connects_to = { database: { writing: :queue } }
 
   # Raise delivery errors so we can see what's failing
   config.action_mailer.raise_delivery_errors = true

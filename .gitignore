@@ -104,3 +104,8 @@ build-iPhoneSimulator/
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
