@@ -17,6 +17,11 @@ module Compiler
     def initialize: (Array[ASTNode]) -> void
   end
 
+  class ClassNode
+    attr_accessor nodes: Array[ASTNode]
+    def initialize: (Array[ASTNode]) -> void
+  end
+
   class FunctionNode < ASTNode
     attr_accessor name: String
     attr_accessor arg_names: Array[String]

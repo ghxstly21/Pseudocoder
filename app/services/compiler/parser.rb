@@ -32,6 +32,13 @@ module Compiler
     end
 
     def parse_java
+      access_modifiers = %i[public private]
+      until @tokens.empty?
+        case peek_type
+        when :class
+          parse_class
+        end
+      end
     end
 
     def parse_js
@@ -47,6 +54,38 @@ module Compiler
       end
       @ast
     end
+
+    def parse_class
+      consume!(:class)
+
+    end
+
+    def parse_modifiers
+      modifiers = []
+      keywords = %i[public static void private protected]
+      i = 0
+      while keywords.include?(peek_type)
+
+      end
+    end
+
+    def keywords_conflict?(node)
+      # return true if the code contains multiple access modifiers
+      access_modifiers = %i[public private protected]
+      return true if node.modifiers.count{access_modifiers.include?(it)} > 1
+
+      if node.modifiers.include?(:abstract)
+        abstract_conflicts = %i[final native synchronized strictfp]
+        return true if node.modifiers.any?{abstract_conflicts.include?(it)}
+        if node.is_a?(FunctionNode)
+          return true if node.modifiers.any?{%i[private static].include?(it)}
+        end
+      end
+
+      if node.modifiers.include?
+
+      end
+      end
 
     def parse_conditional
       condition_type = peek_type
@@ -546,6 +585,10 @@ module Compiler
       end
       VarRefNode.new(value, var_token.location)
     end
+
+    # HELPER METHODS
+    # Allow us to view the next token
+    # Also allows us to remove it from the token list as well
 
     def consume!(expected_type)
       # Grab the first token from the list and remove it
