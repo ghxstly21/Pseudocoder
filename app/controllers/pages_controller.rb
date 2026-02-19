@@ -17,21 +17,9 @@ class PagesController < ApplicationController
     @phonenumber    = params[:phonenumber]
     @subject    = params[:subject]
 
-    begin
-      Rails.logger.info "=== SENDING EMAIL VIA RESEND ==="
-
-      # Resend is fast, so deliver_now is safe and reliable
-      ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_now
-
-      Rails.logger.info "=== EMAIL SENT SUCCESSFULLY ==="
-      flash[:notice] = "Thank you! Your message has been sent."
-    rescue StandardError => e
-      Rails.logger.error "=== EMAIL FAILED: #{e.class} ==="
-      Rails.logger.error e.message
-      Rails.logger.error e.backtrace.first(5).join("\n")
-      flash[:alert] = "Unable to send your message at this time. Please try again later or contact us directly at theofficialpseudocoder@gmail.com"
-    end
-
+  
+    ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_now
+    flash[:notice] = "Thank you! Your message has been sent."
     redirect_to contact_path
   end
 end
