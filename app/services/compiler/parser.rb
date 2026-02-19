@@ -75,11 +75,13 @@ module Compiler
       until peek?(:close_brace)
         if JAVA_TYPES.include?(peek_type)
           # int -> num = 0;
+          i = 0
+          while peek?(:dot)
           parse_var_set if peek?(:identifier, 1) && peek?(:assignment, 2)
-
+          end
         end
       end
-    end
+      end
 
     def parse_modifiers
       parsed_modifiers = []
@@ -323,7 +325,6 @@ module Compiler
       when "python"
 
       when "java"
-              supported_types = %i[char byte short int long float double bool string_type void]
               # [modifiers] type name(type1 arg1, type2 arg2) {body}
               if supported_types.include?(peek_type)
                 type_token = consume!(peek_type)
@@ -334,18 +335,41 @@ module Compiler
               end
 
               name = consume!(:identifier).value
-              arg_names = parse_args
+              args = parse_args
+              consume!(:open_brace)
+              body = []
+              until peek?(:close_brace)
+                local_modifiers = parse_modifiers
+
+                case peek_type
+                when :class then body << parse_class(local_modifiers)
+                when :identifier, *JAVA_TYPES
+                  if peek?(:identifier, 1) && peek?(:open_paren, 2)
+                    raise SyntaxError, "#{peek_token(1).location}Unexpected function definition inside method body."
+                  else
+                    body << parse_var_set
+                  end
+                when :if, :else, :while, :for
+                  body << parse_conditional
+                when :return
+                  body << parse_return
+                else
+                  body << parse_expr
+                end
+              end
+
+              def_end = consume!(:close_brace).location
+              func = FunctionNode.new(
+                name,
+                args,
+                body,
+                LocationRange.new(def_start, def_end),
+                return_type,
+                modifiers
+              )
+              raise SyntaxError, "#{func.location}Function contains conflicting modifiers." if keywords_conflict?(func)
       # continue working on parse_def, add in keywords_conflict? to different
       # functions
-
-
-
-
-
-
-
-
-
       when "javascript"
                     # function foo(arg1, arg2) {body}
                     def_start = consume!(:function).location
@@ -378,6 +402,7 @@ module Compiler
       consume!(:open_paren)
       case @lang
       when "javascript"
+        unless peek?(:close_paren)
         if peek?(:identifier)
           arg_token = consume!(:identifier)
           args << ArgNode.new(arg_token.value, arg_token.location)
@@ -387,18 +412,22 @@ module Compiler
             args << ArgNode.new(arg_token.value, arg_token.location)
           end
         end
+        end
       when "java"
+
+        unless peek?(:close_paren)
         args << parse_java_arg
 
         while peek?(:comma)
           consume!(:comma)
           args << parse_java_arg
         end
-      consume!(:close_paren)
-      args
+        end
       else
         raise UnsupportedLanguageError, "Expected Java or JavaScript, got #{@lang}."
       end
+      consume!(:close_paren)
+      args
     end
 
     def parse_java_arg
