@@ -18,6 +18,12 @@ class Generator
     when FunctionNode then generate_fn(node)
     when ExpressionNode then generate_expr(node)
     when StatementNode then generate_stmt(node)
+    when ArgNode
+      if node.type.nil?
+        "#{node.name}"
+      else
+        "#{node.type} #{node.name}"
+      end
     else raise GenerationError, "Currently unsupported node on type #{node.class} at #{node.location} Let support know!"
     end
   end
@@ -27,8 +33,9 @@ class Generator
   def generate_fn(node)
     return "" if node.nil?
     body = node.body.map { generate(it) }.join("\n    ")
+    args = node.arg_names.map { generate(it) }.join(", ")
     <<~FUNCTION
-    fn #{node.name}(#{node.arg_names.join(", ")}) -> untyped
+    fn #{node.name}(#{args}) -> untyped
         #{body}
     end
     FUNCTION
@@ -39,7 +46,7 @@ class Generator
     case node
     when NumberNode, StringNode, VarRefNode then "#{node.value}"
     when CallNode
-      print_calls = %w[System.out.println System.out.print console.log]
+      print_calls = %w[System.out.println System.out.print System.out.printf console.log]
       node.name = "print" if print_calls.include?(node.name)
       "#{node.name}(#{node.arg_exprs.map { generate_expr(it) }.join(", ")})"
     when DeclarationNode
