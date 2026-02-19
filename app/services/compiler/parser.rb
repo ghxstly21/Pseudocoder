@@ -11,6 +11,7 @@ module Compiler
     # Args: %w[x y z]
     # BODY:
     # INTEGER_LITERAL: "1"
+    JAVA_TYPES = %i[var char byte short int long float double bool string_type void]
     attr_accessor :ast
     def initialize(tokens, lang)
       @tokens = tokens
@@ -32,11 +33,20 @@ module Compiler
     end
 
     def parse_java
-      access_modifiers = %i[public private]
       until @tokens.empty?
+        modifiers = parse_modifiers
         case peek_type
-        when :class
-          parse_class
+        when :class then @ast << parse_class(modifiers)
+        when :identifier, *JAVA_TYPES
+          if peek?(:identifier, 1) && peek?(:open_paren, 2)
+            @ast << parse_def(modifiers)
+          else
+            @ast << parse_var_set
+          end
+        when :if, :else, :while, :for
+          @ast << parse_conditional
+        else
+          raise SyntaxError, "#{peek_token.location}Unknown type: #{peek_token.type}"
         end
       end
     end
@@ -55,30 +65,43 @@ module Compiler
       @ast
     end
 
-    def parse_class
-      consume!(:class)
+    def parse_class(modifiers)
+      # [modifiers] class identifier {}
+      #       supported_keywords = %i[class]
+      class_start = consume!(:class).location
+      name = consume!(:identifier).value
+      body = []
+      consume!(:open_brace)
+      until peek?(:close_brace)
+        if JAVA_TYPES.include?(peek_type)
+          # int -> num = 0;
+          parse_var_set if peek?(:identifier, 1) && peek?(:assignment, 2)
 
+        end
+      end
     end
 
     def parse_modifiers
-      modifiers = []
-      keywords = %i[public static void private protected]
+      parsed_modifiers = []
+      modifiers = %i[public private protected abstract final static]
       i = 0
-      while keywords.include?(peek_type)
-
+      while modifiers.include?(peek_type(i))
+        parsed_modifiers << consume!(peek_type(i)).type
+        i += 1
       end
+      parsed_modifiers
     end
 
     def keywords_conflict?(node)
       # return true if the code contains multiple access modifiers
       access_modifiers = %i[public private protected]
-      return true if node.modifiers.count{access_modifiers.include?(it)} > 1
+      return true if node.modifiers.count { access_modifiers.include?(it) } > 1
 
       if node.modifiers.include?(:abstract)
         abstract_conflicts = %i[final native synchronized strictfp]
-        return true if node.modifiers.any?{abstract_conflicts.include?(it)}
+        return true if node.modifiers.any? { abstract_conflicts.include?(it) }
         if node.is_a?(FunctionNode)
-          return true if node.modifiers.any?{%i[private static].include?(it)}
+          return true if node.modifiers.any? { %i[private static].include?(it) }
         end
       end
 
@@ -294,12 +317,33 @@ module Compiler
       end
     end
 
-    def parse_def
+    def parse_def(modifiers = nil)
       case @lang
 
       when "python"
 
       when "java"
+              supported_types = %i[char byte short int long float double bool string_type void]
+              # [modifiers] type name(type1 arg1, type2 arg2) {body}
+              if supported_types.include?(peek_type)
+                type_token = consume!(peek_type)
+                def_start = type_token.location
+                return_type = type_token.value
+              else
+                raise SyntaxError, "#{peek_token.location}Expected function's return type, got '#{peek_token.value}'"
+              end
+
+              name = consume!(:identifier).value
+              arg_names = parse_args
+      # continue working on parse_def, add in keywords_conflict? to different
+      # functions
+
+
+
+
+
+
+
 
 
       when "javascript"
@@ -320,23 +364,60 @@ module Compiler
                       end
                     end
                     def_end = consume!(:close_brace).location
-                    FunctionNode.new(name, arg_names, body, LocationRange.new(def_start, def_end))
+                    FunctionNode.new(
+                      name,
+                      arg_names,
+                      body,
+                      LocationRange.new(def_start, def_end)
+                    )
       else raise UnsupportedLanguageError, "parse_def expected a valid language, got #{@lang}."
       end
       end
     def parse_args
       args = []
       consume!(:open_paren)
-      if peek?(:identifier)
-        args << consume!(:identifier).value
+      case @lang
+      when "javascript"
+        if peek?(:identifier)
+          arg_token = consume!(:identifier)
+          args << ArgNode.new(arg_token.value, arg_token.location)
+          while peek?(:comma)
+            consume!(:comma)
+            arg_token = consume!(:identifier)
+            args << ArgNode.new(arg_token.value, arg_token.location)
+          end
+        end
+      when "java"
+        args << parse_java_arg
+
         while peek?(:comma)
           consume!(:comma)
-          args << consume!(:identifier).value
+          args << parse_java_arg
         end
-      end
       consume!(:close_paren)
       args
+      else
+        raise UnsupportedLanguageError, "Expected Java or JavaScript, got #{@lang}."
       end
+    end
+
+    def parse_java_arg
+      type_token = consume!(peek_type)
+      arg_start = type_token.location
+      arg_type = type_token.value
+
+      unless JAVA_TYPES.include?(peek_type)
+        raise SyntaxError, "#{peek_token.location}Expected a valid type." unless peek?(:identifier)
+        while peek?(:dot)
+          arg_type << consume!(:dot).value
+          arg_type << consume!(:identifier).value
+        end
+      end
+
+      arg_token = consume!(:identifier)
+      arg_end = arg_token.location
+      ArgNode.new(arg_token.value, LocationRange.new(arg_start, arg_end), arg_type)
+    end
     def parse_expr
       case peek_type
       when :let, :var, :const
@@ -351,9 +432,9 @@ module Compiler
         end
         if peek?(:open_paren, i)
           parse_call
-        elsif peek?(:assignment, 1)
+        elsif peek?(:assignment, i)
           parse_assignment
-        elsif [ :increment, :decrement ].include?(peek_type(1))
+        elsif [ :increment, :decrement ].include?(peek_type(i))
           parse_unary_expr
         else
           parse_var_ref
@@ -373,50 +454,22 @@ module Compiler
         raise SyntaxError, "Expected a valid expression, got #{peek_type}."
       end
     end
-    def is_assignment?
-      # x = 5 -> return true
-      # let x = 5
-      i = 0
-      while true
-        case peek_type(i)
-        when :identifier
-          i += 1
-        when :dot
-          return false unless peek?(:identifier, i + 1)
-          i += 2
-        when :open_bracket
-          i += 1
-          bracket_count = 1
-          while bracket_count > 0
-            type = peek_type(i)
-            raise SyntaxError, "#{peek_token.location}Unclosed opening bracket." if type.nil?
-            bracket_count += 1 if type == :open_bracket
-            bracket_count -= 1 if type == :close_bracket
-            i += 1
-          end
-        else break
-        end
-      end
-      peek?(:assignment, i + 1)
-    end
 
     def parse_var_set
-      js_modifiers = %i[var let const]
-      java_modifiers = %w[final]
-      java_types = %w[byte short int long float double char boolean String]
-      modifiers = []
       # let x = 5
       # let y = "hello"
       # const x = "var";
       # var x = 5;
       # int, long, string, char, short, float, double
       if @lang == "javascript"
+        js_modifiers = %i[var let const]
+        modifiers = []
         init_start = peek_token.location
         modifiers << consume!(:identifier).value if peek_token.value == "export"
         if js_modifiers.include? peek_type
           modifiers << consume!(peek_type).value
         else
-          parse_assignment
+          return parse_assignment
         end
         name = parse_var_ref.value
         consume!(:assignment)
@@ -427,14 +480,15 @@ module Compiler
         end
         DeclarationNode.new(modifiers, name, value, LocationRange.new(init_start, init_end))
       elsif @lang == "java"
-        init_start = peek_token.location
-        modifiers << consume!(:identifier).value if java_modifiers.include?(peek_token.value)
-        if peek?(:assignment)
-          raise SyntaxError, "#{peek_token.location}Expected a data type but got '='"
-        elsif java_types.include?(peek_token.value)
-          data_type = consume!(:identifier).value
-        elsif peek?(:identifier)
-          parse_assignment
+        # int num = 0;
+        # ArrayList<Integer> a = new ArrayList<>();
+        modifiers = [] if modifiers.nil?
+        supported_types = %i[var char byte short int long float double bool string_type void]
+        if supported_types.include?(peek_type)
+          init_start = peek_token.location
+          var_type = consume!(peek_type).type
+        else
+          return parse_assignment
         end
         name = parse_var_ref.value
         consume!(:assignment)

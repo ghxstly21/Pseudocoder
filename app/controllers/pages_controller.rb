@@ -17,7 +17,7 @@ class PagesController < ApplicationController
     @phonenumber    = params[:phonenumber]
     @subject    = params[:subject]
 
-  
+
     ContactMailer.contact_email(@first_name, @last_name, @email, @phonenumber, @subject).deliver_now
     flash[:notice] = "Thank you! Your message has been sent."
     redirect_to contact_path

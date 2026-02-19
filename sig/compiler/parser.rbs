@@ -1,6 +1,8 @@
 module Compiler
   class Parser
 
+    JAVA_TYPES: Array[Symbol]
+
     @tokens: [Tokenizer::Token]
     @lang: String
 
@@ -12,11 +14,15 @@ module Compiler
 
     private
 
-    def parse_class: -> ClassNode
-    
+    def parse_class: (?Array[Symbol]) -> ClassNode
+
     def keywords_conflict?: (ASTNode) -> bool
 
     def parse_conditional: -> StatementNode
+
+    def parse_java_arg: -> ArgNode
+
+    def parse_modifiers: -> Array[Symbol]
 
     def parse_while: -> WhileNode
 
@@ -38,15 +44,13 @@ module Compiler
 
     def parse_expr: -> ExpressionNode
 
-    def is_assignment?: -> bool
-
     def parse_assignment: -> AssignmentNode
 
     def parse_return: -> RetNode
 
     def parse_arr: -> ArrDeclNode
 
-    def parse_var_set: -> DeclarationNode
+    def parse_var_set: -> (DeclarationNode | AssignmentNode)
 
     def parse_python: -> Array[ASTNode]
 
@@ -54,7 +58,7 @@ module Compiler
 
     def parse_js: -> Array[ASTNode]
 
-    def parse_def: -> FunctionNode
+    def parse_def: (?Array[Symbol]?) -> FunctionNode
 
     def parse_str: -> StringNode
 
@@ -62,7 +66,7 @@ module Compiler
     
     def parse_call: -> CallNode
 
-    def parse_args: -> [String]
+    def parse_args: -> Array[ArgNode]
     
     def parse_arg_exprs: -> [ExpressionNode]
     

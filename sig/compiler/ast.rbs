@@ -17,17 +17,25 @@ module Compiler
     def initialize: (Array[ASTNode]) -> void
   end
 
-  class ClassNode
-    attr_accessor nodes: Array[ASTNode]
-    def initialize: (Array[ASTNode]) -> void
+  class ClassNode < ASTNode
+    attr_accessor body: Array[ASTNode]
+    def initialize: (Array[ASTNode], LocationRange) -> void
   end
 
   class FunctionNode < ASTNode
     attr_accessor name: String
     attr_accessor arg_names: Array[String]
     attr_accessor body: Array[ExpressionNode]
+    attr_accessor return_type: String?
 
-    def initialize: (String, Array[String], Array[ExpressionNode], LocationRange) -> void
+    def initialize: (String, Array[String], Array[ExpressionNode], LocationRange, ?String?) -> void
+  end
+
+  class ArgNode < ASTNode
+    attr_accessor type: String?
+    attr_accessor name: String
+
+    def initialize: (String, (Tokenizer::Location | LocationRange), ?String?) -> void
   end
 
   class BinaryExprNode < ExpressionNode

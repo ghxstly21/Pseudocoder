@@ -78,7 +78,7 @@ config.action_mailer.smtp_settings = {
   address:              "smtp.gmail.com",
   port:                 587,
   user_name:            "theofficialpseudocoder@gmail.com",
-  password:             "vkpd eplt zjnc nfse",  
+  password:             "vkpd eplt zjnc nfse",
   authentication:       "plain",
   enable_starttls_auto: true
 }
