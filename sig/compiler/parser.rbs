@@ -12,6 +12,10 @@ module Compiler
 
     private
 
+    def parse_class: -> ClassNode
+    
+    def keywords_conflict?: (ASTNode) -> bool
+
     def parse_conditional: -> StatementNode
 
     def parse_while: -> WhileNode
