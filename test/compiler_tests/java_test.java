@@ -1,29 +1,44 @@
-// 1. Regular and escaped string
-String s = "He said \"Hello!\"";
+public class Test {
 
-// 2. Char literals
-char c = '\n';
-char quote = '\'';
+public static void main(String[] args) {
 
-// 3. Numbers + suffixes
-long l = 123456789L;
-float f = 1.23f;
-double d = 4.56e-10;
-
-// 4. Dot chaining
-System.out.println("Hello, world!");
-
-// 5. Comments (single & multiline)
 /*
- This is a block comment
- // nested-looking line
+This file exists to test
+
+Pseudocoder
+
+Functionality for Java!
 */
-int x = 10; // trailing comment
 
-// 6. Keywords vs identifiers
-int newValue = 5; // not the keyword "new"
-boolean className = true;
+int x = 0; // this is the first variable
 
-// 7. Operators
-x += 1; x <<= 2; x >>>= 3; x &= y; x |= z;
-boolean test = (a == b) && !(c != d);
+int y = 5;
+
+System.out.printf("x + y = %d", add(x, y));
+
+for(int i = 0; i < 10; i++) {
+    System.out.println("This prints 10 times!");
+}
+
+for(byte j = 1; j <= 10; j++) {
+    System.out.println("This also prints 10 times!");
+}
+}
+
+/*
+This function adds two numbers: x and y.
+*/
+public int add(int x, int y) {
+    return x + y;
+}
+
+public void whileLoops() {
+short g = 3;
+while(g < 25) {
+    System.out.println("g is less than 25.");
+    g++;
+}
+System.out.println("g is greater than or equal to 25...")
+}
+
+}

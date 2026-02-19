@@ -8,7 +8,7 @@ module Compiler
   require_relative "parser"
   require_relative "generator"
 
-  # Compiles an uploaded file or pasted code.
+  # Compiles an uploaded file or pasted code into pseudocode.
   # @raise Errno::ENOENT if the file does not exist
   # @raise Errno::EACCES if the compiler does not have permission to read the file
   # @raise UnsupportedLanguageError if the file extension is not .java, .js, or .py
@@ -17,7 +17,7 @@ module Compiler
   # @raise SyntaxError if the code has incorrect syntax
   # @raise GenerationError if generation for a piece of code has not been implemented
   def self.compile(path_or_code, from_file: true)
-    tokenizer = from_file ? Tokenizer.new(path_or_code) : Tokenizer.new(path_or_code, from_file: false)
+    tokenizer = Tokenizer.new(path_or_code, from_file: from_file)
     language = tokenizer.lang
     tokens = tokenizer.tokenize
     parser = Parser.new(tokens, language)
@@ -26,7 +26,7 @@ module Compiler
     generator.generate(ast)
     end
 
-  # Times compilation in seconds
+  # Times compilation in seconds.
   def self.time
     start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     yield

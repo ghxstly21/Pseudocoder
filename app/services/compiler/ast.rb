@@ -41,23 +41,35 @@ class ProgramNode
   end
 end
 
-  class ClassNode
-    attr_accessor :nodes
+  class ClassNode < ASTNode
+    attr_accessor :body
 
-    def initialize(nodes)
-      @nodes = nodes
+    def initialize(body, location)
+      super location
+      @body = body
     end
   end
 
 class FunctionNode < ASTNode
-attr_accessor :name, :arg_names, :body
-def initialize(name, arg_names, body, location)
+attr_accessor :name, :arg_names, :body, :return_type
+def initialize(name, arg_names, body, location, return_type = nil)
   super location
   @name = name
   @arg_names = arg_names
   @body = body
+  @return_type = return_type
 end
 end
+
+  class ArgNode < ASTNode
+    attr_accessor :type, :name
+
+    def initialize(name, location, type = nil)
+      super location
+      @type = type
+      @name = name
+    end
+  end
   class ExpressionNode < ASTNode
   end
 

@@ -63,15 +63,19 @@ class Tokenizer
   JAVA_TOKENS = [
     [ :comment, /\/\/.*/ ],
     [ :comment, /\/\*[\s\S]*?\*\// ],
+    [ :char, /\bchar\b/ ],
     [ :byte, /\bbyte\b/ ],
     [ :short, /\bshort\b/ ],
     [ :int, /\bint\b/ ],
     [ :long, /\blong\b/ ],
     [ :float, /\bfloat\b/ ],
     [ :double, /\bfloat\b/ ],
+    [ :string_type, /\bString\b/ ],
+    [ :abstract, /\babstract\b/ ],
+    [ :final, /\bfinal\b/ ],
     [ :assert, /\bassert\b/ ],
-    [ :public, /\bpublic\b/],
-    [ :private, /\bprivate\b/],
+    [ :public, /\bpublic\b/ ],
+    [ :private, /\bprivate\b/ ],
     [ :protected, /\bprotected\b/ ],
     [ :static, /\bstatic\b/ ],
     [ :void, /\bvoid\b/ ],
@@ -203,7 +207,11 @@ class Tokenizer
     [ :identifier, /[A-Za-z_][A-Za-z0-9_]*/ ]
   ]
 
-  Location = Struct.new(:line, :column, :length)
+  Location = Struct.new(:line, :column, :length) do
+    def to_s
+      "Line #{line}, Position #{column}, Length #{length}\n"
+    end
+  end
   Token = Struct.new(:type, :value, :location)
 
   LANG_TOKENS = {
@@ -272,9 +280,9 @@ class Tokenizer
       @token_defs.find do |_, regexp|
         match = @code.match(/\A#{regexp}/)
       end
-    raise TokenError, "Unrecognized token on #{@code.inspect}" unless token_def && match
+    raise TokenError, "Unrecognized token on #{@code.split.first.inspect}" unless token_def && match
     value = match[0]
-    @code.delete_prefix! value
+    @code.delete_prefix!(value)
     @position += value.length
     Token.new(token_def[0], value, Location.new(@line, @position, value.length))
   end
