@@ -312,7 +312,7 @@ module Compiler
       when "+=", "-=", "*=", "/=" then [ 1, 0 ]
       when "or", "||" then [ 1, 2 ]
       when "and", "&&" then [ 3, 4 ]
-      when "<", ">", "<=", ">=", "==", "!=", "===" then [ 5, 6 ]
+      when "less than", "greater than", "less than or equal to", "greater than or equal to", "equal to", "not equal to", "===" then [ 5, 6 ]
       when "+", "-" then [ 7, 8 ]
       when "*", "/", "%" then [ 9, 10 ]
       else raise "Expected an operator (char) when getting binding power, got #{operator.class}"
