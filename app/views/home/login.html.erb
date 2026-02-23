@@ -16,6 +16,9 @@
             box-sizing: border-box;
         }
 
+
+
+
         .loginpage {
             width: 400px;
             background: white;
@@ -26,10 +29,16 @@
         }
 
         .container {
-            background: #334464;
+            background-image: url(<%= image_path('background2.png') %>);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             height: 100vh;
             display: flex;
         }
+
+
+
 
         .header {
             font-family: "Atkinson Hyperlegible Next", serif;
@@ -59,44 +68,6 @@
             background: blue;
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            background: #222;
-            color: white;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-
-        }
-
-        .logo a {
-            color: chocolate;
-            text-decoration: none;
-        }
-
-        .nav {
-            list-style: none;
-            display: flex;
-        }
-
-        .nav li {
-            margin-left: 20px;
-        }
-
-        .nav a {
-            text-decoration: none;
-            color: white;
-            font-size: 18px;
-        }
-
-        .nav a:hover {
-            color: green;
-        }
 
         .account {
             margin-top: 10px;
@@ -105,18 +76,6 @@
 </head>
 
 <body>
-    <header>
-        <div class="logo"><a href="#">Pseudocoder</a></div>
-        <nav>
-            <ul class="nav">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
     <div class="container">
         <div class="loginpage">
             <h2 class="header">Create Account</h2><br><br>
