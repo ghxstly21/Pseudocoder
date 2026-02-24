@@ -68,7 +68,7 @@ class Generator
   def generate_expr(node)
     return "" if node.nil?
     case node
-    when NumberNode, StringNode, VarRefNode then "#{node.value}"
+    when NumberNode, StringNode, BoolNode, VarRefNode then "#{node.value}"
     when CallNode
       node.name =
         case node.name
@@ -91,7 +91,20 @@ class Generator
     when AssignmentNode
       emit_block { @emit_step.call("Assign #{node.name} to #{generate_expr(node.value)}") }
       "#{node.name} = #{generate_expr(node.value)}"
-    when BinaryExprNode then "#{generate(node.left)} #{node.operator} #{generate(node.right)}"
+    when BinaryExprNode
+      node.operator =
+        case node.operator
+        when ">" then "is greater than"
+        when "<" then "is less than"
+        when ">=" then "is greater than or equal to"
+        when "<=" then "is less than or equal to"
+        when "==" then "is equal to"
+        when "!=" then "is not equal to"
+        when "&&" then "and"
+        when "||" then "or"
+        else node.operator
+        end
+      "#{generate(node.left)} #{node.operator} #{generate(node.right)}"
     when UnaryExprNode
       if node.is_prefix
         emit_block { @emit_step.call("#{node.operator}#{generate(node.var)}") }

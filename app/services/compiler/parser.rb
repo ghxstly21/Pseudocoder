@@ -141,12 +141,12 @@ module Compiler
         raise SyntaxError, "Unexpected function definition inside if statement."
       when :else, :elif
         raise SyntaxError, "Unexpected 'else' inside if statement body"
-      when :if
-        body << parse_if
+      when :if, :while, :for
+        body << parse_conditional
       when :return
         body << parse_return
       else
-        body << parse_expr
+        body << parse_binary_expr
       end
     end
       if_end = consume!(:close_brace).location
@@ -175,12 +175,12 @@ module Compiler
           raise SyntaxError, "Unexpected function definition inside if statement."
         when :else, :elif
           raise SyntaxError, "Unexpected 'else' inside else statement body"
-        when :if
-          body << parse_if
+        when :if, :while, :for
+          body << parse_conditional
         when :return
           body << parse_return
         else
-          body << parse_expr
+          body << parse_binary_expr
         end
       end
       consume!(:close_brace)
@@ -309,7 +309,6 @@ module Compiler
 
     def binding_power(operator)
       case operator
-      when "+=", "-=", "*=", "/=" then [ 1, 0 ]
       when "or", "||" then [ 1, 2 ]
       when "and", "&&" then [ 3, 4 ]
       when "<", ">", "<=", ">=", "==", "!=", "===" then [ 5, 6 ]
@@ -453,6 +452,8 @@ module Compiler
         parse_var_set
       when :exponential, :float, :integer
         parse_number
+      when :true, :false
+        parse_bool
       when :identifier
         i = 1
         while peek?(:dot, i)
@@ -461,14 +462,14 @@ module Compiler
         end
         if peek?(:open_paren, i)
           parse_call
-        elsif peek?(:assignment, i)
+        elsif %i[assignment add_assign sub_assign mul_assign div_assign].include?(peek_type(i))
           parse_assignment
         elsif [ :increment, :decrement ].include?(peek_type(i))
           parse_unary_expr
         else
           parse_var_ref
         end
-      when :not, :increment, :decrement
+      when :not, :sub, :increment, :decrement
         parse_unary_expr
       when :open_paren
         consume!(:open_paren)
@@ -480,7 +481,7 @@ module Compiler
       when :string
         parse_str
       else
-        raise SyntaxError, "Expected a valid expression, got #{peek_type}."
+        raise SyntaxError, "#{peek_token.location}Expected a valid expression, got '#{peek_token.value}'."
       end
     end
 
@@ -500,7 +501,7 @@ module Compiler
         else
           return parse_assignment
         end
-        name = parse_var_ref.value
+        name = consume!(:identifier).value
         consume!(:assignment)
         value = parse_binary_expr
         init_end = value.location
@@ -521,7 +522,7 @@ module Compiler
         end
         name = parse_var_ref.value
         consume!(:assignment)
-        value = parse_expr
+        value = parse_binary_expr
         init_end = consume!(:semicolon).location
         DeclarationNode.new(modifiers, name, value, LocationRange.new(init_start, init_end), data_type)
       end
@@ -532,22 +533,26 @@ module Compiler
       name_token = consume!(:identifier)
       name = name_token.value
       assignment_start = name_token.location
-      consume!(:assignment)
-      value = parse_expr
+      if %i[assignment add_assign sub_assign mul_assign div_assign].include?(peek_type)
+        operator = consume!(peek_type).value
+      else
+        raise SyntaxError, "#{peek_token.location}Expected an assignment operator, got #{peek_token.value}."
+      end
+      value = parse_binary_expr
       assignment_end = value.location
       if peek?(:semicolon)
         assignment_end = consume!(:semicolon).location
       end
-      AssignmentNode.new(name, value, LocationRange.new(assignment_start, assignment_end))
+      AssignmentNode.new(name, operator, value, LocationRange.new(assignment_start, assignment_end))
     end
 
     def parse_unary_expr
-      if peek?(:not)
+      if [ :not, :sub ].include?(peek_type)
         is_prefix = true
-        not_token = consume!(:not)
-        unary_start = not_token.location
-        operator = not_token.value
-        expr = parse_binary_expr(11) # not has the highest BP
+        op_token = consume!(peek_type)
+        unary_start = op_token.location
+        operator = op_token.value
+        expr = parse_binary_expr(11) # not and negatives have the highest BP
         unary_end = expr.location
         # pre-increment -> ++x
       elsif [ :increment, :decrement ].include?(peek_type)
@@ -616,6 +621,15 @@ module Compiler
     def parse_str
       str_token = consume!(:string)
       StringNode.new(str_token.value, str_token.location)
+    end
+
+    def parse_bool
+      if %i[true false].include?(peek_type)
+        bool_token = consume!(peek_type)
+      else
+        raise SyntaxError, "#{peek_token.location}Expected a bool to parse, got '#{peek_token.value}'."
+      end
+      BoolNode.new(bool_token.value, bool_token.location)
     end
 
     def parse_number
