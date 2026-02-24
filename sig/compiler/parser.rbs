@@ -62,6 +62,8 @@ module Compiler
 
     def parse_str: -> StringNode
 
+    def parse_bool: -> BoolNode
+
     def parse_number: -> NumberNode
     
     def parse_call: -> CallNode
