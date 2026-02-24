@@ -13,7 +13,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            background: #222;
+            background: #011222;
             color: white;
         }
 
@@ -31,14 +31,21 @@
             margin-left: 20px;
         }
 
+        .nav li:hover {
+            transition: transform 0.2s ease;
+        }
+
+
         .nav a {
             text-decoration: none;
             color: white;
             font-size: 18px;
+
         }
 
         .nav a:hover {
-            color: green;
+            color: #a0c9ff;
+            transition: transform 0.2s ease;
         }
 
         .user-info {
@@ -48,12 +55,38 @@
         .container {
             padding: 40px;
         }
+
+        .fun-mode {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            background: #000000;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+
+        body.fun-mode-active {
+            background-image: url(<%= image_path('ryan.jpg') %>);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
     </style>
 </head>
 
 <body>
     <header>
-        <div class="logo">Pseudocoder</div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="fun-mode" onclick="toggleFunMode()"></div>
+            <div class="logo">Pseudocoder</div>
+        </div>
         <nav>
             <ul class="nav">
                 <li><a href="/home">Home</a></li>
@@ -108,6 +141,22 @@
                 }
             }
         }
+
+        function toggleFunMode() {
+            document.body.classList.toggle('fun-mode-active');
+
+            if (document.body.classList.contains('fun-mode-active')) {
+                localStorage.setItem('funMode', 'true');
+            } else {
+                localStorage.removeItem('funMode');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('funMode') === 'true') {
+                document.body.classList.add('fun-mode-active');
+            }
+        });
     </script>
 
 </body>

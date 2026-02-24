@@ -6,21 +6,36 @@
 <style>
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background-image: url(<%= image_path('backgroundhome.jpg') %>);
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
     }
 
+
+
     .top-bar {
-        display: flex;
+        margin-top: 1rem;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem 2rem;
-        background: #f9f9f9;
-        border-bottom: 1px solid #eee;
+        padding: 0.5rem 1rem;
+        background: #ffffff;
+        width: fit-content;
+        border-radius: 999px;
+        margin-left: 2rem;
     }
 
     .top-bar-right {
         display: flex;
         align-items: center;
         gap: 1rem;
+    }
+
+    .top-bar-user {
+        font-family: 'Oswald', sans-serif;
+        color: #044caa;
+        font-weight: 700;
+        font-size: 1.2rem;
     }
 
 
@@ -32,6 +47,22 @@
         flex-direction: column;
         align-items: center;
         gap: 1rem;
+    }
+
+    .auth-lead {
+        font-size: 1.1rem;
+        color: #ffffff;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-footnote {
+        color: #ffffff;
+        font-size: 0.9rem;
+    }
+
+    .auth-signup-link {
+        color: #78b2ff;
+        font-weight: 600;
     }
 
     .auth-button {
@@ -61,31 +92,59 @@
     }
 
     .auth-button-secondary:hover {
-        background: #418ef3;
+        background: #b1d0f8;
     }
 
     .header {
         font-family: 'Oswald', sans-serif;
-        color: #044caa;
-        margin: 80px 0 40px;
+        color: #a0c9ff;
+        margin: 80px auto 40px auto;
         text-align: center;
         font-size: 2.5rem;
+        padding: 0.75rem 2rem;
+        border-radius: 999px;
+
     }
 
     .flash-notice {
         background: #d1fae5;
-        padding: 0.75rem;
+        width: fit-content;
+        padding: 0.75rem 5rem;
         border-radius: 6px;
+        margin: auto;
         margin-bottom: 1rem;
         color: #013476;
         text-align: center;
+        font-weight: 600;
+    }
+
+    .pseudocode-panel {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: #e8fff1;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid #044caa;
+    }
+
+    .pseudocode-heading {
+        color: #044caa;
+        margin-top: 0;
+    }
+
+    .pseudocode-pre {
+        background: white;
+        padding: 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-family: monospace;
     }
 
     .compile-form {
         background: #fafafa;
         padding: 1rem;
         border-radius: 10px;
-        margin: 0.5rem auto 2rem;
+        margin: 0 auto 2rem;
         box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
         max-width: 800px;
     }
@@ -102,6 +161,58 @@
 
     .file-input {
         margin-top: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: white;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .file-input::file-selector-button {
+        padding: 0.5rem 1rem;
+        background: #044caa;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 1rem;
+    }
+
+    .file-input::file-selector-button:hover {
+        background: #033580;
+    }
+
+    .file-input-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .clear-file-button {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: #ffffff;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    .save-compilation-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .save-compilation-check {
+        cursor: pointer;
     }
 
     .or-divider {
@@ -112,6 +223,7 @@
 
     .submit-btn {
         margin-top: 0.75rem;
+        width: 100%;
         padding: 0.75rem 1.5rem;
         background: #044caa;
         color: white;
@@ -127,12 +239,17 @@
         background: #0557c2;
     }
 
+    .submit-btn:active {
+        transform: scale(0.98);
+    }
+
     .page-title {
         font-family: 'Oswald', sans-serif;
-        color: #044caa;
+        color: #a0c9ff;
         text-align: center;
         margin: 3rem 0 1.5rem;
         font-size: 2rem;
+
     }
 
     .history-container {
@@ -164,6 +281,11 @@
         font-size: 0.85rem;
         color: #666;
         margin-bottom: 0.75rem;
+    }
+
+    .history-age {
+        margin-left: 1rem;
+        color: #999;
     }
 
     .history-language {
@@ -238,6 +360,10 @@
         text-align: center;
         color: #888;
         font-style: italic;
+    }
+
+    .empty-state-on-dark {
+        color: #ffffff;
     }
 
     .contact-header {
@@ -337,55 +463,27 @@
         min-height: 150px;
     }
 
-    .submit-btn {
-        width: 100%;
-        padding: 0.75rem;
-        background: #044caa;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-
-    .submit-btn:hover {
-        background: #044caa;
-    }
-
-    .submit-btn:active {
-        transform: scale(0.98);
-    }
-
-    .flash-notice {
-        background: #d1fae5;
-        padding: 1rem;
-        border-radius: 6px;
-        margin-bottom: 1.5rem;
-        color: #04387d;
-        text-align: center;
-        font-weight: 600;
-    }
-
     .notice {
-        padding-top: 1rem;
-        padding-left: 1rem;
-        padding-right: 1 rem;
-        border-radius: 6px;
+        padding: 0.75rem 1.5rem;
         color: #04387d;
         text-align: center;
         font-weight: 600;
+        background: #ffff;
+        width: fit-content;
+        margin: 0 auto;
     }
 
     .flash-alert {
         background: #fee2e2;
         padding: 1rem;
         border-radius: 6px;
-        margin-bottom: 1.5rem;
         color: #991b1b;
         text-align: center;
         font-weight: 600;
+        width: fit-content;
+        margin: auto;
+        margin-bottom: 1.5rem;
+
     }
 
     @media (max-width: 768px) {
@@ -407,24 +505,11 @@
 
 <% if current_user.present? %>
 <div class="top-bar">
-    <div style="font-family: 'Oswald', sans-serif; color: #044caa; font-weight: bold; font-size: 1.2rem;">
+    <div class="top-bar-user">
         <% if session[:guest_session] %>
         Guest Session
         <% else %>
         <%= current_user.name %>
-        <% end %>
-    </div>
-    <div class="top-bar-right">
-        <% if session[:guest_session] %>
-        <form id="logout-form" action="<%= logout_path %>" method="post">
-            <input type="hidden" name="_method" value="delete">
-            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-        </form>
-        <% else %>
-        <form id="logout-form" action="<%= logout_path %>" method="post" style="display: none;">
-            <input type="hidden" name="_method" value="delete">
-            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-        </form>
         <% end %>
     </div>
 </div>
@@ -432,10 +517,10 @@
 <% else %>
 <h1 class="header">Understand all your code with ease using Pseudocoder</h1>
 <div class="auth-options">
-    <p style="font-size: 1.1rem; color: #666; margin-bottom: 0.5rem;">Sign in to save your compilation history</p>
+    <p class="auth-lead">Sign in to save your compilation history</p>
     <a href="/login" class="auth-button auth-button-primary">Sign in as User</a>
     <a href="/guest_login" class="auth-button auth-button-secondary">Continue as Guest</a>
-    <p style="color: #888; font-size: 0.9rem;">Don't have an account? <a href="/signup" style="color: #044caa; font-weight: 600;">Create one</a></p>
+    <p class="auth-footnote">Don't have an account? <a href="/signup" class="auth-signup-link">Create one</a></p>
 </div>
 <% end %>
 
@@ -448,45 +533,129 @@
 <% end %>
 
 <% if @pseudocode_output.present? %>
-<div style="max-width: 800px; margin: 2rem auto; background: #e8fff1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #044caa;">
-    <h3 style="color: #044caa; margin-top: 0;">Generated Pseudocode:</h3>
-    <pre style="background: white; padding: 1rem; border-radius: 6px; overflow-x: auto; font-family: monospace;"><%= @pseudocode_output %></pre>
+<div class="pseudocode-panel">
+    <h3 class="pseudocode-heading">Generated Pseudocode:</h3>
+    <pre class="pseudocode-pre"><%= @pseudocode_output %></pre>
 </div>
-<%else%>
+<% else %>
 <p class="notice">Please avoid submitting gibberish code, since the compiler may return complex errors.</p>
 
 <% end %>
-<%= form_with url: compilations_path, multipart: true, local: true do |f| %> <div class="compile-form">
+<%= form_with url: compilations_path, multipart: true, local: true do |f| %>
+<div class="compile-form">
     <%= f.text_area :code, placeholder: "Paste code here...", rows: 8, class: "code-input", id: "code-input" %>
 
     <div class="or-divider">OR</div>
 
-    <%= f.file_field :file, class: "file-input" %>
+    <div class="file-input-row">
+        <%= f.file_field :file, class: "file-input", id: "file-input" %>
+        <button type="button" id="clear-file" class="clear-file-button">x</button>
+    </div>
+
+    <% if current_user.present? && !session[:guest_session] %>
+    <label class="save-compilation-label">
+        <%= f.check_box :save_compilation, class: "save-compilation-check" %>
+        <span>Save compilation</span>
+    </label>
+    <% end %>
 
     <%= f.submit "Generate Pseudocode", class: "submit-btn" %>
 </div>
 <% end %>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var codeInput = document.getElementById("code-input");
-        if (!codeInput || !window.CodeMirror) {
-            return;
+        var fileInput = document.getElementById("file-input");
+        var clearFileButton = document.getElementById("clear-file");
+        var editor = null;
+
+        if (codeInput && window.CodeMirror) {
+            editor = CodeMirror.fromTextArea(codeInput, {
+                lineNumbers: true,
+                indentUnit: 4,
+                indentWithTabs: false,
+                tabSize: 4
+            });
+
+            var form = codeInput.closest("form");
+            if (form) {
+                form.addEventListener("submit", function() {
+                    editor.save();
+                });
+            }
         }
 
-        var editor = CodeMirror.fromTextArea(codeInput, {
-            lineNumbers: true,
-            indentUnit: 4,
-            indentWithTabs: false,
-            tabSize: 4
-        });
+        function getCodeValue() {
+            if (editor) {
+                return editor.getValue();
+            }
+            return codeInput ? codeInput.value : "";
+        }
 
-        var form = codeInput.closest("form");
-        if (form) {
-            form.addEventListener("submit", function() {
-                editor.save();
+        function setCodeDisabled(disabled) {
+            if (editor) {
+                editor.setOption("readOnly", disabled ? "nocursor" : "");
+                editor.getWrapperElement().style.opacity = disabled ? "0.6" : "1";
+            }
+            if (codeInput) {
+                codeInput.disabled = disabled;
+            }
+        }
+
+        function setFileDisabled(disabled) {
+            if (fileInput) {
+                fileInput.disabled = disabled;
+            }
+            if (clearFileButton) {
+                clearFileButton.disabled = disabled;
+                clearFileButton.style.opacity = disabled ? "0.4" : "1";
+            }
+        }
+
+        function updateState() {
+            var hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+            var hasCode = getCodeValue().trim().length > 0;
+
+            if (hasFile) {
+                setCodeDisabled(true);
+                setFileDisabled(false);
+            } else if (hasCode) {
+                setFileDisabled(true);
+                setCodeDisabled(false);
+            } else {
+                setFileDisabled(false);
+                setCodeDisabled(false);
+            }
+
+            if (clearFileButton) {
+                clearFileButton.style.display = hasFile ? "inline-flex" : "none";
+            }
+        }
+
+        if (fileInput) {
+            fileInput.addEventListener("change", updateState);
+        }
+
+        if (clearFileButton) {
+            clearFileButton.addEventListener("click", function() {
+                if (fileInput) {
+                    fileInput.value = "";
+                }
+                updateState();
             });
         }
+
+        if (editor) {
+            editor.on("change", updateState);
+        }
+
+        if (codeInput) {
+            codeInput.addEventListener("input", updateState);
+        }
+
+        updateState();
     });
 </script>
 
@@ -500,7 +669,7 @@
         <div class="history-meta">
             <div>
                 <span class="history-language"><%= c.language %></span>
-                <span style="margin-left: 1rem; color: #999;">
+                <span class="history-age">
                     <%= time_ago_in_words(c.created_at) %> ago
                 </span>
             </div>
@@ -521,6 +690,6 @@
     </div>
     <% end %>
     <% else %>
-    <p class="empty-state">No history yet. <% if current_user %>Run some code!<% else %>Sign in to save your compilations.<% end %></p>
+    <p class="empty-state empty-state-on-dark">No history yet. <% if current_user %>Run some code!<% else %>Sign in to save your compilations.<% end %></p>
     <% end %>
 </div>

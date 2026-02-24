@@ -38,11 +38,13 @@ class CompilationsController < ApplicationController
       end
 
       unless session[:guest_session]
-        @compilation = current_user.compilations.create!(
-          input_type: input_type,
-          input_text: input_text,
-          output_text: output_text
-        )
+        if params[:save_compilation] == "1"
+          @compilation = current_user.compilations.create!(
+            input_type: input_type,
+            input_text: input_text,
+            output_text: output_text
+          )
+        end
       end
 
       @pseudocode_output = output_text
