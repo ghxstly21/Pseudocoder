@@ -1,6 +1,9 @@
 # Name of your application. Used to uniquely configure containers.
 service: pseudocoder
 
+# Git repository URL
+repo: https://github.com/ghxstly21/Pseudocoder.git
+
 # Name of the container image.
 image: pseudocoder
 
