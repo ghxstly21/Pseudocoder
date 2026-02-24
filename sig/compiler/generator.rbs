@@ -4,13 +4,21 @@ module Compiler
 
     attr_reader ast: ProgramNode
 
-    attr_reader instructions: Array[String]
+    attr_reader instructions: String
 
-    def initialize: (ProgramNode) -> void
+    @show_instructions: bool
+
+    @step_list: Array[String]
+
+    @emit_step: Proc
+
+    def initialize: (ProgramNode, bool) -> void
 
     def generate: (ASTNode | ProgramNode) -> String
 
     private
+
+    def emit_block: { () -> String } -> String
 
     def generate_fn: (FunctionNode) -> String
 

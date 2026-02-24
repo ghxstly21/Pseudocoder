@@ -27,6 +27,9 @@ until %w[1 2].include? input
   print "Invalid input. Please reenter your choice: "
   input = gets.to_s.strip
 end
+
+compiler = Compiler::Compiler.new
+
 case input
 when "1"
   print "Please enter a file path: "
@@ -42,7 +45,7 @@ when "1"
   end
   puts "File is valid!\nCompiling..."
 
-  elapsed = Compiler.time { pseudocode = Compiler.compile file }
+  elapsed = compiler.time { pseudocode = compiler.compile file }
 
 when "2"
   puts "Paste your code below:"

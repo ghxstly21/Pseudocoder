@@ -51,7 +51,7 @@ end
 
 class FunctionNode < ASTNode
 attr_accessor :name, :arg_names, :body, :return_type, :modifiers
-def initialize(name, arg_names, body, location, return_type = nil, modifiers = [])
+def initialize(name, arg_names, body, location, return_type = "untyped", modifiers = nil)
   super location
   @name = name
   @arg_names = arg_names
@@ -171,12 +171,12 @@ end
   end
 
   class AssignmentNode < ExpressionNode
-    attr_accessor :name, :value
-    def initialize(name, value, location)
+    attr_accessor :name, :operator, :value
+    def initialize(name, operator, value, location)
       super location
       @name = name
+      @operator = operator
       @value = value
-      @location = location
     end
   end
 
@@ -215,6 +215,14 @@ class VarRefNode < ExpressionNode
 end
 
   class StringNode < ExpressionNode
+    attr_accessor :value
+    def initialize(value, location)
+      super location
+      @value = value
+    end
+  end
+
+  class BoolNode < ExpressionNode
     attr_accessor :value
     def initialize(value, location)
       super location
