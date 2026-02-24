@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+<head data-theme="light">
     <title><%= content_for(:title) || "Pseudocoder" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,12 +21,21 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+
+    <style>
+        body {
+            background-color: #F4F4F4;
+
+        }
+    </style>
 </head>
 
 
 <body>
 
     <%= render 'home/header' %>
+
     <%= yield %>
     <%= render 'home/footer' %>
 </body>

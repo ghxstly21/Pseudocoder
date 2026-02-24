@@ -502,7 +502,7 @@ module Compiler
         end
         name = parse_var_ref.value
         consume!(:assignment)
-        value = parse_expr
+        value = parse_binary_expr
         init_end = value.location
         if peek?(:semicolon)
           init_end = consume!(:semicolon).location

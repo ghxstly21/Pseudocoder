@@ -132,6 +132,7 @@ class Tokenizer
     [ :sub, /-/ ],
     [ :multiply, /\*/ ],
     [ :divide, /\// ],
+    [ :modulo, /%/ ],
     [ :comparison, /(>=|<=|==|>|<)/ ],
     [ :assignment, /=/ ],
     [ :identifier, /\b[A-Za-z_][A-Za-z0-9_]*\b/ ]
@@ -202,6 +203,7 @@ class Tokenizer
     [ :sub, /-/ ],
     [ :multiply, /\*/ ],
     [ :divide, /\// ],
+    [ :modulo, /%/ ],
     [ :comparison, /(>=|<=|===|==|>|<)/ ],
     [ :assignment, /=/ ],
     [ :identifier, /[A-Za-z_][A-Za-z0-9_]*/ ]
