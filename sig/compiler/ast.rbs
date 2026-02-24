@@ -26,10 +26,10 @@ module Compiler
     attr_accessor name: String
     attr_accessor arg_names: Array[ArgNode]
     attr_accessor body: Array[ExpressionNode]
-    attr_accessor return_type: String?
+    attr_accessor return_type: String
     attr_accessor modifiers: Array[Symbol]?
 
-    def initialize: (String, Array[ArgNode], Array[ExpressionNode], LocationRange, ?String?, ?Array[Symbol]?) -> void
+    def initialize: (String, Array[ArgNode], Array[ExpressionNode], LocationRange, ?String, ?Array[Symbol]?) -> void
   end
 
   class ArgNode < ASTNode
