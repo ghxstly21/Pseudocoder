@@ -1,10 +1,16 @@
 module Compiler
 
-  def self.compile: (String, ?from_file: bool) -> String
+  class Compiler
 
-  def self.time: { () -> void } -> float
+    attr_reader language: String?
+    attr_reader instructions: String?
+
+  def compile: (String, ?from_file: bool, show_instructions: bool) -> String
+
+  def time: -> Float
 
   private
 
-  def self.adaptive_round: (float) -> float
+  def adaptive_round: (float) -> float
+end
 end
