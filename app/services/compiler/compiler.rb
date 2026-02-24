@@ -1,12 +1,12 @@
 require "bigdecimal"
+require_relative "ast"
+require_relative "tokenizer"
+require_relative "parser"
+require_relative "generator"
+
 module Compiler
   class Compiler
-  end
-
-  require_relative "ast"
-  require_relative "tokenizer"
-  require_relative "parser"
-  require_relative "generator"
+  attr_reader :language, :instructions
 
   # Compiles an uploaded file or pasted code into pseudocode.
   # @raise Errno::ENOENT if the file does not exist
@@ -16,18 +16,18 @@ module Compiler
   # @raise TokenError if the code contains currently unsupported tokens
   # @raise SyntaxError if the code has incorrect syntax
   # @raise GenerationError if generation for a piece of code has not been implemented
-  def self.compile(path_or_code, from_file: true)
+  def compile(path_or_code, from_file: true, show_instructions: true)
     tokenizer = Tokenizer.new(path_or_code, from_file: from_file)
-    language = tokenizer.lang
+    @language = tokenizer.lang
     tokens = tokenizer.tokenize
-    parser = Parser.new(tokens, language)
+    parser = Parser.new(tokens, @language)
     ast = parser.parse
-    generator = Generator.new(ast)
+    generator = Generator.new(ast, show_instructions)
     generator.generate(ast)
     end
 
   # Times compilation in seconds.
-  def self.time
+  def time
     start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     yield
     elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
@@ -37,7 +37,7 @@ module Compiler
   private
 
   # Rounds to the nearest decimal place that contains a nonzero digit.
-  def self.adaptive_round(num)
+  def adaptive_round(num)
     n_digits = nil # the first nonzero index
     num_as_string = BigDecimal(num).to_s("F") # bigdecimal is used to avoid conversion to scientific notation
     fractional_part = num_as_string.split(".")[1]
@@ -54,5 +54,6 @@ module Compiler
       end
     end
     n_digits.nil? || n_digits < 2 ? num.round(2) : num.round(n_digits)
+  end
   end
 end

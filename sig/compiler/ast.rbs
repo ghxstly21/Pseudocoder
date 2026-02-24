@@ -26,10 +26,10 @@ module Compiler
     attr_accessor name: String
     attr_accessor arg_names: Array[ArgNode]
     attr_accessor body: Array[ExpressionNode]
-    attr_accessor return_type: String?
+    attr_accessor return_type: String
     attr_accessor modifiers: Array[Symbol]?
 
-    def initialize: (String, Array[ArgNode], Array[ExpressionNode], LocationRange, ?String?, ?Array[Symbol]?) -> void
+    def initialize: (String, Array[ArgNode], Array[ExpressionNode], LocationRange, ?String, ?Array[Symbol]?) -> void
   end
 
   class ArgNode < ASTNode
@@ -117,9 +117,10 @@ module Compiler
 
   class AssignmentNode < ExpressionNode
     attr_accessor name: String
+    attr_accessor operator: String
     attr_accessor value: ExpressionNode
 
-    def initialize: (String, ExpressionNode, LocationRange) -> void
+    def initialize: (String, String, ExpressionNode, LocationRange) -> void
   end
 
   class NumberNode < ExpressionNode
@@ -156,4 +157,8 @@ module Compiler
     def initialize: (String, Tokenizer::Location) -> void
   end
 
+  class BoolNode < ExpressionNode
+    attr_accessor value: String
+    def initialize: (String, Tokenizer::Location) -> void
+  end
 end
