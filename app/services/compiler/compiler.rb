@@ -6,7 +6,7 @@ require_relative "generator"
 
 module Compiler
   class Compiler
-  attr_reader :language, :instructions
+  attr_reader :language, :ast_text, :english
 
   # Compiles an uploaded file or pasted code into pseudocode.
   # @raise Errno::ENOENT if the file does not exist
@@ -17,16 +17,16 @@ module Compiler
   # @raise SyntaxError if the code has incorrect syntax
   # @raise NotImplementedError if the generator failed on a node because of an unimplemented function
   # @raise GenerationError if generation for a piece of code has not been implemented
-  def compile(path_or_code, from_file: true, show_instructions: true)
+  def compile(path_or_code, from_file: true)
     tokenizer = Tokenizer.new(path_or_code, from_file: from_file)
     @language = tokenizer.lang
     tokens = tokenizer.tokenize
     parser = Parser.new(tokens, @language)
     ast = parser.parse
-    @ast_text = compiler.ast
-    generator = Generator.new(ast, show_instructions)
+    generator = Generator.new(ast)
     generator.generate(ast)
-    @instructions = compiler.english
+    @english = generator.english
+    @ast_text = generator.ast_text
     end
 
   # Times compilation in seconds.
