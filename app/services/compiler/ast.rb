@@ -151,9 +151,9 @@ end
 
     def to_pseudocode
       if @type.nil?
-        "#{indent}#{@name}"
+        "#{@name}"
       else
-        "#{indent}#{@type} #{@name}"
+        "#{@type} #{@name}"
       end
     end
 
