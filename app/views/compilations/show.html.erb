@@ -1,0 +1,150 @@
+<style>
+    body {
+        background-image: url(<%= image_path('background2.png') %>);
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    .compilation-show {
+        max-width: 1000px;
+        margin: 2rem auto 4rem;
+        padding: 0 1.5rem;
+    }
+
+    .compilation-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .compilation-title {
+        font-family: 'Oswald', sans-serif;
+        color: #a0c9ff;
+        font-size: 2rem;
+        margin: 0;
+        font-style: bold;
+    }
+
+    .compilation-meta {
+        display: block;
+
+        color: #efe8e8;
+        font-size: 0.9rem;
+    }
+
+    .compilation-pill {
+        background: #e8fff1;
+        color: #044caa;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .compilation-grid {
+        display: block;
+    }
+
+    .compilation-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 1.25rem;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #a0c9ff;
+        margin-bottom: 1.5rem;
+    }
+
+
+
+    .compilation-pre {
+        background: #f4f4f4;
+        padding: 0.75rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 0;
+        white-space: pre-wrap;
+    }
+
+    .compilation-output {
+        background: #e8fff1;
+    }
+
+    .compilation-actions {
+        margin-top: 1.5rem;
+    }
+
+    .compilation-back {
+        display: inline-block;
+        background: #044caa;
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+    }
+
+    .compilation-back:hover {
+        background: #0557c2;
+    }
+
+    .compilation-download {
+        display: inline-block;
+        background: #044caa;
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        margin-right: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .compilation-download:hover {
+        background: #0557c2;
+    }
+
+    .compilation-expiry {
+        color: #e0d8d8;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .compilation-headers {
+        color: #044caa;
+        font-size: 2rem;
+    }
+</style>
+
+<div class="compilation-show">
+    <div class="compilation-header">
+        <h1 class="compilation-title">Compilation Details</h1>
+
+        <div class="compilation-meta">
+            <span class="compilation-pill"><%= @compilation.language %></span>
+            <div>Created <%= time_ago_in_words(@compilation.created_at) %> ago</div>
+            <div>Input type: <%= @compilation.input_type %></div>
+        </div>
+        <div class="compilation-expiry">
+            This report expires in <%= distance_of_time_in_words(Time.current, @compilation.expires_at) %>.
+        </div>
+    </div>
+
+    <div class="compilation-grid">
+        <div class="compilation-card">
+            <pre class="compilation-pre">
+<div class="compilation-headers">Pseudocode:</div>
+<%= @compilation.output_text %>
+
+<div class="compilation-headers">AST:</div>
+<%= @compilation.ast_text.presence || "No AST recorded for this compilation." %>
+
+<div class="compilation-headers">English_version:</div>
+<%= @compilation.instructions.presence || "No instructions recorded for this compilation." %>
+            </pre>
+        </div>
+    </div>
+
+    <div class="compilation-actions">
+        <%= link_to "Download report", download_compilation_path(@compilation), class: "compilation-download" %>
+        <%= link_to "Back to home", root_path, class: "compilation-back" %>
+    </div>
+</div>

@@ -6,23 +6,37 @@ require_relative "../errors/compiler/syntax_error"
 
 class CompilationsController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_compilation, only: [ :destroy ]
+  before_action :find_compilation, only: [ :show, :download, :destroy ]
+  before_action :reject_expired_compilation, only: [ :show, :download ]
+
+  def show
+  end
+
+  def download
+    send_data(
+      compilation_report(@compilation),
+      filename: "compilation-#{@compilation.id}.txt",
+      type: "text/plain"
+    )
+  end
 
   def create
     begin
+      compiler = Compiler::Compiler.new
+
       if params[:file].present?
         uploaded_file = params[:file]
         input_text = uploaded_file.original_filename
         output_text = nil
 
-        time = Compiler.time { output_text = Compiler.compile(uploaded_file, from_file: true) }
+        time = compiler.time { output_text = compiler.compile(uploaded_file, from_file: true) }
         input_type = "file"
 
       elsif params[:code].present?
         input_text = params[:code]
         output_text = nil
 
-        time = Compiler.time { output_text = Compiler.compile(input_text, from_file: false) }
+        time = compiler.time { output_text = compiler.compile(input_text, from_file: false) }
         input_type = "code"
 
       else
@@ -42,8 +56,12 @@ class CompilationsController < ApplicationController
           @compilation = current_user.compilations.create!(
             input_type: input_type,
             input_text: input_text,
-            output_text: output_text
+            output_text: output_text,
+            language: compiler.language,
+            instructions: compiler.instructions,
+            ast_text: compiler.ast_text
           )
+          purge_expired_compilations
         end
       end
 
@@ -95,5 +113,37 @@ class CompilationsController < ApplicationController
 
   def find_compilation
     @compilation = current_user.compilations.find(params[:id])
+  end
+
+  def reject_expired_compilation
+    return unless @compilation.expired?
+
+    @compilation.destroy
+    redirect_to root_path, alert: "That compilation report expired after 30 days. Please run it again if you need a new report."
+  end
+
+  def purge_expired_compilations
+    current_user.compilations.where("created_at < ?", 30.days.ago).delete_all
+  end
+
+  def compilation_report(compilation)
+    <<~REPORT
+    Pseudocoder Compilation Report
+    ==============================
+    ID: #{compilation.id}
+    Language: #{compilation.language}
+    Input type: #{compilation.input_type}
+    Created at: #{compilation.created_at}
+    Expires at: #{compilation.expires_at}
+
+    Pseudocode:
+    #{compilation.output_text}
+
+    AST:
+    #{compilation.ast_text.presence || "No AST recorded for this compilation."}
+
+    English_version:
+    #{compilation.instructions.presence || "No instructions recorded for this compilation."}
+    REPORT
   end
 end
