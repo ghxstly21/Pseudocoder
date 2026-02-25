@@ -15,6 +15,7 @@ module Compiler
   # @raise LanguageRecognitionError if the language could not be identified based on code alone
   # @raise TokenError if the code contains currently unsupported tokens
   # @raise SyntaxError if the code has incorrect syntax
+  # @raise NotImplementedError if the generator failed on a node because of an unimplemented function
   # @raise GenerationError if generation for a piece of code has not been implemented
   def compile(path_or_code, from_file: true, show_instructions: true)
     tokenizer = Tokenizer.new(path_or_code, from_file: from_file)

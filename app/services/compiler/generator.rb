@@ -19,19 +19,24 @@ class Generator
 
   # Generates pseudocode from the syntax tree nodes.
   def generate(node)
-    return "" if node.nil?
-    case node
-    when ProgramNode then @ast.nodes.map { generate(it) }.join("\n")
-    when FunctionNode then generate_fn(node)
-    when ExpressionNode then generate_expr(node)
-    when StatementNode then generate_stmt(node)
-    when ArgNode
-      if node.type.nil?
-        "#{node.name}"
-      else
-        "#{node.type} #{node.name}"
-      end
-    else raise GenerationError, "Currently unsupported node on type #{node.class} at #{node.location} Let support know!"
+    # return "" if node.nil?
+    # case node
+    # when ProgramNode then @ast.nodes.map { generate(it) }.join("\n")
+    # when FunctionNode then generate_fn(node)
+    # when ExpressionNode then generate_expr(node)
+    # when StatementNode then generate_stmt(node)
+    # when ArgNode
+    #   if node.type.nil?
+    #     "#{node.name}"
+    #   else
+    #     "#{node.type} #{node.name}"
+    #   end
+    # else raise GenerationError, "Currently unsupported node on type #{node.class} at #{node.location} Let support know!"
+    # end
+
+    if node.is_a?(ProgramNode)
+      @instructions = @ast.nodes.map { it.to_english }.join("\n")
+      @ast.nodes.map { it.to_pseudocode }.join("\n")
     end
   end
 

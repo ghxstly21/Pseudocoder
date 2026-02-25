@@ -9,7 +9,17 @@ module Compiler
 
   class ASTNode
     attr_reader location: LocationRange | Tokenizer::Location
+    attr_accessor parent: ASTNode | ProgramNode
     def initialize: (LocationRange | Tokenizer::Location) -> void
+
+    def to_pseudocode: -> String
+    def to_english: -> String
+    def indent: -> String
+    def depth: -> Integer
+    def class_name: -> String
+    def add_children: (*ASTNode) -> void
+
+
   end
 
   class ProgramNode
