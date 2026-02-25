@@ -593,7 +593,7 @@ class CallNode < ExpressionNode
       when "System.out.printf" then "printf"
       else @name
       end
-    "#{indent}#{updated_name}(#{@arg_exprs.map { it.to_pseudocode }.join(", ")})"
+    "#{updated_name}(#{@arg_exprs.map { it.to_pseudocode }.join(", ")})"
   end
 
   def to_english
