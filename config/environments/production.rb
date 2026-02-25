@@ -28,7 +28,8 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  config.assume_ssl = true
+  # Disabled until SSL is configured
+  config.assume_ssl = false
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # Disabled for Elastic Beanstalk (load balancer handles SSL)
@@ -60,7 +61,7 @@ Rails.application.configure do
 
   # Raise delivery errors so we can see what's failing
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.perform_deliveries = true
+    config.action_mailer.perform_deliveries = true
 
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: ENV.fetch("MAILER_HOST", "pseudocoder-1.onrender.com") }
@@ -85,6 +86,7 @@ Rails.application.configure do
   # ]
   config.hosts << "pseudocoder.app"
   config.hosts << "www.pseudocoder.app"
+  config.hosts << "54.172.146.184"
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
