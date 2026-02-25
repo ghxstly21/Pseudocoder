@@ -309,6 +309,29 @@
         transition: background 0.2s;
     }
 
+    .history-more-btn {
+        background: #044caa;
+        color: white;
+        border: none;
+        padding: 0.35rem 0.75rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        text-decoration: none;
+        transition: background 0.2s;
+        display: inline-block;
+    }
+
+    .history-more-btn:hover {
+        background: #033580;
+    }
+
+    .history-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
     .history-delete-btn:hover {
         background: #dc2626;
     }
@@ -673,7 +696,10 @@
                     <%= time_ago_in_words(c.created_at) %> ago
                 </span>
             </div>
-            <%= button_to "Delete", compilation_path(c), method: :delete, class: "history-delete-btn" %>
+            <div class="history-actions">
+                <%= link_to "More info", compilation_path(c), class: "history-more-btn" %>
+                <%= button_to "Delete", compilation_path(c), method: :delete, class: "history-delete-btn" %>
+            </div>
         </div>
 
         <div class="history-content">

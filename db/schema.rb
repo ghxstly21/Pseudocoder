@@ -10,11 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_31_223221) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_24_010000) do
   create_table "compilations", force: :cascade do |t|
+    t.text "ast_text"
     t.datetime "created_at", null: false
     t.text "input_text"
     t.string "input_type"
+    t.text "instructions"
     t.string "language"
     t.text "output_text"
     t.datetime "updated_at", null: false

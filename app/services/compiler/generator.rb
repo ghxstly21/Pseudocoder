@@ -3,7 +3,7 @@ require_relative "../../errors/compiler/generation_error"
 
 module Compiler
 class Generator
-  attr_reader :ast, :instructions
+
   def initialize(ast, show_instructions)
     @ast = ast
 
@@ -16,6 +16,8 @@ class Generator
 
     @show_instructions = show_instructions
   end
+
+ 
 
   # Generates pseudocode from the syntax tree nodes.
   def generate(node)

@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   root "pages#home"
-  resources :compilations, only: [ :create, :destroy ]
+  resources :compilations, only: [ :create, :destroy, :show ] do
+    get :download, on: :member
+  end
 
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
@@ -31,5 +33,5 @@ Rails.application.routes.draw do
   get "/feedback", to: "pages#feedback"
   get "/docs", to: "pages#documentation"
   get "/frontend", to: "pages#frontend", as: "frontened_presentation"
-  get "/backend", to: "pages#backend", as: "backedn_presentation"
+  get "/backend", to: "pages#backend", as: "backend_presentation"
 end
