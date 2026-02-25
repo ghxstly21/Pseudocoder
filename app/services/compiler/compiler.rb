@@ -24,9 +24,9 @@ module Compiler
     parser = Parser.new(tokens, @language)
     ast = parser.parse
     generator = Generator.new(ast)
-    generator.generate(ast)
     @english = generator.english
     @ast_text = generator.ast_text
+    generator.generate(ast)
     end
 
   # Times compilation in seconds.

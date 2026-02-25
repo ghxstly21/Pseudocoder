@@ -394,6 +394,19 @@ end
         #{indent})#{'   '}
       WHILE
     end
+
+    def to_pseudocode
+      body_lines = @body.map { it.to_pseudocode }.join("\n")
+      <<~WHILE_BLOCK
+        #{indent}while #{@condition.to_pseudocode}
+        #{body_lines}
+        #{indent}end while
+      WHILE_BLOCK
+    end
+
+    def to_english
+      "#{indent}WHILE #{@condition.to_english}: #{@body.map { it.to_english }.join(", ")}"
+    end
   end
   class ForNode < ConditionalNode
     attr_accessor :var_init, :increment
