@@ -22,8 +22,10 @@ module Compiler
     tokens = tokenizer.tokenize
     parser = Parser.new(tokens, @language)
     ast = parser.parse
+    @ast_text = compiler.ast
     generator = Generator.new(ast, show_instructions)
     generator.generate(ast)
+    @instructions = compiler.english
     end
 
   # Times compilation in seconds.
