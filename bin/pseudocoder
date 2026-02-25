@@ -45,7 +45,7 @@ when "1"
   end
   puts "File is valid!\nCompiling..."
 
-  elapsed = compiler.time { pseudocode = compiler.compile file }
+  elapsed = compiler.time { pseudocode = compiler.compile(file) }
 
 when "2"
   puts "Paste your code below:"
