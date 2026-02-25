@@ -21,11 +21,12 @@ proxy:
   ssl: false
   host: 13.59.141.238
 
-# Credentials for your image host (not used when building locally on server).
+# Credentials for your image host (not used when building remotely on server).
+# Using a local registry since we're building remotely
 registry:
-  username: pseudocoder
-  password:
-    - KAMAL_REGISTRY_PASSWORD
+  server: localhost:5000
+  username: unused
+  password: unused
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:
