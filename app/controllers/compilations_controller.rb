@@ -58,7 +58,7 @@ class CompilationsController < ApplicationController
             input_text: input_text,
             output_text: output_text,
             language: compiler.language,
-            instructions: compiler.instructions,
+            instructions: compiler.english,
             ast_text: compiler.ast_text
           )
           purge_expired_compilations
