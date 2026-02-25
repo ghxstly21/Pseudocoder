@@ -3,9 +3,10 @@ module Compiler
   class Compiler
 
     attr_reader language: String?
-    attr_reader instructions: String?
+    attr_reader english: String
+    attr_reader ast_text: String
 
-  def compile: (String, ?from_file: bool, show_instructions: bool) -> String
+  def compile: (String, ?from_file: bool) -> String
 
   def time: -> Float
 
