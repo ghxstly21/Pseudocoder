@@ -15,7 +15,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "jbuilder"
 
-gem "bcrypt", "~> 3.1.21"
+gem "bcrypt", "~> 3.1.22"
 gem "resend"
 
 gem "tzinfo-data"
