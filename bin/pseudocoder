@@ -18,6 +18,14 @@ def is_valid?(path)
   File.exist?(path) && SUPPORTED_LANGUAGES.include?(File.extname(path))
 end
 
+def multigets
+  result = ""
+  while (in=gets) != "\n"
+    result << in
+  end
+  return result.chomp
+end
+
 puts "Welcome to Pseudocoder!"
 puts "Your source file will be compiled into English-readable pseudocode."
 puts "Java, JavaScript, and Python files are supported."

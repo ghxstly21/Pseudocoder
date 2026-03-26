@@ -9,8 +9,8 @@ class Generator
   def initialize(ast)
     @ast = ast
 
-    @ast_text = @ast.nodes.map{ it.to_s }.join("\n")
-    @english = @ast.nodes.map{ it.to_english }.join("\n")
+    @ast_text = @ast.nodes.map { it.to_s }.join("\n")
+    @english = @ast.nodes.map { it.to_english }.join("\n")
 
     # if show_instructions
     #   @step_list = []
@@ -22,7 +22,7 @@ class Generator
     # @show_instructions = show_instructions
   end
 
- 
+
 
   # Generates pseudocode from the syntax tree nodes.
   def generate(node)

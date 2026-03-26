@@ -109,3 +109,21 @@ build-iPhoneSimulator/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# Log files
+log/
+
+# Kamal
+.kamal/
+
+# Storage
+storage/
+
+# AWS
+.ebextensions/
+eb_logs*.txt
+
+# Misc
+vendor/
+pseudocoder-deploy.tar.gz
+test.txt
