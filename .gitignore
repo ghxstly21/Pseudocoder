@@ -122,6 +122,8 @@ storage/
 # AWS
 .ebextensions/
 eb_logs*.txt
+Procfile
+Procfile.dev
 
 # Misc
 vendor/
